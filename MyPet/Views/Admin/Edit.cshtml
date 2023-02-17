@@ -1,18 +1,19 @@
-﻿@*@using Microsoft.AspNetCore.Identity
-@model MyPet
-
-<h2>Изменение ролей для пользователя @Model.UserEmail</h2>
-
-<form asp-action="Edit" method="post">
-    <input type="hidden" name="userId" value="@Model.UserId" />
+﻿@model MyPet.ViewModels.EditUserViewModel
+@{
+    ViewBag.Title = "Редактирование пользователя";
+}
+<h1>view</h1>
+@*<form asp-action="Edit" asp-controller="User">
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
-        @foreach (IdentityRole role in Model.AllRoles)
-        {
-                <input type="checkbox" name="roles" value="@role.Name"
-                   @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />
-
-            @role.Name <br />
-        }
+        <input type="hidden" asp-for="Id" />
     </div>
-    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">Email</label>
+        <input type="text" asp-for="Email" class="form-control" />
+    </div>
+  
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-secondary" />
+    </div>
 </form>*@
