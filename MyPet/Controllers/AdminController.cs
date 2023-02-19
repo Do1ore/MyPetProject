@@ -59,26 +59,5 @@ namespace MyPet.Controllers
 
         public IActionResult CreateRole() => View();
 
-        public async Task<IActionResult> Create(CreateUserViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                MyPetUser user = new MyPetUser {Email = model.Email, UserName = model.Email, FirstName = model.FirstName,
-                                                LastName = model.FirstName, RegistrationDateTime = model.RegistrationDateTime};
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
-            }
-            return View(model);
-        }
     }
 }
