@@ -1,0 +1,16 @@
+﻿@model IEnumerable<MyPet.Areas.Identity.Data.MyPetUser>
+
+<h2>Список пользователей</h2>
+<table class="table">
+    @foreach (var user in Model)
+    {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-userid="@user.Id">Access level</a>
+                </td>
+            </tr>
+    }
+</table>

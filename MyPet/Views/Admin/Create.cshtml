@@ -1,6 +1,6 @@
 ﻿@model MyPet.ViewModels.CreateUserViewModel
 @{
-    ViewBag.Title = "Добавление пользователя";
+    ViewBag.Title = "User creation";
 }
 <form asp-action="Create" asp-controller="Admin">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -25,14 +25,14 @@
         <input type="text" asp-for="PhoneNumber" class="form-control" />
     </div>
     <div class="form-group">
-        <label asp-for="Password" class="control-label">Пароль</label>
+        <label asp-for="Password" class="control-label">Password</label>
         <input type="password" asp-for="Password" class="form-control" />
     </div>
     <div class="form-group">
-        <label asp-for="RegistrationDateTime" class="control-label">Год рождения</label>
+        <label asp-for="RegistrationDateTime" class="control-label">Year of birth</label>
         <input type="datetime-local" asp-for="RegistrationDateTime" class="form-control" />
     </div>
     <div class="form-group">
-        <input type="submit" value="Добавить" class="btn btn-outline-secondary" />
+        <input type="submit" value="Add" class="btn btn-outline-secondary" />
     </div>
 </form>

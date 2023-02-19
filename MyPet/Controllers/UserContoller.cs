@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyPet.Areas.Identity.Data;
@@ -5,6 +6,7 @@ using MyPet.ViewModels;
 
 namespace MyPet.Controllers
 {
+    //[Authorize(Roles = "admin")]
     public class UserController : Controller
     {
         private MyIdentityDbContext db;
