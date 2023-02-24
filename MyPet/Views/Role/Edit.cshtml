@@ -2,7 +2,7 @@
 
 @model MyPet.ViewModels.ChangeRoleViewModel
 
-<h2>Edit role for user@Model.UserEmail</h2>
+<h2>Edit role for user @Model.UserEmail</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" name="userId" value="@Model.UserId" />

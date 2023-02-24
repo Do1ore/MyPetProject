@@ -3,11 +3,17 @@
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="name">New role</label>
-        <input name="name" class="form-control" />
+    <div class="form-group ">
+ 
+
+        <h1 classfor="name">New role</h1>
+        <hr>
+        <div class="input-group mb-3" bis_skin_checked="1">
+
+            <input name="name" type="text"  class="form-control" placeholder="Enter your role name here..." aria-label="New role" aria-describedby="button-addon2">
+            <button class="btn btn-outline-primary" type="submit" id="button-addon2">Add role</button>
+        </div>
+        <a class="nav-link text-primary text-center" asp-action="Index">Role list</a>
     </div>
-    <div class="text-center">
-    <button class="btn btn-primary" type="submit" style="margin-top: 20px">Add</button>
-    </div>
+    
 </form>

@@ -2,17 +2,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyPet.Areas.Identity.Data;
+using MyPet.Areas.SomeLogics;
+using MyPet.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("IdentityDbContextConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDbContextConnection' not found.");
 
 builder.Services.AddDbContext<MyIdentityDbContext>(options =>
     options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ProductDbContext>(options =>
+options.UseSqlServer(connectionString));
+
 
 builder.Services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
         .AddEntityFrameworkStores<MyIdentityDbContext>()
         .AddDefaultTokenProviders()
         .AddDefaultUI();
-
 
 //builder.Services.AddDefaultIdentity<MyPetUser>(options => options.SignIn.RequireConfirmedAccount = false)
 //    .AddEntityFrameworkStores<MyIdentityDbContext>();
@@ -22,6 +27,7 @@ builder.Services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddMvc();
+
 // Add roles
 builder.Services.AddHealthChecks();
 var app = builder.Build();

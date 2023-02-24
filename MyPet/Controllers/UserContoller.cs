@@ -14,12 +14,9 @@ namespace MyPet.Controllers
         public UserController(MyIdentityDbContext context)
         {
             db = context;
-
         }
 
         UserManager<MyPetUser> _userManager;
-
-        
 
         public IActionResult Index() => View(_userManager.Users.ToList());
 

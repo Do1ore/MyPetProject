@@ -1,0 +1,14 @@
+﻿@model IEnumerable<MyPet.Models.ProductModel>
+
+@{
+    ViewBag.Title = "All stuff";
+}
+<a asp-action="Create">Добавить пользователя</a>
+<table class="table">
+    <tr><td>Имя</td><td>Возраст</td></tr>
+    @foreach (var item in Model)
+    {
+            <tr><td>@item.Category</td><td>@item.Description</td></tr>
+    }
+</table>
+

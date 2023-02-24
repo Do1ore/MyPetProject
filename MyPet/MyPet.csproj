@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.13">
       <PrivateAssets>all</PrivateAssets>
@@ -18,9 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Views\User\" />
     <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\img\Products\" />
+    <Folder Include="wwwroot\lib\bootstrap\mydist\" />
   </ItemGroup>
 
 </Project>

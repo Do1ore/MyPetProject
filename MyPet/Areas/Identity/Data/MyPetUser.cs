@@ -19,7 +19,5 @@ public class MyPetUser : IdentityUser
     public string? LastName { get; set; }
     [PersonalData]
     public DateTime RegistrationDateTime { get; set; }
-    
-    
 }
 
