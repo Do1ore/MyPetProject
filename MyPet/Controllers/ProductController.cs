@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -14,12 +16,14 @@ namespace MyPet.Controllers
     public class ProductController : Controller
     {
         private ProductDbContext db;
+        private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ProductController(ProductDbContext context, IWebHostEnvironment hostEnvironment)
+        public ProductController(ProductDbContext context, IWebHostEnvironment hostEnvironment, IMapper mapper)
         {
             db = context;
             _hostEnvironment = hostEnvironment;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> EditProduct(int? id)
@@ -38,37 +42,38 @@ namespace MyPet.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProduct(int id, [Bind("Id,ProdcutName,Category,Brand,Description,ShortDescription,FileName,FilePath,Price,Info,CreationDateTime,LastTimeEdited")] ProductModel product, IFormFile image)
+        public async Task<IActionResult> EditProduct(int id, ProductModel product)
         {
             if (id != product.Id)
             {
                 return NotFound();
             }
-
+            if (ModelState.IsValid)
+            {
                 try
                 {
-                    if (image != null)
+                    if (product.Image != null)
                     {
                         // Delete the old image image if it exists
                         //todo
                         var oldFilePath = product.FilePath;
-                            if (System.IO.File.Exists(oldFilePath))
-                            {
-                                System.IO.File.Delete(oldFilePath);
-                            }
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
 
-                        
                         string wwwRootPath = _hostEnvironment.WebRootPath;
-                        string FileName = Path.GetFileNameWithoutExtension(image.FileName);
-                        string Extension = Path.GetExtension(image.FileName);
+                        string FileName = Path.GetFileNameWithoutExtension(product.Image.FileName);
+                        string Extension = Path.GetExtension(product.Image.FileName);
                         FileName = FileName + DateTime.Now.ToString("yymmdd") + Extension;
                         string path = Path.Combine(wwwRootPath + "/img/Products/", FileName);
                         // Save the uploaded image to wwwroot/images folder and update the FilePath property of the product
                         product.FilePath = path;
                         product.FileName = FileName;
+
                         using (var fileStream = new FileStream(path, FileMode.Create))
                         {
-                            await image.CopyToAsync(fileStream);
+                            await product.Image.CopyToAsync(fileStream);
                         }
                     }
 
@@ -85,6 +90,8 @@ namespace MyPet.Controllers
                     throw;
                 }
                 return RedirectToAction(nameof(Index));
+            }
+            return View(product);
             
             
         }
@@ -92,6 +99,7 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> Index()
         {
+            ViewBag.Assholes = "adsfsdf";
 
             return View(await db.Products.ToListAsync());
         }
@@ -104,14 +112,19 @@ namespace MyPet.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductViewModel model, IFormFile image)
         {
-            
-                string wwwRootPath = _hostEnvironment.WebRootPath;
-                string FileName = Path.GetFileNameWithoutExtension(image.FileName);
-                string Extension = Path.GetExtension(image.FileName);
+           
+            string FileName = "";
+            string Extension = "";
+            string path = "";
+            string wwwRootPath = _hostEnvironment.WebRootPath;
+            if (image is not null)
+            {
+                FileName = Path.GetFileNameWithoutExtension(image.FileName);
+                Extension = Path.GetExtension(image.FileName);
                 FileName = FileName + DateTime.Now.ToString("yymmdd") + Extension;
-                string path = Path.Combine(wwwRootPath + "/img/Products/", FileName);
-                
-                if (image != null && image.Length > 0) 
+                path = Path.Combine(wwwRootPath + "/img/Products/", FileName);
+
+                if (image != null && image.Length > 0)
                 {
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
@@ -120,25 +133,14 @@ namespace MyPet.Controllers
 
                     // сохранение изображения в БД
                 }
-                var product = new ProductModel
-                {
-                    ProductName = model.ProductName,
-                    Description = model.Description,
-                    ShortDescription = model.ShortDescription,
-                    Price = model.Price,
-                    Info = model.Info,
-                    Brand = model.Brand,
-                    Category = model.Category,
-                    FileName = FileName,
-                    FilePath = path,
-                    CreationDateTime = DateTime.Now.Date,
-                    LastTimeEdited = DateTime.Now
-                    
-                };
+            }
 
+                var product = _mapper.Map<ProductModel>(model);
+                product.FileName = FileName;
+                product.FilePath = path;
                 db.Products.Add(product);
                 await db.SaveChangesAsync();
-
+            
                 return RedirectToAction("Index", "Home");
             
 

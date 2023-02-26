@@ -3,13 +3,14 @@
 @{
     ViewBag.Title = "Product list";
 }
+
+
 <a asp-controller="Product" asp-action="Create">Add product</a>
 @foreach (var item in Model)
 {
     #region Time
     string? value = TimeDifference.GetDifference(item.LastTimeEdited);
     #endregion
-    
     <div class="card mb-lg-3" style="max-width: 100%;">
         <div class="row">
         <div class="col-md-4 mycenter">

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MyPet.Areas.Identity.Data;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("IdentityDbContextConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDbContextConnection' not found.");
@@ -18,6 +19,7 @@ builder.Services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.
         .AddEntityFrameworkStores<MyIdentityDbContext>()
         .AddDefaultTokenProviders()
         .AddDefaultUI();
+        
 
 //builder.Services.AddDefaultIdentity<MyPetUser>(options => options.SignIn.RequireConfirmedAccount = false)
 //    .AddEntityFrameworkStores<MyIdentityDbContext>();
@@ -27,7 +29,7 @@ builder.Services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddMvc();
-
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 // Add roles
 builder.Services.AddHealthChecks();
 var app = builder.Build();

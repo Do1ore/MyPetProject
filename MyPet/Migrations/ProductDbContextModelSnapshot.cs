@@ -17,10 +17,77 @@ namespace MyPet.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MyPet.Models.HeadphoneModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Appointment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("BatteryСapacity")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("BluetoothVersion")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("ChargingTime")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConnectionType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConstructionType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Info")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastTimeEdited")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("MarketLaunchDate")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("MaxRunTime")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("MaxRunTimeWithCase")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ProductType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SummaryStroke")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Headphones");
+                });
 
             modelBuilder.Entity("MyPet.Models.ProductModel", b =>
                 {
@@ -28,7 +95,7 @@ namespace MyPet.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Brand")
                         .IsRequired()
@@ -46,7 +113,6 @@ namespace MyPet.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FilePath")
@@ -66,7 +132,9 @@ namespace MyPet.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortDescription")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SummaryStroke")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

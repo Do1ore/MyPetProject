@@ -4,7 +4,12 @@
 
 <form asp-action="EditProduct" enctype="multipart/form-data" method="post">
     <input type="hidden" asp-for="Id" />
-    
+    <input type="hidden" name="FilePath" asp-for="FilePath" />
+    <input type="hidden" name="FileName" asp-for="FileName" />
+    <div class="form-group">
+       
+
+    </div>
     <div class="form-group">
         <label asp-for="ProductName">Product Name:</label>
         <input asp-for="ProductName" class="form-control" />
@@ -45,8 +50,7 @@
         <label asp-for="Image">Image:</label>
         <input type="file" asp-for="Image" class="form-control-file" />
         <span asp-validation-for="Image"></span>
-
     </div>
-    
+   
     <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>

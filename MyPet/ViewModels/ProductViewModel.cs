@@ -7,8 +7,6 @@ namespace MyPet.ViewModels
     {
         [Required]
         [Display(Name = "Product name")]
-        public string ProdcutName { get; set; }
-
         public string ProductName { get; set; }
         [Required]
         public string Category { get; set; }
