@@ -11,6 +11,7 @@ namespace MyPet.Models
         public string? SummaryStroke { get; set; }
         public int? MarketLaunchDate { get; set; }
         public string? Appointment { get; set; }
+        public string? ShortDescription { get; set; }
         public string? ConnectionType { get; set; }
         public string? ProductType { get; set; }
         public string? ConstructionType { get; set; }
@@ -27,6 +28,7 @@ namespace MyPet.Models
         public DateTime CreationDateTime { get; set; }
         public DateTime LastTimeEdited { get; set; }
         public string? Info { get; set; }
+        public string? ParsedUrl { get; set; }
 
     }
 }

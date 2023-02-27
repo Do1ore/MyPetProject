@@ -99,9 +99,12 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Assholes = "adsfsdf";
-
             return View(await db.Products.ToListAsync());
+        }
+
+        public async Task<IActionResult> ProductsToList()
+        {
+            return View(await db.Headphones.ToListAsync());
         }
 
         public IActionResult Create()

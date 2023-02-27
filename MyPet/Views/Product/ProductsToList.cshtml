@@ -1,0 +1,44 @@
+﻿@using MyPet.Areas.SomeLogics;
+@model IEnumerable<MyPet.Models.HeadphoneModel>
+
+@{
+    ViewData["Title"] = "ProductsToList";
+}
+
+<h1>Product list</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@foreach (var item in Model)
+{
+    #region Time
+    string? value = TimeDifference.GetDifference(item.LastTimeEdited);
+    #endregion
+        <div class="card mb-lg-3" href="" style="max-width: 100%;">
+            <div class="row">
+            <div class="col-md-4 mycenter">
+                        <img src="@item.FilePath" heigth="200px" class="img-fluid rounded-start" value="@item.SummaryStroke" asp-append-version="true">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                       <h5 class="card-title">@item.SummaryStroke</h5>
+                    <p class="card-text">@item.ShortDescription</p>
+                    <p><small class="text-muted">@item.ProductType</small> </p>
+                    <p><small class="text-muted">Bluetooth @item.BluetoothVersion</small></p>
+                    <span class="card-text badge rounded-pill bg-info">@item.Info</span>
+
+                    <p class="card-text">$@item.Price</p>
+                    <p class="card-text"><small class="text-muted">Edited @value</small></p>
+                    <button class="btn btn-danger" asp-controller="Product" asp-action="EditProduct" asp-route-id="@item.Id">Edit</button>
+
+                    <button class="btn btn-info" asp-controller="Product" asp-action="EditProduct" asp-route-id="@item.Id">Edit</button>
+
+                    <button class="btn btn-primary" asp-controller="Product" asp-action="EditProduct" asp-route-id ="@item.Id">Edit</button>
+
+
+                </div>
+            </div>
+        </div>
+        </div>
+}   

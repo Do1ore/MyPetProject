@@ -16,14 +16,17 @@ namespace DataParser
         private readonly HeadphoneModel _headphone;
         private readonly HttpClient _httpClient;
         private readonly HtmlDocument _htmlDocument;
-
+        private readonly SelenuimDataParser _dataParser;
+        
         public MarketScraper()
         {
             _headphone = new HeadphoneModel();
             _httpClient = new HttpClient();
             _htmlDocument = new HtmlDocument();
-        }
+            _dataParser = new SelenuimDataParser();
 
+        }
+       
         #region Lists
         List<int> ProductLaunchDates = new List<int>() { 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, DateTime.Now.Year };
         List<string> Appointment = new List<string>() { "portable", "gaiming", "sport", "swimming" };
@@ -37,17 +40,24 @@ namespace DataParser
         List<double> CharginngTime = new List<double>() { 1, 1.5, 2, 0.5 };
         List<double> MaxRunTime = new List<double>() { 2, 4, 6, 4.6, 4.7, 5.5, 6.5 };
         #endregion
-
-        public async Task<HeadphoneModel> GenerateHedphoneAsync(string url)
+        public async Task<HeadphoneModel?> GenerateHedphoneAsync(string url)
         {
             Random random = new Random();
-
+     
 
             var html = await _httpClient.GetStringAsync(url);
 
+            HtmlNodeCollection? productNodes = null;
             _htmlDocument.LoadHtml(html);
+            try
+            {
+                productNodes = _htmlDocument.DocumentNode.SelectNodes("//div[@class='offers-description__preview']");
 
-            var productNodes = _htmlDocument.DocumentNode.SelectNodes("//div[@class='offers-description__preview']");
+            }
+            catch (Exception)
+            {
+                return null;
+            }
             string outerHtml = "";
             foreach (var productNode in productNodes)
             {
@@ -57,44 +67,46 @@ namespace DataParser
             #region ProductGeneration
             //start
             string imgsrc = await SelectImg(_htmlDocument);
-            string SummaryTitle = await SelectHeader(_htmlDocument);
-            string ShortDescription = await SelectShortDescription(_htmlDocument);
-            double ProductPrice = await SelectPrice(_htmlDocument);
+            
+                string SummaryTitle = await SelectHeader(_htmlDocument);
+                string ShortDescription = await SelectShortDescription(_htmlDocument);
+                double ProductPrice = await SelectPrice(_htmlDocument);
 
-            string? headphoneType = HeadphoneType[random.Next(0, HeadphoneType.Count)];
-            int? productLaunch = ProductLaunchDates[random.Next(0, ProductLaunchDates.Count)];
-            string appointment = Appointment[random.Next(0, Appointment.Count)];
-            string constructionType = ConstructionType[random.Next(0, ConstructionType.Count)];
-            string connectionType = ConnectionType[random.Next(0, ConnectionType.Count)];
-            string color = ProdcutColor[random.Next(0, ProdcutColor.Count)];
-            double bluetoothVersion = BluetoothVersion[random.Next(0, BluetoothVersion.Count)];
-            bool hasCase = HasCase[random.Next(0, HasCase.Count)];
-            double batteryCapacity = BatteryCapacity[random.Next(0, BatteryCapacity.Count)];
-            double chargingtime = CharginngTime[random.Next(0, CharginngTime.Count)];
-            double maxRunTime = MaxRunTime[random.Next(0, MaxRunTime.Count)];
-            var product = new HeadphoneModel()
-            {
-                Price = ProductPrice,
-                FilePath = imgsrc,
-                FileName = CreateFileName(ShortDescription, imgsrc),
-                SummaryStroke = SummaryTitle,
-                MarketLaunchDate = productLaunch,
-                Appointment = appointment,
-                ProductType = headphoneType,
-                ConstructionType = constructionType,
-                ConnectionType = connectionType,
-                Color = color,
-                BatteryСapacity = batteryCapacity,
-                BluetoothVersion = bluetoothVersion,
-                MaxRunTime = maxRunTime,
-                MaxRunTimeWithCase = maxRunTime * 3,
-                ChargingTime = chargingtime,
-                CreationDateTime = DateTime.Now,
-                LastTimeEdited = DateTime.Now,
-            };
-            #endregion
+                string? headphoneType = HeadphoneType[random.Next(0, HeadphoneType.Count)];
+                int? productLaunch = ProductLaunchDates[random.Next(0, ProductLaunchDates.Count)];
+                string appointment = Appointment[random.Next(0, Appointment.Count)];
+                string constructionType = ConstructionType[random.Next(0, ConstructionType.Count)];
+                string connectionType = ConnectionType[random.Next(0, ConnectionType.Count)];
+                string color = ProdcutColor[random.Next(0, ProdcutColor.Count)];
+                double bluetoothVersion = BluetoothVersion[random.Next(0, BluetoothVersion.Count)];
+                bool hasCase = HasCase[random.Next(0, HasCase.Count)];
+                double batteryCapacity = BatteryCapacity[random.Next(0, BatteryCapacity.Count)];
+                double chargingtime = CharginngTime[random.Next(0, CharginngTime.Count)];
+                double maxRunTime = MaxRunTime[random.Next(0, MaxRunTime.Count)];
+                var product = new HeadphoneModel()
+                {
+                    Price = ProductPrice,
+                    FilePath = imgsrc,
+                    FileName = CreateFileName(ShortDescription, imgsrc),
+                    ShortDescription = ShortDescription,
+                    SummaryStroke = SummaryTitle,
+                    MarketLaunchDate = productLaunch,
+                    Appointment = appointment,
+                    ProductType = headphoneType,
+                    ConstructionType = constructionType,
+                    ConnectionType = connectionType,
+                    Color = color,
+                    BatteryСapacity = batteryCapacity,
+                    BluetoothVersion = bluetoothVersion,
+                    MaxRunTime = maxRunTime,
+                    MaxRunTimeWithCase = maxRunTime * 3,
+                    ChargingTime = chargingtime,
+                    CreationDateTime = DateTime.Now,
+                    LastTimeEdited = DateTime.Now,
+                };
+                #endregion
 
-            return product;
+                return product;
         }
 
         private string? CreateFileName(string Title, string src)
@@ -137,13 +149,15 @@ namespace DataParser
         private async Task<string> SelectHeader(HtmlDocument htmlDocument)
         {
             string SummaryTitle = "";
-            await Task.Run(() =>
+            string result = "";
+            await Task.Run(async () =>
             {
                 var productNode = htmlDocument.DocumentNode.SelectSingleNode("//h1[@class='catalog-masthead__title js-nav-header']");
-                SummaryTitle = productNode.InnerHtml;
+                SummaryTitle = productNode.InnerHtml.Trim().Replace("\n", "");
+                result = await _dataParser.TranslateData(SummaryTitle);
 
             });
-            return SummaryTitle.Trim().Replace("\n", "");
+            return result.Trim();
         }
 
         private async Task<string> SelectShortDescription(HtmlDocument htmlDocument)
@@ -151,7 +165,7 @@ namespace DataParser
             string? regex = (@"<p>(.*?)</p>");
             string? htmlNode = null;
             string? Result = "";
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 var productNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='offers-description__specs']");
                 htmlNode = productNode.InnerHtml;
@@ -163,6 +177,8 @@ namespace DataParser
                         Result = match.Groups[1].Value;
 
                 }
+
+                Result = await _dataParser.TranslateData(Result);
             });
             return Result.Trim().Replace("\n", "");
         }
@@ -178,5 +194,7 @@ namespace DataParser
             });
             return Convert.ToDouble(SummaryTitle.Trim().Replace("\n", "").Replace("&nbsp;р.", ""));
         }
+
+    
     }
 }
