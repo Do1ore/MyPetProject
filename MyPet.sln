@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyPet", "MyPet\MyPet.csproj", "{04A57F5E-DBD4-4A20-98F6-01CA1711DF71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataParser", "DataParser\DataParser.csproj", "{CAEAD0AD-C80B-499F-B2D1-996CD367C6F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataParser", "DataParser\DataParser.csproj", "{CAEAD0AD-C80B-499F-B2D1-996CD367C6F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

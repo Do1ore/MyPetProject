@@ -18,14 +18,14 @@ namespace DataParser
             var list = SelenuimDataParser.SelectProductHref("https://catalog.onliner.by/headphones");
             for (int i = 0; i < list.Count; i++)
             {
-                var result = await scraper.GenerateHedphoneAsync(list[i]);
+                var result = await scraper.GenerateHeadphoneAsync(list[i]);
                 if (result is null)
                 {
                     continue;
                 }
                 await ProductDbHelper.SendDataAsync(result);
             }
-            
+
             MessageBox.Show($"Sucsess. Added {list.Count} products", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }

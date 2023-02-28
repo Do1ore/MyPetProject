@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<MyPet.Areas.Identity.Data.MyPetUser>
-
-<h2>User list</h2>
+@{
+    ViewBag.Title = "User list";
+}
 <table class="table">
     @foreach (var user in Model)
     {

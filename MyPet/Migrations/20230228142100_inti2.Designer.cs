@@ -12,8 +12,8 @@ using MyPet.Models;
 namespace MyPet.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    [Migration("20230226201706_newUpdate2")]
-    partial class newUpdate2
+    [Migration("20230228142100_inti2")]
+    partial class inti2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,33 @@ namespace MyPet.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MyPet.Models.ExtraImageModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileSource")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("headphoneModelId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("headphoneModelId");
+
+                    b.ToTable("ExtraImageModel");
+                });
+
             modelBuilder.Entity("MyPet.Models.HeadphoneModel", b =>
                 {
                     b.Property<int>("Id")
@@ -33,14 +60,14 @@ namespace MyPet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Appointment")
-                        .HasColumnType("int");
+                    b.Property<string>("Appointment")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("BatteryСapacity")
                         .HasColumnType("float");
 
-                    b.Property<string>("BluetoothVersion")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("BluetoothVersion")
+                        .HasColumnType("float");
 
                     b.Property<double?>("ChargingTime")
                         .HasColumnType("float");
@@ -57,17 +84,14 @@ namespace MyPet.Migrations
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Info")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("LastTimeEdited")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("MainFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MainFilePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("MarketLaunchDate")
                         .HasColumnType("int");
@@ -78,60 +102,13 @@ namespace MyPet.Migrations
                     b.Property<double?>("MaxRunTimeWithCase")
                         .HasColumnType("float");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SummaryStroke")
+                    b.Property<string>("ParsedUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Headphones");
-                });
-
-            modelBuilder.Entity("MyPet.Models.ProductModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Info")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastTimeEdited")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
+                    b.Property<string>("ProductType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortDescription")
@@ -142,7 +119,21 @@ namespace MyPet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Headphones");
+                });
+
+            modelBuilder.Entity("MyPet.Models.ExtraImageModel", b =>
+                {
+                    b.HasOne("MyPet.Models.HeadphoneModel", "headphoneModel")
+                        .WithMany("ExtraImages")
+                        .HasForeignKey("headphoneModelId");
+
+                    b.Navigation("headphoneModel");
+                });
+
+            modelBuilder.Entity("MyPet.Models.HeadphoneModel", b =>
+                {
+                    b.Navigation("ExtraImages");
                 });
 #pragma warning restore 612, 618
         }

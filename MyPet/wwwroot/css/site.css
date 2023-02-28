@@ -22,3 +22,17 @@ body {
     align-items: center;
     justify-content: center;
 }
+#page-title {
+    position: relative;
+    padding: 4rem 0;
+    background-color: #F5F5F5;
+    border-bottom: 1px solid #EEE;
+}
+
+    #page-title span {
+        display: block;
+        margin-top: 10px;
+        font-weight: 300;
+        color: #777;
+        font-size: 18px;
+    }

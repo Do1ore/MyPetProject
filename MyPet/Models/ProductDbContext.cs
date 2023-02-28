@@ -4,8 +4,8 @@ namespace MyPet.Models
 {
     public class ProductDbContext : DbContext
     {
-        public DbSet<ProductModel> Products { get; set; }
-        public DbSet<HeadphoneModel> Headphones { get; set; } 
+        public DbSet<MainProductModel> Products { get; set; } 
+        public DbSet<ExtraImageModel> ExtraImages { get; set; }
         public ProductDbContext(DbContextOptions<ProductDbContext> options)
                 : base(options)
         {

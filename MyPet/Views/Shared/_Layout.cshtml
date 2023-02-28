@@ -3,12 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MyPet</title>
+    <title>@ViewBag.Title - MyPet</title>
     <link rel="stylesheet" href="~/lib/bootstrap/mydist/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MyPet.styles.css" asp-append-version="true" />
 </head>
 <body>
+
+   
     <header style="margin-block-end: 40px">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid" bis_skin_checked="1">
@@ -55,6 +57,14 @@
   </div>
     <partial name="_LoginPartial" />
 </nav>
+        <section id="page-title">
+            <div class="container clearfix">
+                <h1>@ViewBag.Title</h1>
+                <span>lorem100</span>
+               
+            </div>
+
+        </section>
 
     </header>
     <div class="container">

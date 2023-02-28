@@ -9,14 +9,14 @@ namespace MyPet.Controllers
     //[Authorize(Roles = "admin")]
     public class UserController : Controller
     {
-        private MyIdentityDbContext db;
+        private readonly MyIdentityDbContext db;
 
         public UserController(MyIdentityDbContext context)
         {
             db = context;
         }
 
-        UserManager<MyPetUser> _userManager;
+        readonly UserManager<MyPetUser?> _userManager;
 
         public IActionResult Index() => View(_userManager.Users.ToList());
 
@@ -27,7 +27,7 @@ namespace MyPet.Controllers
         {
             if (ModelState.IsValid)
             {
-                MyPetUser user = new MyPetUser { Email = model.Email, UserName = model.Email};
+                MyPetUser user = new() { Email = model.Email, UserName = model.Email};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

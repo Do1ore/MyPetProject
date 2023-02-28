@@ -1,4 +1,4 @@
-﻿using OpenQA.Selenium;
+﻿    using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
@@ -11,14 +11,15 @@ namespace DataParser
     public class SelenuimDataParser
     {
 
+        public static List<string> hrefList;
 
         public static List<string> SelectProductHref(string url)
         {
-            List<string> hrefList = new List<string>();
+            hrefList = new List<string>();
 
             IWebDriver driver = new ChromeDriver();
             driver.Navigate().GoToUrl(url);
-            for (int i = 2; i < 30; i++)
+            for (int i = 2; i < 3; i++)
             {
                 try
                 {
@@ -45,10 +46,9 @@ namespace DataParser
             {
                 driver.Manage().Window.Minimize();
                 driver.Navigate().GoToUrl("https://translate.yandex.com/?source_lang=ru&target_lang=en");
-
+                
                 Thread.Sleep(1000);
-                // Navigate to the Google Translate website
-
+  
                 // Find the input field and enter the Russian text to be translated
                 IWebElement inputField = driver.FindElement(By.CssSelector("#fakeArea"));
                 inputField.SendKeys(text);

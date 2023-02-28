@@ -1,5 +1,5 @@
 ﻿@using MyPet.Areas.SomeLogics;
-@model IEnumerable<MyPet.Models.HeadphoneModel>
+@model IEnumerable<MyPet.Models.MainProductModel>
 
 @{
     ViewData["Title"] = "ProductsToList";
@@ -18,7 +18,7 @@
         <div class="card mb-lg-3" href="" style="max-width: 100%;">
             <div class="row">
             <div class="col-md-4 mycenter">
-                        <img src="@item.FilePath" heigth="200px" class="img-fluid rounded-start" value="@item.SummaryStroke" asp-append-version="true">
+                        <img src="@item.MainFilePath" heigth="200px" class="img-fluid rounded-start" value="@item.SummaryStroke" asp-append-version="true">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
@@ -26,7 +26,7 @@
                     <p class="card-text">@item.ShortDescription</p>
                     <p><small class="text-muted">@item.ProductType</small> </p>
                     <p><small class="text-muted">Bluetooth @item.BluetoothVersion</small></p>
-                    <span class="card-text badge rounded-pill bg-info">@item.Info</span>
+                   
 
                     <p class="card-text">$@item.Price</p>
                     <p class="card-text"><small class="text-muted">Edited @value</small></p>
