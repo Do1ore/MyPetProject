@@ -1,0 +1,83 @@
+﻿@model MyPet.Models.MainProductModel
+
+
+
+
+        <div class="card mb-3" style="max-width: 600px;">
+        <div class="row g-0">
+        <div class="col-md-4 mycenter">
+            <img src="@Model.MainFilePath" class="img-fluid " alt="@Model.SummaryStroke">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title text-primary">@Model.SummaryStroke</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @*Image scrollbox*@
+<div class="scroll-box">
+    <div class="scroll-content">
+      @foreach (var item in Model.ExtraImage)
+        {
+                <img src="@item.FileSource">
+            
+        }
+    </div>
+</div>
+
+
+        <div class="bd-example" bis_skin_checked="1">
+        <table class="table table-striped">
+            <thead>
+        <tr>
+            <th scope="col"><small class="text-muted">Parameter name</small></th>
+            <th scope="col"><small class="text-muted">Value</small></th>
+
+        </tr>
+        </thead>
+
+    <tbody>
+            <tr>
+                <th scope="row"><span class="text-primary">Appoinment</span></th>
+                <th> @Model.Appointment</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Bluetooth version</span></th>
+                <th> Bluetooth @Model.BluetoothVersion</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Batterty capacity</span></th>
+                <th> @Model.BatteryСapacity mA</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Prodcut type</span></th>
+                <th> @Model.ProductType mA</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Charging time</span></th>
+                <th> @Model.ChargingTime h</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Connection type</span></th>
+                <th> @Model.ConnectionType h</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Construction type</span></th>
+                <th> @Model.ConstructionType h</th>
+            </tr>
+            
+    </tbody>
+
+        </table>
+    </div>
+
+            
+
+@*<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>*@

@@ -29,10 +29,46 @@ body {
     border-bottom: 1px solid #EEE;
 }
 
-    #page-title span {
-        display: block;
-        margin-top: 10px;
-        font-weight: 300;
-        color: #777;
-        font-size: 18px;
+#page-title span {
+    display: block;
+    margin-top: 10px;
+    font-weight: 300;
+    color: #777;
+    font-size: 18px;
+}
+
+.scroll-box {
+    overflow-x: scroll;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.scroll-content {
+    display: inline-block;
+}
+
+    .scroll-content img {
+        display: inline-block;
+        height: 200px;
+        margin: 10px;
+        width: auto;
     }
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    height: 10px;
+    background: #888;
+    transition: background inherit 2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    height: 13px;
+    background: #555;
+}
+

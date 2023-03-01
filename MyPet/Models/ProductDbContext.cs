@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Reflection.Emit;
 
 namespace MyPet.Models
 {
@@ -11,5 +13,13 @@ namespace MyPet.Models
         {
             Database.EnsureCreated();
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MainProductModel>()
+                .HasMany(c => c.ExtraImage)
+                .WithOne(e => e.ProductModel);
+        }
+
     }
 }

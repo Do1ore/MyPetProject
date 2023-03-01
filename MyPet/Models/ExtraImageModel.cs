@@ -13,9 +13,9 @@ namespace MyPet.Models
 
         // Foreign key
         [ForeignKey("MainProductModel")]
-        public int? ProductId { get; set; }
+        public int ProductId { get; set; }
         // Navigation property
-        public MainProductModel? headphoneModel { get; set; }
+        public MainProductModel? ProductModel { get; set; }
 
     }
 }

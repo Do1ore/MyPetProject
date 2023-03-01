@@ -2,11 +2,12 @@
 @model IEnumerable<MyPet.Models.MainProductModel>
 
 @{
-    ViewData["Title"] = "ProductsToList";
+    ViewBag.Title = "Product List";
 }
 
-<h1>Product list</h1>
+<head>
 
+</head>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -30,15 +31,42 @@
 
                     <p class="card-text">$@item.Price</p>
                     <p class="card-text"><small class="text-muted">Edited @value</small></p>
+
+
+
+
                     <button class="btn btn-danger" asp-controller="Product" asp-action="EditProduct" asp-route-id="@item.Id">Edit</button>
 
-                    <button class="btn btn-info" asp-controller="Product" asp-action="EditProduct" asp-route-id="@item.Id">Edit</button>
+                    <button class="btn btn-info" asp-controller="Product" asp-action="ViewDetails" asp-route-Id="@item.Id">View details</button>
 
-                    <button class="btn btn-primary" asp-controller="Product" asp-action="EditProduct" asp-route-id ="@item.Id">Edit</button>
+                    <a class="btn btn-primary" asp-controller="Product" asp-action="ViewDetails" asp-route-id="@item.Id">View details</a>
+                </div>
 
 
                 </div>
             </div>
         </div>
-        </div>
-}   
+        
+}
+@*@section scripts
+{
+    <script>
+        let scrollBox = document.querySelector('.scroll-box');
+        let leftArrow = document.querySelector('.arrow.left');
+        let rightArrow = document.querySelector('.arrow.right');
+
+        let scrollAmount = 300;
+
+        leftArrow.addEventListener('click', () => {
+            scrollBox.scrollBy(-scrollAmount, 0);
+            
+        });
+
+        rightArrow.addEventListener('click', () => {
+            scrollBox.scrollBy(scrollAmount, 0);
+           
+        });
+    </script>
+}*@
+
+

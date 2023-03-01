@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 
 namespace DataParser
 {
@@ -7,15 +8,20 @@ namespace DataParser
     /// </summary>
     public partial class MainWindow : Window
     {
-        string url = @"https://catalog.onliner.by/headphones/dialog/dialep10";
+        
         public MainWindow()
         {
             InitializeComponent();
         }
+        ProductDbHelper productDbHelper = new ProductDbHelper();
+
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             MarketScraper scraper = new MarketScraper();
-            var list = SelenuimDataParser.SelectProductHref("https://catalog.onliner.by/headphones");
+            var url = "https://catalog.onliner.by/headphones";
+            
+
+            var list = await SelenuimDataParser.SelectProductHref(url);
             for (int i = 0; i < list.Count; i++)
             {
                 var result = await scraper.GenerateHeadphoneAsync(list[i]);
@@ -27,6 +33,12 @@ namespace DataParser
             }
 
             MessageBox.Show($"Sucsess. Added {list.Count} products", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            await productDbHelper.TranslateDataFromDbAsync();
+
         }
     }
 }

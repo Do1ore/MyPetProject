@@ -1,21 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using MyPet.Areas.SomeLogics;
 using MyPet.Models;
-using MyPet.ViewModels;
-using System;
-using System.Drawing.Text;
-using System.Net;
 
 namespace MyPet.Controllers
 {
     public class ProductController : Controller
     {
-        private ProductDbContext db;
+        private readonly ProductDbContext db;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _hostEnvironment;
 
@@ -29,6 +21,17 @@ namespace MyPet.Controllers
         public async Task<IActionResult> ProductsToList()
         {
             return View(await db.Products.ToListAsync());
+        }
+
+        public IActionResult ViewDetails(int id)
+        {
+            MainProductModel? product = db.Products.Include(i => i.ExtraImage).ToList().Find(i => i.Id == id);
+            if (product is not null)
+            {
+                ViewBag.Title = product.SummaryStroke + " info";
+            }
+
+            return View(product);
         }
 
         #region Legacy
@@ -98,8 +101,8 @@ namespace MyPet.Controllers
         //        return RedirectToAction(nameof(Index));
         //    }
         //    return View(product);
-            
-            
+
+
         //}
         //public async Task<IActionResult> Index()
         //{
@@ -112,7 +115,7 @@ namespace MyPet.Controllers
         //[HttpPost]
         //public async Task<IActionResult> Create(ProductViewModel model, IFormFile image)
         //{
-           
+
         //    string FileName = "";
         //    string Extension = "";
         //    string path = "";
@@ -140,11 +143,11 @@ namespace MyPet.Controllers
         //        product.FilePath = path;
         //        db.Products.Add(product);
         //        await db.SaveChangesAsync();
-            
-        //        return RedirectToAction("Index", "Home");
-            
 
-            
+        //        return RedirectToAction("Index", "Home");
+
+
+
         //}
         #endregion
     }

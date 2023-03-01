@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Parse data" HorizontalAlignment="Center"  VerticalAlignment="Center" Height="40" Click="Button_Click" Width="160" FontFamily="Bahnschrift SemiBold" FontSize="18" BorderBrush="White">
+        <Button Content="Parse data" HorizontalAlignment="Left"  VerticalAlignment="Center" Height="40" Click="Button_Click" Width="160" FontFamily="Bahnschrift SemiBold" FontSize="18" BorderBrush="White" Margin="410,0,0,0">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="White"/>
@@ -16,13 +16,22 @@
             </Button.Background>
             <Button.RenderTransform>
                 <TransformGroup>
-                    
+
                     <SkewTransform/>
-                    
+
                     <TranslateTransform/>
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
+        <Button
+            Content="Translate data" HorizontalAlignment="Left"  VerticalAlignment="Center" Height="40" Click="Button_Click_1" Width="160" FontFamily="Bahnschrift SemiBold" FontSize="18" BorderBrush="White" Margin="177,0,0,0">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="White"/>
+                    <GradientStop Color="#FFC3C1DC" Offset="0.996"/>
+                </LinearGradientBrush>
+            </Button.Background>
 
+        </Button>
     </Grid>
 </Window>
