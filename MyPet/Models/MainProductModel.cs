@@ -7,11 +7,14 @@ namespace MyPet.Models
     {
         [Key]
         public int Id { get; set; }
-        public double Price { get; set; }
+        public double? DefaultPrice { get; set; }
+        public double? MinPrice { get; set; }
+        public double? MaxPrice { get; set; }
         public string? SummaryStroke { get; set; }
         public int? MarketLaunchDate { get; set; }
         public string? Appointment { get; set; }
         public string? ShortDescription { get; set; }
+        public string? Description { get; set; }
         public string? ConnectionType { get; set; }
         public string? ProductType { get; set; }
         public string? ConstructionType { get; set; }

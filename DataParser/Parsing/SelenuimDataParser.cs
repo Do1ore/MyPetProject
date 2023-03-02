@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace DataParser
+namespace DataParser.Parsing
 {
     public class SelenuimDataParser
     {
@@ -30,7 +30,7 @@ namespace DataParser
             driver.Navigate().GoToUrl(url);
             int i = 1;
             int exceptionCounter = 0;
-           while(i <=7)
+            while (i <= 7)
             {
                 try
                 {
@@ -46,11 +46,11 @@ namespace DataParser
                         break;
                     }
                     continue;
-                    
-                }
-                if(driver.Url == url) continue;
 
-                if(ProductDbHelper.CheckForRepeat(driver.Url))
+                }
+                if (driver.Url == url) continue;
+
+                if (ProductDbHelper.CheckForRepeat(driver.Url))
                 {
                     driver.Navigate().Back();
                     continue;
@@ -71,7 +71,7 @@ namespace DataParser
             {
                 driver.Manage().Window.Minimize();
                 driver.Navigate().GoToUrl("https://translate.yandex.com/?source_lang=ru&target_lang=en");
-                
+
                 Thread.Sleep(new Random().Next(1200, 1400));
                 try
                 {
@@ -90,7 +90,7 @@ namespace DataParser
 
                     // Close the browser window
                 }
-                
+
                 catch (DriverServiceNotFoundException)
                 {
                     throw;

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataParser.Parsing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MyPet.Models;
 using NuGet.Protocol.Core.Types;
@@ -39,6 +40,20 @@ namespace DataParser
             
             await db.SaveChangesAsync();
         }
+
+        public static async Task SendRangeOfDataAsync(List<MainProductModel> RangeofData)
+        {
+            var options = new DbContextOptionsBuilder<ProductDbContext>()
+    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
+    .Options;
+
+            db = new ProductDbContext(options);
+            await db.Products.AddRangeAsync(RangeofData);
+
+            await db.SaveChangesAsync();
+        }
+
+
 
         public static async Task<bool> CheckForRepeatAsync(string url)
         {

@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using DataParser.Parsing;
+using HtmlAgilityPack;
 using MyPet.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace DataParser
 
         private readonly MainProductModel _product;
         private readonly HttpClient _httpClient;
-        private readonly HtmlDocument _htmlDocument;
+        private HtmlDocument? _htmlDocument;
         private readonly SelenuimDataParser _dataParser;
 
         public MarketScraper()
@@ -42,9 +43,7 @@ namespace DataParser
         public async Task<MainProductModel?> GenerateHeadphoneAsync(string url)
         {
             Random random = new();
-            string html = await _httpClient.GetStringAsync(url);
-
-            _htmlDocument.LoadHtml(html);
+            _htmlDocument = await CreateHtmlDocumentAsync(url);
 
             #region ProductGeneration
             //start
@@ -71,7 +70,7 @@ namespace DataParser
 
             MainProductModel product = new()
             {
-                Price = ProductPrice,
+                DefaultPrice = ProductPrice,
                 MainFilePath = imgsrc,
                 MainFileName = CreateFileName(ShortDescription, imgsrc),
                 ShortDescription = ShortDescription,
@@ -101,7 +100,17 @@ namespace DataParser
             return product;
         }
 
-        private string? CreateFileName(string Title, string src)
+        public async Task<HtmlDocument?> CreateHtmlDocumentAsync(string url)
+        {
+            string html = await _httpClient.GetStringAsync(url);
+            if (_htmlDocument != null)
+            {
+                _htmlDocument.LoadHtml(html);
+            }
+            return _htmlDocument;
+        }
+
+        public string? CreateFileName(string Title, string src)
         {
             List<string> words = Title.Split(' ').ToList();
             string? FileName = null;
@@ -117,7 +126,7 @@ namespace DataParser
        
 
 
-        private async Task<List<string?>> CreateExtraFileNameAsync(string Words, string src, int count)
+        public async Task<List<string?>> CreateExtraFileNameAsync(string Words, string src, int count)
         {
             List<string?> FileNames = new();
             await Task.Run(() =>
@@ -205,7 +214,7 @@ namespace DataParser
             return Convert.ToDouble(SummaryTitle.Trim().Replace("\n", "").Replace("&nbsp;р.", ""));
         }
 
-        private async Task<List<string?>?> SelectSecondaryImg(HtmlDocument htmlDocument)
+        public async Task<List<string?>> SelectSecondaryImg(HtmlDocument htmlDocument)
         {
             string pattern = @"src=""(.+)""";
             List<string?> ExtraImagesSrc = new();
