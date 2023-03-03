@@ -13,7 +13,7 @@ using System.Windows.Controls;
 
 namespace DataParser.Parsing
 {
-    public class SelenuimDataParser
+    public class SeleniumDataParser
     {
         public static bool Continue { get; set; } = true;
         public static int PageCounter { get; set; } = 2;
@@ -63,7 +63,7 @@ namespace DataParser.Parsing
             return hrefList;
         }
 
-        public async static Task<string> TranslateSingleAsync(string text)
+        public async static Task<string> TranslateSingleStrokeAsync(string text)
         {
             IWebDriver driver = new ChromeDriver();
             string result = "";

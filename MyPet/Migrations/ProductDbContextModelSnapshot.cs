@@ -57,27 +57,6 @@ namespace MyPet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Appointment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("BatteryСapacity")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("BluetoothVersion")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("ChargingTime")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConnectionType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConstructionType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("datetime2");
 
@@ -96,16 +75,7 @@ namespace MyPet.Migrations
                     b.Property<string>("MainFilePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MarketLaunchDate")
-                        .HasColumnType("int");
-
                     b.Property<double?>("MaxPrice")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("MaxRunTime")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("MaxRunTimeWithCase")
                         .HasColumnType("float");
 
                     b.Property<double?>("MinPrice")
@@ -114,13 +84,19 @@ namespace MyPet.Migrations
                     b.Property<string>("ParsedUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProductExtendedFullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductFullName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProductType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ShortDescription")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SummaryStroke")
+                    b.Property<string>("ShortDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

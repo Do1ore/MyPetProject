@@ -1,0 +1,28 @@
+﻿@model MainProductModel
+@{
+    ViewData["Title"] = "Submit delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Are you sure that you want to delete @Model.ProductFullName ?</h2>
+<div class="card mb-3" style="max-width: 100%;">
+    <div class="row g-0">
+        <div class="col-md-4 mycenter" >
+        <img src="@Model.MainFilePath" class="img-fluid " alt="@Model.ProductFullName" style="padding: 20px">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body" style="padding: 40px">
+            <h1 class="card-title text-primary" style="padding-block-end: 20px">@Model.ProductExtendedFullName</h1>
+            <h4 class="card-text text-secondary">Rating: @(Model.Rating / 10.0) / 5</h4>
+            <p class="card-text">@Model.Description</p>
+                <small class="" style="text-align: left">Price from @Model.MinPrice to @Model.MinPrice BYN</small>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Explode product" class="btn btn-danger" /> |
+    <a asp-action="ProductsToList">Back to List</a>
+    </form>

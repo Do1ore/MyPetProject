@@ -14,11 +14,17 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DataParser.Parsing
 {
     public class JsonParser
     {
+        
+        public int PagesCount { get; set; }
+        public int Scipped { get; set; }
+        private readonly MarketScraper _scraper;
+        private List<MainProductModel> _dataRange;
         #region Lists
         private readonly List<int> ProductLaunchDates = new() { 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, DateTime.Now.Year };
         private readonly List<string> Appointment = new() { "portable", "gaiming", "sport", "swimming" };
@@ -32,9 +38,6 @@ namespace DataParser.Parsing
         private readonly List<double> CharginngTime = new() { 1, 1.5, 2, 0.5 };
         private readonly List<double> MaxRunTime = new() { 2, 4, 6, 4.6, 4.7, 5.5, 6.5 };
         #endregion
-        private readonly MarketScraper _scraper;
-        private List<MainProductModel> _dataRange;
-
         public JsonParser()
         {
             _scraper = new MarketScraper();
@@ -55,12 +58,13 @@ namespace DataParser.Parsing
             return myDeserializedClass;
         }
 
-        public async Task HandleHesponse(Root myDeserializedClass)
+        public async Task HandleResponse(Root myDeserializedClass)
         {
+            PagesCount = myDeserializedClass.page.last;
             ICollection<ExtraImageModel> images = null;
             for (int i = 0; i < myDeserializedClass.products.Count; i++)
             {
-                if (myDeserializedClass.products[i].html_url != null)
+                if (myDeserializedClass.products[i].html_url != null &&  !(await ProductDbHelper.CheckForRepeatAsync(myDeserializedClass.products[i].html_url)))
                 {
                     List<string?> ExtraImagesSrc =
                         await _scraper.SelectSecondaryImg(
@@ -69,25 +73,24 @@ namespace DataParser.Parsing
 
                     images = await ProductDbHelper.CreateExtraImagesCollectionAsync(ExtraImagesSrc, ExtraFileNames);
                 }
+                else
+                {
+                    Scipped++;
+                    continue;
+                }
                 MainProductModel product = new()
                 {
-                    DefaultPrice = ConvertToDouble((myDeserializedClass.products[i].prices.price_max.amount)),
+                    DefaultPrice = Math.Round((ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount) + ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount))/2, 1),
+                    MinPrice = ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount),
+                    MaxPrice = ConvertToDouble(myDeserializedClass.products[i].prices.price_max.amount),
+                    ProductFullName = myDeserializedClass.products[i].full_name,
+                    ProductExtendedFullName = myDeserializedClass.products[i].extended_name,
                     MainFilePath = myDeserializedClass.products[i].images.header,
                     MainFileName = _scraper.CreateFileName(myDeserializedClass.products[i].full_name, myDeserializedClass.products[i].images.header),
                     ShortDescription = myDeserializedClass.products[i].micro_description,
                     Description = myDeserializedClass.products[i].description,
-                    SummaryStroke = myDeserializedClass.products[i].full_name,
-                    MarketLaunchDate = ProductLaunchDates[new Random().Next(0, ProductLaunchDates.Count)],
-                    Appointment = myDeserializedClass.products[i].name_prefix, //to do
                     ProductType = myDeserializedClass.products[i].name_prefix,
-                    ConstructionType = ConstructionType[new Random().Next(0, ConstructionType.Count)],
-                    ConnectionType = ConnectionType[new Random().Next(0, ConnectionType.Count)],
-                    Color = myDeserializedClass.products[i].color_code,
-                    BatteryСapacity = BatteryCapacity[new Random().Next(0, BatteryCapacity.Count)] * 10,
-                    BluetoothVersion = BluetoothVersion[new Random().Next(0, BluetoothVersion.Count)],
-                    MaxRunTime = new Random().Next(2, 5),
-                    MaxRunTimeWithCase = new Random().Next(2, 5) * 3,
-                    ChargingTime = new Random().Next(2, 5),
+                    Rating = myDeserializedClass.products[i].reviews.rating,
                     CreationDateTime = DateTime.Now,
                     LastTimeEdited = DateTime.Now,
                     ParsedUrl = myDeserializedClass.products[i].html_url,
@@ -99,6 +102,7 @@ namespace DataParser.Parsing
             {
                 await ProductDbHelper.SendRangeOfDataAsync(_dataRange);
             }
+            MessageBox.Show($"Success! Added product: {_dataRange.Count}, Scipped: {Scipped}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private double ConvertToDouble(string s)

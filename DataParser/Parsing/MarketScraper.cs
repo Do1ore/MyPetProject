@@ -17,28 +17,21 @@ namespace DataParser
         private readonly MainProductModel _product;
         private readonly HttpClient _httpClient;
         private HtmlDocument? _htmlDocument;
-        private readonly SelenuimDataParser _dataParser;
+        private readonly SeleniumDataParser _dataParser;
 
         public MarketScraper()
         {
             _product = new MainProductModel();
             _httpClient = new HttpClient();
             _htmlDocument = new HtmlDocument();
-            _dataParser = new SelenuimDataParser();
+            _dataParser = new SeleniumDataParser();
         }
 
         #region Lists
-        private readonly List<int> ProductLaunchDates = new() { 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, DateTime.Now.Year };
         private readonly List<string> Appointment = new() { "portable", "gaiming", "sport", "swimming" };
         private readonly List<string> HeadphoneType = new() { "headphones with microphone", "wireless headphones with microphone" };
-        private readonly List<string> ConstructionType = new() { "intracanal", "plug-in" };
         private readonly List<string> ConnectionType = new() { "wireless", "wired" };
-        private readonly List<string> ProdcutColor = new() { "black", "gray", "white", "yellow", "red", "blue", "orange", "purple", "lemon" };
-        private readonly List<double> BluetoothVersion = new() { 4.0, 5.0, 5.2, 4.2, 6.0 };
         private readonly List<bool> HasCase = new() { true, false };
-        private readonly List<double> BatteryCapacity = new() { 30, 40, 45, 50, 24, 25, 10 };
-        private readonly List<double> CharginngTime = new() { 1, 1.5, 2, 0.5 };
-        private readonly List<double> MaxRunTime = new() { 2, 4, 6, 4.6, 4.7, 5.5, 6.5 };
         #endregion
         public async Task<MainProductModel?> GenerateHeadphoneAsync(string url)
         {
@@ -53,16 +46,7 @@ namespace DataParser
             double ProductPrice = await SelectPrice(_htmlDocument);
 
             string? headphoneType = HeadphoneType[random.Next(0, HeadphoneType.Count)];
-            int? productLaunch = ProductLaunchDates[random.Next(0, ProductLaunchDates.Count)];
-            string appointment = Appointment[random.Next(0, Appointment.Count)];
-            string constructionType = ConstructionType[random.Next(0, ConstructionType.Count)];
-            string connectionType = ConnectionType[random.Next(0, ConnectionType.Count)];
-            string color = ProdcutColor[random.Next(0, ProdcutColor.Count)];
-            double bluetoothVersion = BluetoothVersion[random.Next(0, BluetoothVersion.Count)];
             _ = HasCase[random.Next(0, HasCase.Count)];
-            double batteryCapacity = BatteryCapacity[random.Next(0, BatteryCapacity.Count)];
-            double chargingtime = CharginngTime[random.Next(0, CharginngTime.Count)];
-            double maxRunTime = Math.Round(MaxRunTime[random.Next(0, MaxRunTime.Count)], 1);
 
             List<string?> ExtraImagesSrc = await SelectSecondaryImg(_htmlDocument);
             List<string?> ExtraFileNames = await CreateExtraFileNameAsync(SummaryTitle, imgsrc, ExtraImagesSrc.Count);
@@ -74,18 +58,7 @@ namespace DataParser
                 MainFilePath = imgsrc,
                 MainFileName = CreateFileName(ShortDescription, imgsrc),
                 ShortDescription = ShortDescription,
-                SummaryStroke = SummaryTitle,
-                MarketLaunchDate = productLaunch,
-                Appointment = appointment,
                 ProductType = headphoneType,
-                ConstructionType = constructionType,
-                ConnectionType = connectionType,
-                Color = color,
-                BatteryСapacity = batteryCapacity,
-                BluetoothVersion = bluetoothVersion,
-                MaxRunTime = maxRunTime,
-                MaxRunTimeWithCase = maxRunTime * 3,
-                ChargingTime = chargingtime,
                 CreationDateTime = DateTime.Now,
                 LastTimeEdited = DateTime.Now,
                 ParsedUrl = url,

@@ -1,25 +1,27 @@
-﻿@model MyPet.Models.MainProductModel
+﻿@using MyPet.Areas.SomeLogics;
+@model MyPet.Models.MainProductModel
 
-
-
-
-        <div class="card mb-3" style="max-width: 600px;">
+        <div class="card mb-3" style="max-width: 100%;">
         <div class="row g-0">
-        <div class="col-md-4 mycenter">
-            <img src="@Model.MainFilePath" class="img-fluid " alt="@Model.SummaryStroke">
+            <div class="col-md-4 mycenter" >
+            <img src="@Model.MainFilePath" class="img-fluid " alt="@Model.ProductFullName" style="padding: 20px">
             </div>
             <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title text-primary">@Model.SummaryStroke</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              <div class="card-body" style="padding: 40px">
+                <h1 class="card-title text-primary" style="padding-block-end: 20px">@Model.ProductExtendedFullName</h1>
+                <h4 class="card-text text-secondary">Rating: @(Model.Rating/10.0) / 5</h4>
+                <p class="card-text">@Model.Description</p>
+                    <small class="" style="text-align: left">Price from @Model.MinPrice to @Model.MinPrice BYN</small>
+                    <hr>
+                <small class="text-muted" style="text-align: right">Last time edited @TimeDifference.GetDifference(Model.LastTimeEdited)</small>
               </div>
             </div>
           </div>
         </div>
 
+
         @*Image scrollbox*@
-<div class="scroll-box">
+<div class="scroll-box" style="margin-top: 40px">
     <div class="scroll-content">
       @foreach (var item in Model.ExtraImage)
         {
@@ -42,42 +44,46 @@
 
     <tbody>
             <tr>
-                <th scope="row"><span class="text-primary">Appoinment</span></th>
-                <th> @Model.Appointment</th>
-            </tr>
-            <tr>
-                <th scope="row"><span class="text-primary">Bluetooth version</span></th>
-                <th> Bluetooth @Model.BluetoothVersion</th>
-            </tr>
-            <tr>
-                <th scope="row"><span class="text-primary">Batterty capacity</span></th>
-                <th> @Model.BatteryСapacity mA</th>
+                <th scope="row"><span class="text-primary">Id</span></th>
+                <th> @Model.Id</th>
             </tr>
             <tr>
                 <th scope="row"><span class="text-primary">Prodcut type</span></th>
-                <th> @Model.ProductType mA</th>
+                <th> @Model.ProductType</th>
             </tr>
             <tr>
-                <th scope="row"><span class="text-primary">Charging time</span></th>
-                <th> @Model.ChargingTime h</th>
+                <th scope="row"><span class="text-primary">Short description</span></th>
+                <th> @Model.ShortDescription</th>
+            </tr>
+        
+            <tr>
+                <th scope="row"><span class="text-primary">Rating</span></th>
+                <th> @Model.Rating</th>
             </tr>
             <tr>
-                <th scope="row"><span class="text-primary">Connection type</span></th>
-                <th> @Model.ConnectionType h</th>
+                <th scope="row"><span class="text-primary">Max price</span></th>
+                <th> @Model.MaxPrice BYN</th>
             </tr>
             <tr>
-                <th scope="row"><span class="text-primary">Construction type</span></th>
-                <th> @Model.ConstructionType h</th>
+                <th scope="row"><span class="text-primary">Min price</span></th>
+                <th> @Model.MaxPrice BYN</th>
             </tr>
-            
+            <tr>
+                <th scope="row"><span class="text-primary">Last time edited</span></th>
+                <th> @Model.LastTimeEdited</th>
+            </tr>
     </tbody>
 
         </table>
     </div>
-
-            
-
-@*<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>*@
+<div class="row text-center" style="margin: 100px">
+    <div class="col">
+        <a class="btn btn-primary" asp-action="EditProduct" asp-route-id="@Model.Id">Edit product</a>
+    </div>
+    <div class="col">
+        <a class="btn btn-danger" asp-action="Submit" asp-for="@Model.Id" asp-route-Id="@Model.Id">Delete product</a>
+    </div>
+    <div class="col">
+        <a class="btn btn-outline-secondary" asp-action="ProductsToList" asp-route-id="@Model.Id">See all products</a>
+    </div>
+</div>

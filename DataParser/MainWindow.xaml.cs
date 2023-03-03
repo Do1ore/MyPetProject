@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using DataParser.Parsing;
@@ -8,6 +9,8 @@ namespace DataParser
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
+    
     public partial class MainWindow : Window
     {
         
@@ -20,15 +23,17 @@ namespace DataParser
         private async void Button_Click(object sender, RoutedEventArgs e)
         {        
             
-            Uri Url = new Uri("https://catalog.onliner.by/sdapi/catalog.api/search/hairdryer?page=2");
-
+            Uri Url = new Uri(urltext.Text);
             var response = await jsonParser.GetJsonAsync(Url);
-            await jsonParser.HandleHesponse(response);
+            textBox1.Text += $"Response accepted. Response product counts: {response.products.Count}\n\r";
+            await jsonParser.HandleResponse(response);
+            textBox1.Text += $"data in processing... \n\r";
+
             //MarketScraper scraper = new MarketScraper();
             //var url = "https://catalog.onliner.by/headphones";
-            
 
-            //var list = await SelenuimDataParser.SelectProductHref(url);
+
+            //var list = await SeleniumDataParser.SelectProductHref(url);
             //for (int i = 0; i < list.Count; i++)
             //{
             //    var result = await scraper.GenerateHeadphoneAsync(list[i]);
@@ -45,6 +50,11 @@ namespace DataParser
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             await productDbHelper.TranslateDataFromDbAsync();
+
+        }
+
+        private void textBox1_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
 
         }
     }

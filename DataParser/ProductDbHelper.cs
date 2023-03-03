@@ -20,6 +20,7 @@ namespace DataParser
     {
 
         private static ProductDbContext db;
+
         private readonly List<char> russianLetters = new List<char>()
         {
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М',
@@ -53,8 +54,6 @@ namespace DataParser
             await db.SaveChangesAsync();
         }
 
-
-
         public static async Task<bool> CheckForRepeatAsync(string url)
         {
             var options = new DbContextOptionsBuilder<ProductDbContext>()
@@ -64,13 +63,14 @@ namespace DataParser
             db = new ProductDbContext(options);
             if (await db.Products.AnyAsync(x => x.ParsedUrl == url))
             {
-                return false;
+                return true;
             }
             else
             {
-                return true;
+                return false;
             }
         }
+
         public static bool CheckForRepeat(string url)
         {
             var options = new DbContextOptionsBuilder<ProductDbContext>()
@@ -122,12 +122,17 @@ namespace DataParser
 
             List<int?> productIdToEdit = new List<int?>();
 
-            List<string?> TranslatedSummary = new();
-            List<string?> TranslatedShortDescription = new();
+            List<string?>? TranslatedShortDescription =null;
+            List<string?>? TranslatedExtendedFullName = null;
+            List<string?>? TranslatedFullName = null;
+
+            List<string?>? TranslatedDescription = null;
+
 
             foreach (var item in db.Products)
             {
-                if (item.SummaryStroke.Any(c => russianLetters.Contains(c)))
+                if (item.Description.Any(c => russianLetters.Contains(c) 
+                || item.ProductFullName.Any(c => russianLetters.Contains(c))))
                 {
                     productIdToEdit.Add(item.Id);
                 }
@@ -136,17 +141,29 @@ namespace DataParser
             List<MainProductModel?> ProductsToEdit = await FindModelsAsync(productIdToEdit);
 
             if (ProductsToEdit is not null)
-            {
-                TranslatedSummary = await SelenuimDataParser.TranslateListAsync(await FindSummaryAsync(ProductsToEdit));
-                TranslatedShortDescription = await SelenuimDataParser.TranslateListAsync(await FindShortDescriptionAsync(ProductsToEdit));
+            {  
+                
+                var shortdesc = await FindShortDescriptionAsync(ProductsToEdit);
+                if(shortdesc is not null)
+                    TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(shortdesc);
 
+                var extendedname = await FindExtenderProductNameAsync(ProductsToEdit);
+                if(extendedname is not null)
+                TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(extendedname);
 
+                var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
+                if (extendedname is not null)
+                    TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(prodfullname);
+
+                var description = await FindDescriptionAsync(ProductsToEdit);
+                if (description is not null)
+                    TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(description);
                 for (int i = 0; i < productIdToEdit.Count; i++)
                 {
 
-                    ProductsToEdit[i].ShortDescription = TranslatedShortDescription[i];
-                    ProductsToEdit[i].SummaryStroke = TranslatedSummary[i];
-
+                    ProductsToEdit[i].ShortDescription ??= TranslatedShortDescription[i];
+                    ProductsToEdit[i].Description ??= TranslatedDescription[i];
+                    ProductsToEdit[i].ProductExtendedFullName ??= TranslatedExtendedFullName[i];
                     db.Products.Update(ProductsToEdit[i]);
 
                 }
@@ -155,7 +172,26 @@ namespace DataParser
             MessageBox.Show($"Fields translated: {ProductsToEdit.Count}", "Data info", MessageBoxButton.OK, MessageBoxImage.Information);
 
         }
-
+        //to do translate
+        private bool IsContainsRussianLetter(List<string?> strings)
+        {
+            int counter = 0;
+            foreach (var item in strings)
+            {
+                if (item != null)
+                    if (item.Any(c => russianLetters.Contains(c)))
+                    {
+                        return true;
+                    }
+                    else { counter++; }
+            }
+            if(counter == strings.Count)
+            {
+                return false;
+            }
+            return false;
+            
+        }
         private async Task<List<MainProductModel?>> FindModelsAsync (List<int?> idList)
         {
              List<MainProductModel?> products = new List<MainProductModel?>();
@@ -169,24 +205,28 @@ namespace DataParser
             return products;
         }
 
-        private async Task<List<string?>> FindSummaryAsync(List<MainProductModel?> products)
+        private async Task<List<string?>?> FindProductFullNameAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
+
             await Task.Run(() =>
             {
 
                 foreach (var product in products)
                 {
                     if (product is not null)
-                        values.Add(product.SummaryStroke);
+                        values.Add(product.ProductFullName);
                 }
             });
+            if (!IsContainsRussianLetter(values))
+                return null;
             return values;
         }
 
-        private async Task<List<string?>> FindShortDescriptionAsync(List<MainProductModel?> products)
+        private async Task<List<string?>?> FindShortDescriptionAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
+
             await Task.Run(() =>
             {
 
@@ -196,6 +236,42 @@ namespace DataParser
                         values.Add(product.ShortDescription);
                 }
             });
+            if (!IsContainsRussianLetter(values))
+                return null;
+            return values;
+        }
+
+        private async Task<List<string?>?> FindExtenderProductNameAsync(List<MainProductModel?> products)
+        {
+            List<string?> values = new List<string?>();
+            await Task.Run(() =>
+            {
+
+                foreach (var product in products)
+                {
+                    if (product is not null)
+                        values.Add(product.ProductExtendedFullName);
+                }
+            });
+            if (!IsContainsRussianLetter(values))
+                return null;
+            return values;
+        }
+
+        private async Task<List<string?>?> FindDescriptionAsync(List<MainProductModel?> products)
+        {
+            List<string?> values = new List<string?>();
+            await Task.Run(() =>
+            {
+
+                foreach (var product in products)
+                {
+                    if (product is not null)
+                        values.Add(product.Description);
+                }
+            });
+            if (!IsContainsRussianLetter(values))
+                return null;
             return values;
         }
 

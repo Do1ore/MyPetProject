@@ -13,8 +13,8 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
+body{
+    margin-bottom: 60px;
 }
 
 .mycenter {
@@ -31,7 +31,7 @@ body {
 
 #page-title span {
     display: block;
-    margin-top: 10px;
+    margin-top: 4rem 0;
     font-weight: 300;
     color: #777;
     font-size: 18px;
@@ -71,4 +71,20 @@ body {
     height: 13px;
     background: #555;
 }
-
+.bg-overlay {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%), radial-gradient(100% 1056.25% at 0% 0%, #F7E5F0 0%, #EEEBFF 20.44%, #D2DFFF 100%);
+    position: static;
+}
+.mynav {
+    border-bottom: 0.0625rem solid #e0e0e0;
+    flex-shrink: 0;
+    line-height: 1.7em;
+    position: fixed;
+    top: 0;
+    -webkit-transform: none;
+    transform: none;
+    -webkit-transition: transform cubic-bezier(0.4,0,0.2,1) 240ms;
+    transition: transform cubic-bezier(0.4,0,0.2,1) 240ms;
+    width: 100%;
+    z-index: 986;
+}

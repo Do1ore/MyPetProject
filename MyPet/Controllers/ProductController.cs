@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Conventions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Models;
+using MyPet.ViewModels;
 
 namespace MyPet.Controllers
 {
@@ -23,133 +25,97 @@ namespace MyPet.Controllers
             return View(await db.Products.ToListAsync());
         }
 
-        public IActionResult ViewDetails(int id)
+        public IActionResult ViewDetails(int? id)
         {
             MainProductModel? product = db.Products.Include(i => i.ExtraImage).ToList().Find(i => i.Id == id);
             if (product is not null)
             {
-                ViewBag.Title = product.SummaryStroke + " info";
+                ViewBag.Title = "Detailed Info";
             }
 
             return View(product);
         }
+        public async Task<IActionResult> EditProduct(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        #region Legacy
-        //public async Task<IActionResult> EditProduct(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var product = await db.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
 
-        //    var product = await db.Products.FindAsync(id);
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(product);
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditProduct(int id, ProductModel product)
-        //{
-        //    if (id != product.Id)
-        //    {
-        //        return NotFound();
-        //    }
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            if (product.Image != null)
-        //            {
-        //                // Delete the old image image if it exists
-        //                //todo
-        //                var oldFilePath = product.FilePath;
-        //                if (System.IO.File.Exists(oldFilePath))
-        //                {
-        //                    System.IO.File.Delete(oldFilePath);
-        //                }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProduct(int id, MainProductModel product)
+        {
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    product.LastTimeEdited = DateTime.Now;
 
-        //                string wwwRootPath = _hostEnvironment.WebRootPath;
-        //                string FileName = Path.GetFileNameWithoutExtension(product.Image.FileName);
-        //                string Extension = Path.GetExtension(product.Image.FileName);
-        //                FileName = FileName + DateTime.Now.ToString("yymmdd") + Extension;
-        //                string path = Path.Combine(wwwRootPath + "/img/Products/", FileName);
-        //                // Save the uploaded image to wwwroot/images folder and update the FilePath property of the product
-        //                product.FilePath = path;
-        //                product.FileName = FileName;
+                    db.Update(product);
+                    await db.SaveChangesAsync();
 
-        //                using (var fileStream = new FileStream(path, FileMode.Create))
-        //                {
-        //                    await product.Image.CopyToAsync(fileStream);
-        //                }
-        //            }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
 
-        //            product.LastTimeEdited = DateTime.Now;
+                    throw;
+                }
+                return RedirectToAction(nameof(ProductsToList));
+            }
+            return View(product);
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id is null)
+                return NotFound();
+            var product = await db.Products.FindAsync(id);
+            if (product is not null)
+                return View(product);
+            else return NotFound();
+        }
 
-        //            db.Update(product);
-        //            await db.SaveChangesAsync();
-
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-
-        //            throw;
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(product);
-
-
-        //}
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await db.Products.ToListAsync());
-        //}
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> Create(ProductViewModel model, IFormFile image)
-        //{
-
-        //    string FileName = "";
-        //    string Extension = "";
-        //    string path = "";
-        //    string wwwRootPath = _hostEnvironment.WebRootPath;
-        //    if (image is not null)
-        //    {
-        //        FileName = Path.GetFileNameWithoutExtension(image.FileName);
-        //        Extension = Path.GetExtension(image.FileName);
-        //        FileName = FileName + DateTime.Now.ToString("yymmdd") + Extension;
-        //        path = Path.Combine(wwwRootPath + "/img/Products/", FileName);
-
-        //        if (image != null && image.Length > 0)
-        //        {
-        //            using (var stream = new FileStream(path, FileMode.Create))
-        //            {
-        //                await image.CopyToAsync(stream);
-        //            }
-
-        //            // сохранение изображения в БД
-        //        }
-        //    }
-
-        //        var product = _mapper.Map<ProductModel>(model);
-        //        product.FileName = FileName;
-        //        product.FilePath = path;
-        //        db.Products.Add(product);
-        //        await db.SaveChangesAsync();
-
-        //        return RedirectToAction("Index", "Home");
-
-
-
-        //}
-        #endregion
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirm(int? id)
+        {
+            var product = await db.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            var extraimages = db.ExtraImages;
+            List<ExtraImageModel> images = extraimages
+                .Where(i=> i.ProductModel != null)
+                .Where(i => i.ProductModel.Id == product.Id).Select(i => i).ToList();
+            db.ExtraImages.RemoveRange(images);
+            db.Products.Remove(product);
+            await db.SaveChangesAsync();
+            return RedirectToAction(nameof(ProductsToList));
+        }
+        //todo
+        public async Task<IActionResult> Create(CreateProductViewModel? product, ExtraImageModel imageModel)
+        {
+            if(ModelState.IsValid)
+            {
+                
+            }
+            return View();
+        }
     }
 }
 

@@ -24,7 +24,6 @@
   <ItemGroup>
     <Folder Include="Areas\Mapping\" />
     <Folder Include="Migrations\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Views\User\" />
     <Folder Include="wwwroot\img\" />
     <Folder Include="wwwroot\img\Products\" />

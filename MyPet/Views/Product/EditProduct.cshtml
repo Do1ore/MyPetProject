@@ -1,0 +1,110 @@
+﻿@model MyPet.Models.MainProductModel
+
+@{
+    ViewBag.Title = "EditProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row text-center">
+
+    <div class="col">
+        <a class="btn btn-outline-secondary" asp-controller="Product" asp-action="ProductsToList">Back to List</a>
+    </div>
+    <div class="col">
+        <a class="btn btn-outline-danger" asp-controller="Product" asp-action="Delete" asp-route-Id="@Model.Id">Delete product</a>
+    </div>
+    </div>
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="EditProduct">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" type="number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DefaultPrice" class="control-label"></label>
+                <input asp-for="DefaultPrice" type="number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MinPrice" class="control-label"></label>
+                <input asp-for="MinPrice" type="number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MaxPrice" class="control-label"></label>
+                <input asp-for="MaxPrice" type="number" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ShortDescription" class="control-label"></label>
+                <input asp-for="ShortDescription" class="form-control" />
+                <span asp-validation-for="ShortDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductFullName" class="control-label"></label>
+                <input asp-for="ProductFullName" class="form-control" />
+                <span asp-validation-for="ProductFullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductExtendedFullName" class="control-label"></label>
+                <input asp-for="ProductExtendedFullName" class="form-control" />
+                <span asp-validation-for="ProductExtendedFullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductType" class="control-label"></label>
+                <input asp-for="ProductType" class="form-control" />
+                <span asp-validation-for="ProductType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MainFileName" class="control-label"></label>
+                <input asp-for="MainFileName" class="form-control" />
+                <span asp-validation-for="MainFileName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MainFilePath" class="control-label"></label>
+                <input asp-for="MainFilePath" class="form-control" />
+                <span asp-validation-for="MainFilePath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreationDateTime" class="control-label"></label>
+                <input asp-for="CreationDateTime" class="form-control" />
+                <span asp-validation-for="CreationDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastTimeEdited" class="control-label"></label>
+                <input asp-for="LastTimeEdited" class="form-control" />
+                <span asp-validation-for="LastTimeEdited" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParsedUrl" class="control-label"></label>
+                <input asp-for="ParsedUrl" class="form-control" />
+                <span asp-validation-for="ParsedUrl" class="text-danger"></span>
+            </div>
+            <div>
+                <input asp-for="Image" type="hidden" class="form-control" />
+            </div>
+            <div>
+                <input asp-for="ExtraImage" type="hidden" class="form-control" />
+            </div>
+            <div class="form-group" style="margin: 20px;">
+                <input type="submit" value="Save data" class="btn btn-outline-success" style="margin-right: 20px" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+</div>
+
+            
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
