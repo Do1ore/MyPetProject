@@ -88,3 +88,52 @@ body{
     width: 100%;
     z-index: 986;
 }
+
+
+.myspacing{
+    margin-right: 5px;
+}
+.nav-masthead .nav-link {
+    color: rgba(255, 255, 255, .5);
+    border-bottom: 0.25rem solid transparent;
+}
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(var(--bs-body-color-rgb),.075) !important;
+}
+.mx-auto {
+
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+.btn{
+border-radius: 15px;
+}
+
+.form-control {
+    border-radius: 15px;
+}
+
+.input-group-text{
+        border-radius: 15px;
+        margin-left: 10px;
+}
+
+.nav nav-pills flex-column {
+    border-radius: 15px;
+}
+.nav-link {
+    border-radius: 15px;
+}
+
+.dropdown-menu{
+border-radius: 15px;
+}
+.dropdown-item{
+    border-radius: 5px;
+}
+.valid{
+    margin-bottom: 20px;
+}
+.form-check-input{
+    border-radius: 15px;
+}

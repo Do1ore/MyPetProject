@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MyPet.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MyPet.Models
+namespace MyPet.ViewModels
 {
-    public class MainProductModel
+    public class ProductDetailedViewModel
     {
         [Key]
         public int Id { get; set; }
@@ -18,12 +24,10 @@ namespace MyPet.Models
         public string? ProductType { get; set; }
         public string? MainFileName { get; set; }
         public string? MainFilePath { get; set; }
-        [NotMapped]
-        public IFormFile? Image { get; set; }
-        public DateTime? CreationDateTime { get; set; }
-        public DateTime? LastTimeEdited { get; set; }
+
+        public DateTime CreationDateTime { get; set; }
+        public DateTime LastTimeEdited { get; set; }
         public string? ParsedUrl { get; set; }
         public ICollection<ExtraImageModel>? ExtraImage { get; set; }
-
     }
 }

@@ -123,10 +123,10 @@ namespace DataParser
             List<int?> productIdToEdit = new List<int?>();
 
             List<string?>? TranslatedShortDescription =null;
+            List<string?>? TranslatedDescription = null;
             List<string?>? TranslatedExtendedFullName = null;
             List<string?>? TranslatedFullName = null;
-
-            List<string?>? TranslatedDescription = null;
+            List<string?>? TranslatedProductType = null;
 
 
             foreach (var item in db.Products)
@@ -140,30 +140,73 @@ namespace DataParser
             }
             List<MainProductModel?> ProductsToEdit = await FindModelsAsync(productIdToEdit);
 
+            //if (ProductsToEdit is not null)
+            //{  
+
+            //    var shortdesc = await FindShortDescriptionAsync(ProductsToEdit);
+            //    if(shortdesc is not null)
+            //        TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(shortdesc);
+
+            //    var extendedname = await FindExtenderProductNameAsync(ProductsToEdit);
+            //    if(extendedname is not null)
+            //    TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(extendedname);
+
+            //    var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
+            //    if (prodfullname is not null)
+            //        TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(prodfullname);
+
+            //    var description = await FindDescriptionAsync(ProductsToEdit);
+            //    if (description is not null)
+            //        TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(description);
+
+            //    var prodtype = await FindProductTypeAsync(ProductsToEdit);
+            //    if (prodtype is not null)
+            //        TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(prodtype);
+            //    for (int i = 0; i < productIdToEdit.Count; i++)
+            //    {
+
+            //        ProductsToEdit[i].ShortDescription = TranslatedShortDescription[i];
+            //        ProductsToEdit[i].Description = TranslatedDescription[i];
+            //        ProductsToEdit[i].ProductExtendedFullName = TranslatedExtendedFullName[i];
+            //        ProductsToEdit[i].ProductType = TranslatedProductType[i];
+            //        ProductsToEdit[i].ProductFullName = TranslatedFullName[i];
+            //        db.Products.Update(ProductsToEdit[i]);
+
+            //    }
+            //}
             if (ProductsToEdit is not null)
-            {  
-                
+            {
+                List<List<string?>> superList = new List<List<string?>>();
+
                 var shortdesc = await FindShortDescriptionAsync(ProductsToEdit);
-                if(shortdesc is not null)
-                    TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(shortdesc);
+                if (shortdesc is not null)
+                    superList.Add(shortdesc);
 
                 var extendedname = await FindExtenderProductNameAsync(ProductsToEdit);
-                if(extendedname is not null)
-                TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(extendedname);
-
-                var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
                 if (extendedname is not null)
-                    TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(prodfullname);
+                    superList.Add(extendedname);
+
+                    var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
+                if (prodfullname is not null)
+                    superList.Add(prodfullname);
 
                 var description = await FindDescriptionAsync(ProductsToEdit);
                 if (description is not null)
-                    TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(description);
+                    superList.Add(description);
+
+                var prodtype = await FindProductTypeAsync(ProductsToEdit);
+                if (prodtype is not null)
+                    superList.Add(prodtype);
+
+                List<List<string?>> translatedData = await SeleniumDataParser.TranslateListOfLists(superList);
                 for (int i = 0; i < productIdToEdit.Count; i++)
                 {
 
-                    ProductsToEdit[i].ShortDescription ??= TranslatedShortDescription[i];
-                    ProductsToEdit[i].Description ??= TranslatedDescription[i];
-                    ProductsToEdit[i].ProductExtendedFullName ??= TranslatedExtendedFullName[i];
+                    ProductsToEdit[i].ShortDescription = translatedData[0][i];
+                    ProductsToEdit[i].Description = translatedData[1][i];
+                    ProductsToEdit[i].ProductExtendedFullName = translatedData[2][i];
+                    ProductsToEdit[i].ProductType = translatedData[3][i];
+                    ProductsToEdit[i].ProductFullName = translatedData[4][i];
                     db.Products.Update(ProductsToEdit[i]);
 
                 }
@@ -204,7 +247,6 @@ namespace DataParser
             }
             return products;
         }
-
         private async Task<List<string?>?> FindProductFullNameAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
@@ -222,7 +264,38 @@ namespace DataParser
                 return null;
             return values;
         }
+        private async Task<List<string?>?> FindExtenderProductNameAsync(List<MainProductModel?> products)
+        {
+            List<string?> values = new List<string?>();
+            await Task.Run(() =>
+            {
 
+                foreach (var product in products)
+                {
+                    if (product is not null)
+                        values.Add(product.ProductExtendedFullName);
+                }
+            });
+            if (!IsContainsRussianLetter(values))
+                return null;
+            return values;
+        }
+        private async Task<List<string?>?> FindProductTypeAsync(List<MainProductModel?> products)
+        {
+            List<string?> values = new List<string?>();
+            await Task.Run(() =>
+            {
+
+                foreach (var product in products)
+                {
+                    if (product is not null)
+                        values.Add(product.ProductType);
+                }
+            });
+            if (!IsContainsRussianLetter(values))
+                return null;
+            return values;
+        }
         private async Task<List<string?>?> FindShortDescriptionAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
@@ -240,24 +313,6 @@ namespace DataParser
                 return null;
             return values;
         }
-
-        private async Task<List<string?>?> FindExtenderProductNameAsync(List<MainProductModel?> products)
-        {
-            List<string?> values = new List<string?>();
-            await Task.Run(() =>
-            {
-
-                foreach (var product in products)
-                {
-                    if (product is not null)
-                        values.Add(product.ProductExtendedFullName);
-                }
-            });
-            if (!IsContainsRussianLetter(values))
-                return null;
-            return values;
-        }
-
         private async Task<List<string?>?> FindDescriptionAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();

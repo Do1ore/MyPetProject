@@ -1,5 +1,5 @@
-﻿@using MyPet.Areas.SomeLogics;
-@model MyPet.Models.MainProductModel
+﻿@using MyPet.Areas.SomeLogics
+@model MyPet.ViewModels.ProductDetailedViewModel
 
         <div class="card mb-3" style="max-width: 100%;">
         <div class="row g-0">
@@ -25,8 +25,7 @@
     <div class="scroll-content">
       @foreach (var item in Model.ExtraImage)
         {
-                <img src="@item.FileSource">
-            
+          <img src="@item.FileSource">  
         }
     </div>
 </div>

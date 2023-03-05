@@ -1,13 +1,19 @@
 ﻿using MyPet.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MyPet.ViewModels
 {
-    public class CreateProductViewModel
+    public class ProductViewModel
     {
-        
+        public int Id { get; set; }
         [Display(Name = "Рейтинг")]
-        [Range(0, 50, ErrorMessage ="Рейтин может быть только в пределах от {0} до {1}")]
         public int? Rating { get; set; }
         [Display(Name = "Средняя цена")]
         public double? DefaultPrice { get; set; }
@@ -30,11 +36,9 @@ namespace MyPet.ViewModels
         [Display(Name = "Основной путь к файлу")]
         public string? MainFilePath { get; set; }
         [Display(Name = "Дата добавления товара")]
-        public DateTime? CreationDateTime { get; set; }
-        public DateTime? LastTimeEdited { get; set; }
+        public DateTime CreationDateTime { get; set; }
+        public DateTime LastTimeEdited { get; set; }
         [Display(Name = "URL страницы")]
         public string? ParsedUrl { get; set; }
-        public ICollection<ExtraImageModel?>? ExtraImage { get; set; }
-
     }
 }

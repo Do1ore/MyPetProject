@@ -20,7 +20,7 @@
     <div class="collapse navbar-collapse" id="navbarColor01" bis_skin_checked="1">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#">Home
+          <a class="nav-link" href="#">Дом
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
@@ -29,28 +29,30 @@
 
         @*Product manage*@
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Product manage</a>
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Управление</a>
 
             <div class="dropdown-menu" bis_skin_checked="1">
-                <a class="text-dark dropdown-item" asp-controller="Product" asp-action="ProductsToList">Product list</a>
+                <a class="text-dark dropdown-item" asp-controller="Product" asp-action="ProductsToList">Список продуктов</a>
                 <div class="dropdown-divider" bis_skin_checked="1"></div>
+                <a class="text-dark dropdown-item" asp-controller="Product" asp-action="Create">Создать</a>
+
             </div>
         </li>
         <li class="nav-item dropdown">
 
                            
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">User managment</a>
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Упавление доступом</a>
           <div class="dropdown-menu" bis_skin_checked="1">
-                <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="Index">Roles</a>
-                <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="Create">Create role</a>
+                <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="Index">Роли</a>
+                <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="Create">Создать роль</a>
                 <div class="dropdown-divider" bis_skin_checked="1"></div>
-                <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="UserList">User list</a>
+                <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="UserList">Список пользователей</a>
           </div>
         </li>
       </ul>
         <form class="d-flex" asp-controller="Search" asp-action="FindResult">
-                        <input class="form-control me-sm-2" name="searchTerm" type="search" placeholder="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                        <input class="form-control me-sm-2" name="searchTerm" type="search" placeholder="Введете текст...">
+                        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Поиск</button>
       </form>
     </div>
   </div>
@@ -60,7 +62,7 @@
         <section id="page-title" class="bg-overlay" style="display: flex; margin-top: 100px; height: 400px" >
             <div class="container clearfix">
                 <h1>@ViewBag.Title</h1>
-                <span>lorem100</span>
+                <span class="text-muted">@ViewBag.Secondary</span>
                
             </div>
 

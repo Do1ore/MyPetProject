@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration.Conventions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using MyPet.Models;
 using MyPet.ViewModels;
 
@@ -22,18 +24,27 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> ProductsToList()
         {
-            return View(await db.Products.ToListAsync());
+            List<ProductViewModel> viewModels= new List<ProductViewModel>();
+            var ModelProducts = await db.Products.ToListAsync();
+            foreach(var product in ModelProducts)
+            {
+                viewModels.Add(_mapper.Map<ProductViewModel>(product));
+            }
+
+            return View(viewModels);
+
         }
 
         public IActionResult ViewDetails(int? id)
         {
             MainProductModel? product = db.Products.Include(i => i.ExtraImage).ToList().Find(i => i.Id == id);
+            ProductDetailedViewModel? productView = _mapper.Map<ProductDetailedViewModel?>(product);
             if (product is not null)
             {
-                ViewBag.Title = "Detailed Info";
+                ViewBag.Title = "Детальная информация";
             }
 
-            return View(product);
+            return View(productView);
         }
         public async Task<IActionResult> EditProduct(int? id)
         {
@@ -108,13 +119,27 @@ namespace MyPet.Controllers
             return RedirectToAction(nameof(ProductsToList));
         }
         //todo
-        public async Task<IActionResult> Create(CreateProductViewModel? product, ExtraImageModel imageModel)
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateProductViewModel? product, ExtraImageModel? imageModel, int? ExtaImageCount)
         {
             if(ModelState.IsValid)
             {
-                
+                if(imageModel != null && ExtaImageCount is not null)
+                product.ExtraImage.Add(imageModel);
+                product.CreationDateTime = DateTime.Now;
+                product.LastTimeEdited = DateTime.Now;
+                await db.AddAsync(_mapper.Map<MainProductModel>(product));
+                await db.SaveChangesAsync();
             }
-            return View();
+            else
+            {
+                return RedirectToAction(nameof(Create));
+            }
+            return RedirectToAction(nameof(ProductsToList));
         }
     }
 }

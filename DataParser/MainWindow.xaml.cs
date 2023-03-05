@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using DataParser.Parsing;
+using DataParser.SupportingLogics;
 
 namespace DataParser
 {
@@ -26,8 +27,8 @@ namespace DataParser
             Uri Url = new Uri(urltext.Text);
             var response = await jsonParser.GetJsonAsync(Url);
             textBox1.Text += $"Response accepted. Response product counts: {response.products.Count}\n\r";
-            await jsonParser.HandleResponse(response);
             textBox1.Text += $"data in processing... \n\r";
+            await jsonParser.HandleResponse(response);
 
             //MarketScraper scraper = new MarketScraper();
             //var url = "https://catalog.onliner.by/headphones";
@@ -49,6 +50,7 @@ namespace DataParser
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            //var result = await MachineTranslation.TranslateSingleStroke("беспроводные наушники с микрофоном, вставные, портативные, Bluetooth 5.2, 20-20000 Гц, быстрая зарядка, время работы 4 ч, с кейсом 22 ч, активное шумоподавление");
             await productDbHelper.TranslateDataFromDbAsync();
 
         }
