@@ -11,8 +11,6 @@ var connectionString = builder.Configuration.GetConnectionString("IdentityDbCont
 
 builder.Services.AddDbContext<MyIdentityDbContext>(options =>
     options.UseSqlServer(connectionString));
-
-builder.Services.AddDefaultIdentity<MyPetUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MyIdentityDbContext>();
 builder.Services.AddDbContext<ProductDbContext>(options =>
 options.UseSqlServer(connectionString));
 
@@ -22,6 +20,10 @@ builder.Services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.
         .AddDefaultTokenProviders()
         .AddDefaultUI();
         
+
+//builder.Services.AddDefaultIdentity<MyPetUser>(options => options.SignIn.RequireConfirmedAccount = false)
+//    .AddEntityFrameworkStores<MyIdentityDbContext>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
