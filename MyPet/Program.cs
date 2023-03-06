@@ -11,6 +11,7 @@ var connectionString = builder.Configuration.GetConnectionString("IdentityDbCont
 
 builder.Services.AddDbContext<MyIdentityDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDbContext<ProductDbContext>(options =>
 options.UseSqlServer(connectionString));
 
