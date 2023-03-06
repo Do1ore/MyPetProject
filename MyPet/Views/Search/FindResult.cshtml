@@ -1,43 +1,50 @@
-﻿@*@using MyPet.Areas.SomeLogics;
-@model IEnumerable<ProductModel>
+﻿@using MyPet.Areas.SomeLogics;
+@using MyPet.ViewModels;
+@model IEnumerable<ProductViewModel>
+
 @{
-    if(Model.Count() == 0)
+    ViewBag.Title = "Результаты по запросу " + ViewBag.Search;
+    ViewBag.Secondary = "Найдено товаров: " + @Model.Count();
+}
+
+    @if(Model.Count() == 0)
     {
         <h2>No results</h2>
     }
     else
     {
-        <h2>Here your search results</h2>
-        foreach (var item in Model)
+        
+        @foreach (var item in Model)
         {
-            #region Time
-            string? value = TimeDifference.GetDifference(item.LastTimeEdited);
-            #endregion
-
-            <div class="card mb-lg-3" style="max-width: 100%;">
-                <div class="row">
+              
+                <div class="card mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
+                    <div class="row">
                     <div class="col-md-4 mycenter">
-                        <img src="@("~/img/Products/"+item.FileName)" heigth="200px" class="img-fluid rounded-start" alt="..." asp-append-version="true">
+                                <img src="@item.MainFilePath" heigth="200px" class="img-fluid rounded-start" value="@item.ProductFullName" asp-append-version="true">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title">@item.ProductName <muted>@item.Brand</muted> <muted>@item.Category</muted> </h5>
+                               <h5 class="card-title">@item.ProductFullName</h5>
                             <p class="card-text">@item.ShortDescription</p>
-                            <span class="card-text badge rounded-pill bg-info">@item.Info</span>
-
-                            <p class="card-text"><small class="text-muted">$@item.Price</small></p>
-                            <p class="card-text"><small class="text-muted">Edited @value</small></p>
-                            <a class="text-muted" asp-controller="Product" asp-action="EditProduct" asp-route-id ="@item.Id">Edit</a>
+                            <p><small class="text-muted">@item.ProductType</small> </p>
 
 
+                            <p class="card-text">От @item.MinPrice BYN </p>
+
+
+                                <a class="btn btn-outline-info col myspacing" asp-controller="Product" asp-action="ViewDetails" asp-route-Id="@item.Id">
+                                    <div class="mycenter"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-binoculars" viewBox="0 0 16 16">
+                                      <path d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z"/>
+                                        </svg>&thinsp;Детали
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-    
-        }
+
+            }
     }
-}
 
 
-*@
+

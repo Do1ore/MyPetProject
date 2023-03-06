@@ -80,7 +80,7 @@
         <a class="btn btn-primary" asp-action="EditProduct" asp-route-id="@Model.Id">Edit product</a>
     </div>
     <div class="col">
-        <a class="btn btn-danger" asp-action="Submit" asp-for="@Model.Id" asp-route-Id="@Model.Id">Delete product</a>
+        <a class="btn btn-danger" asp-action="Delete" asp-for="@Model.Id" asp-route-Id="@Model.Id">Delete product</a>
     </div>
     <div class="col">
         <a class="btn btn-outline-secondary" asp-action="ProductsToList" asp-route-id="@Model.Id">See all products</a>

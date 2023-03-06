@@ -1,23 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyPet.Models;
+using MyPet.ViewModels;
 
 namespace MyPet.Controllers
 {
     public class SearchController : Controller
     {
+        private readonly ProductDbContext db;
+        private readonly IMapper mapper;
+        public SearchController(ProductDbContext db, IMapper mapper)
+        {
+            this.db = db;
+            this.mapper = mapper;
+        }
 
-        //public SearchController(ProductDbContext db)
-        //{
-        //    this.db = db;
-        //}
-        
-        //public IActionResult FindResult(string searchTerm)
-        //{
-        //    var results = db.Products
-        //.Where(p => p.ProductName.Contains(searchTerm) || p.Description.Contains(searchTerm) 
-        //|| p.Brand.Contains(searchTerm) || p.ShortDescription.Contains(searchTerm));
+        public async Task<IActionResult> FindResult(string searchTerm)
+        {
+            var results = await db.Products
+        .Where(p => p.ProductFullName.Contains(searchTerm) || p.Description.Contains(searchTerm)
+        || p.ProductType.Contains(searchTerm)).ToListAsync();
+            List<ProductViewModel> viewmodel = new List<ProductViewModel>();
+            
+            if (results.Count > 0)
+            {
+                for (int i =0; i < results.Count; i++)
+                {
+                    viewmodel.Add(mapper.Map<ProductViewModel>(results[i]));
+                    ViewBag.Search = searchTerm;
+                }
 
-        //    return View(results.ToList());
-        //}
+            }
+            return View(viewmodel.ToList());
+        }
     }
 }

@@ -70,7 +70,7 @@ namespace MyPet.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Required]
             [EmailAddress]
-            [Display(Name = "New email")]
+            [Display(Name = "Новый Email")]
             public string NewEmail { get; set; }
         }
 

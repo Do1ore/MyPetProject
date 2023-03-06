@@ -137,3 +137,15 @@ border-radius: 15px;
 .form-check-input{
     border-radius: 15px;
 }
+.alert{
+    border-radius: 15px;
+}
+.navbar {
+    background: rgb(0,0,0);
+    background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(1,1,10,1) 32%, rgba(20,20,61,1) 72%, rgba(0,52,77,1) 100%);
+}
+
+.mygradient {
+    background: rgb(0,0,0);
+    background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(1,1,10,1) 32%, rgba(20,20,61,1) 72%, rgba(0,52,77,1) 100%);
+}

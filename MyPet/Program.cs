@@ -20,11 +20,6 @@ builder.Services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.
         .AddEntityFrameworkStores<MyIdentityDbContext>()
         .AddDefaultTokenProviders()
         .AddDefaultUI();
-        
-
-//builder.Services.AddDefaultIdentity<MyPetUser>(options => options.SignIn.RequireConfirmedAccount = false)
-//    .AddEntityFrameworkStores<MyIdentityDbContext>();
-
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

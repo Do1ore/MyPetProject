@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using MyPet.Areas.Identity.Data;
+using static System.Collections.Specialized.BitVector32;
 
 namespace MyPet.Areas.Identity.Pages.Account.Manage
 {
@@ -181,9 +182,10 @@ namespace MyPet.Areas.Identity.Pages.Account.Manage
             return string.Format(
                 CultureInfo.InvariantCulture,
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Microsoft.AspNetCore.Identity.UI"),
+                _urlEncoder.Encode("MyPet"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
     }
 }
+
