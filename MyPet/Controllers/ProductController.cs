@@ -24,7 +24,7 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> ProductsToList()
         {
-            List<ProductViewModel> viewModels= new List<ProductViewModel>();
+            List<ProductViewModel> viewModels = new List<ProductViewModel>();
             var ModelProducts = await db.Products.ToListAsync();
             foreach(var product in ModelProducts)
             {

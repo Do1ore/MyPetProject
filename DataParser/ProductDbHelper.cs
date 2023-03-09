@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MyPet.Models;
-using NuGet.Protocol.Core.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+
 
 namespace DataParser
 {
@@ -140,40 +140,7 @@ namespace DataParser
             }
             List<MainProductModel?> ProductsToEdit = await FindModelsAsync(productIdToEdit);
 
-            //if (ProductsToEdit is not null)
-            //{  
-
-            //    var shortdesc = await FindShortDescriptionAsync(ProductsToEdit);
-            //    if(shortdesc is not null)
-            //        TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(shortdesc);
-
-            //    var extendedname = await FindExtenderProductNameAsync(ProductsToEdit);
-            //    if(extendedname is not null)
-            //    TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(extendedname);
-
-            //    var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
-            //    if (prodfullname is not null)
-            //        TranslatedExtendedFullName = await SeleniumDataParser.TranslateListAsync(prodfullname);
-
-            //    var description = await FindDescriptionAsync(ProductsToEdit);
-            //    if (description is not null)
-            //        TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(description);
-
-            //    var prodtype = await FindProductTypeAsync(ProductsToEdit);
-            //    if (prodtype is not null)
-            //        TranslatedShortDescription = await SeleniumDataParser.TranslateListAsync(prodtype);
-            //    for (int i = 0; i < productIdToEdit.Count; i++)
-            //    {
-
-            //        ProductsToEdit[i].ShortDescription = TranslatedShortDescription[i];
-            //        ProductsToEdit[i].Description = TranslatedDescription[i];
-            //        ProductsToEdit[i].ProductExtendedFullName = TranslatedExtendedFullName[i];
-            //        ProductsToEdit[i].ProductType = TranslatedProductType[i];
-            //        ProductsToEdit[i].ProductFullName = TranslatedFullName[i];
-            //        db.Products.Update(ProductsToEdit[i]);
-
-            //    }
-            //}
+            
             if (ProductsToEdit is not null)
             {
                 List<List<string?>> superList = new List<List<string?>>();

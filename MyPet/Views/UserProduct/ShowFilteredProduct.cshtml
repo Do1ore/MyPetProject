@@ -1,0 +1,34 @@
+﻿@using MyPet.Areas.SomeLogics;
+@using MyPet.ViewModels;
+@model IEnumerable<ProductViewModel>
+@{
+    ViewBag.Title = "Товары";
+    ViewBag.Secondary = "Спикок всех доступных товаров";
+    List<string?> categoties = await ProductHelper.GetAllCategoriesAsync();
+   
+}
+
+<form asp-action="Filter" method="post">
+    <div class="form-group mymargin">
+        <select name="ProductType" class="form-control">
+            @foreach (var item in categoties)
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col">
+                <input type="text" name="MinPrice" placeholder="Цена от" class="form-control mymargin" />
+            </div>
+            <div class="col">
+                <input type="text" name="MaxPrice" placeholder="Цена до" class="form-control mymargin" 
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mymargin">Искать</button>
+</form>
+
+
+<partial name="_ProductListPartial"></partial>

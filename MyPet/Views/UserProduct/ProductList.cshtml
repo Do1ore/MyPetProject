@@ -1,0 +1,37 @@
+﻿@using MyPet.ViewModels;
+@model IEnumerable<ProductViewModel>
+@{
+    ViewBag.Title = "Товары";
+    ViewBag.Secondary = "Спикок всех доступных товаров";
+    List<string?> categoties = Model.Select(p => p.ProductType).Distinct().ToList();
+    FilterViewModel filterView = new FilterViewModel()
+            {
+                Alphabet = false,
+                MaxPrice = 100,
+                MinPrice = 0,
+                ProductType = "Наушники",
+                SortBy = "Наушники",
+            };
+}
+
+<form asp-action="Filter" method="post">
+    <div class="form-group">
+        <select name="ProductType" class="form-control">
+            @foreach (var item in categoties)
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+
+
+        <input type="text" name="MinPrice" class="form-control" />
+        <input type="text" name="MaxPrice" class="form-control" />
+
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+<partial name="_ProductListPartial"></partial>
