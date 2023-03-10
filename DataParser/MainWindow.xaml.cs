@@ -21,6 +21,7 @@ namespace DataParser
         }
         ProductDbHelper productDbHelper = new ProductDbHelper();
         JsonParser jsonParser = new JsonParser();
+
         private async void Button_Click(object sender, RoutedEventArgs e)
         {        
             
@@ -50,8 +51,7 @@ namespace DataParser
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            //var result = await MachineTranslation.TranslateSingleStroke("беспроводные наушники с микрофоном, вставные, портативные, Bluetooth 5.2, 20-20000 Гц, быстрая зарядка, время работы 4 ч, с кейсом 22 ч, активное шумоподавление");
-            await productDbHelper.TranslateDataFromDbAsync();
+            await ProductDbHelper.RemoveDublicates();
 
         }
 

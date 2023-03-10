@@ -11,8 +11,7 @@
                     <p class="card-text">@item.ShortDescription</p>
                     <p><small class="text-muted">@item.ProductType</small> </p>
 
-
-                    <p class="card-text">От @item.MinPrice BYN </p>
+                    <p class="card-text">От @Math.Round(item.MinPrice, 0) BYN </p>
 
 
                     <a class="btn btn-outline-info col myspacing" asp-controller="UserProduct" asp-action="ViewDetails" asp-route-Id="@item.Id">

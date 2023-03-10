@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
+using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels;
 using System.Net;
@@ -13,8 +14,7 @@ namespace MyPet.Controllers
     {
         private readonly ProductDbContext db;
         private readonly IMapper mapper;
-        private static List<ProductViewModel> productToShow = new();
-
+        private static FilterViewModel buffilter;
 
         public UserProductController(ProductDbContext db, IMapper mapper)
         {
@@ -43,8 +43,8 @@ namespace MyPet.Controllers
             }
             else
             {
-                ViewBag.Title = $"Товары по запросу: '{searchTerm}' не найдены";
-                ViewBag.Secondary = $"Вы найти нужный товар во вкладке 'Товары'";
+                ViewBag.Title = $"Товар не найден по запросу: '{searchTerm}'";
+                ViewBag.Secondary = $"Вы можете найти нужный товар во вкладке 'Товары'";
 
             }
             return View(productViewModels);
@@ -52,13 +52,36 @@ namespace MyPet.Controllers
 
 
 
-        public async Task<IActionResult> Filter(FilterViewModel filter)
+        public async Task<IActionResult> ShowFilteredProduct(FilterViewModel filter)
         {
+            if (!ProductHelper.CheckFilterForEmptyness(filter))
+            {
+                buffilter = new FilterViewModel()
+                {
+                    MaxPrice = filter.MaxPrice,
+                    MinPrice = filter.MinPrice,
+                    ProductType = filter.ProductType,
+                    SortPrice = filter.SortPrice,
+                };
+            }
+
+            if (ProductHelper.CheckFilterForEmptyness(filter) && !ProductHelper.CheckFilterForEmptyness(buffilter))
+            {
+                filter.SortPrice = buffilter.SortPrice;
+                filter.MinPrice = buffilter.MinPrice;
+                filter.MaxPrice = buffilter.MaxPrice;
+                filter.ProductType = buffilter.ProductType;
+            }
+
+            List<ProductViewModel> productToShow = new();
+
             List<MainProductModel> products = await db.Products.ToListAsync();
 
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(ShowFilteredProduct));
+                ViewBag.Title = "Вы ввели что не так";
+                ViewBag.Secondary = "Введите данные в фильтр правильно";
+                return View(productToShow);
             }
 
             if (filter.ProductType is not null)
@@ -82,17 +105,24 @@ namespace MyPet.Controllers
             {
                 productToShow.Add(mapper.Map<ProductViewModel>(item));
             }
-            return RedirectToAction(nameof(ShowFilteredProduct));
 
+            if (productToShow.Count == 0)
+            {
+                ViewBag.Title = "Товар не найден";
+                ViewBag.Secondary = "Попробуйте ввести другие данные в фильтр";
+                return View(productToShow);
+            }
+
+            return View(productToShow);
         }
 
 
-        public IActionResult? ShowFilteredProduct()
-        {
-            var products = productToShow.GetRange(0, productToShow.Count);
-            productToShow.Clear();
-            return View(products);
-        }
+        //public IActionResult? ShowFilteredProduct()
+        //{
+        //    var products = productToShow.GetRange(0, productToShow.Count);
+        //    productToShow.Clear();
+
+        //}
 
         [HttpGet]
         public async Task<IActionResult> ProductList()

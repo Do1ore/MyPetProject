@@ -30,7 +30,7 @@
             </Button.RenderTransform>
         </Button>
         <Button x:Name="_default3"
-            Content="Translate data" HorizontalAlignment="Left"  VerticalAlignment="Center" Height="40" Click="Button_Click_1" Width="160" FontFamily="Bahnschrift SemiBold" FontSize="18" BorderBrush="White" Margin="72,0,0,0">
+            Content="Distinct data" HorizontalAlignment="Left"  VerticalAlignment="Center" Height="40" Click="Button_Click_1" Width="160" FontFamily="Bahnschrift SemiBold" FontSize="18" BorderBrush="White" Margin="72,0,0,0">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="White"/>
@@ -39,8 +39,8 @@
             </Button.Background>
 
         </Button>
-        <TextBox  x:Name="textBox1"  MouseDoubleClick="textBox1_MouseDoubleClick" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Height="460" Width="1086" Background="White" FontFamily="Consolas" FontSize="16" Margin="680,112,0,0" />
-        <TextBox x:Name="urltext" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="743,57,0,0" TextWrapping="Wrap" Text="https://catalog.onliner.by/sdapi/catalog.api/search/headphones?group=1" VerticalAlignment="Top" Width="588" Background="Black" Foreground="White" FontFamily="Bahnschrift Light" Height="28" FontSize="16"  TextAlignment="Center"/>
-        <Label Content="URL:" HorizontalAlignment="Left" Margin="685,57,0,0" VerticalAlignment="Top" TextBlock.Foreground="White" RenderTransformOrigin="0.75,0.56" FontFamily="Franklin Gothic Heavy" FontSize="16"/>
+        <TextBox  x:Name="textBox1"  MouseDoubleClick="textBox1_MouseDoubleClick" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Height="675" Width="1060" Background="White" FontFamily="Consolas" FontSize="16" Margin="380,152,0,0" />
+        <TextBox x:Name="urltext" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="462,57,0,0" TextWrapping="Wrap" Text="https://catalog.onliner.by/sdapi/catalog.api/search/headphones?group=1" VerticalAlignment="Top" Width="944" Background="Black" Foreground="White" FontFamily="Bahnschrift Light" Height="61" FontSize="16"  TextAlignment="Center"/>
+        <Label Content="URL:" HorizontalAlignment="Left" Margin="380,78,0,0" VerticalAlignment="Top" TextBlock.Foreground="White" RenderTransformOrigin="0.397,0.558" FontFamily="Franklin Gothic Heavy" FontSize="16"/>
     </Grid>
 </Window>

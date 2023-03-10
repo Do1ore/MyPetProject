@@ -66,11 +66,12 @@ namespace DataParser.Parsing
             {
                 if (myDeserializedClass.products[i].html_url != null &&  !(await ProductDbHelper.CheckForRepeatAsync(myDeserializedClass.products[i].html_url)))
                 {
+                    if (myDeserializedClass.products[i].prices is null) continue;
+
                     List<string?> ExtraImagesSrc =
                         await _scraper.SelectSecondaryImg(
                         await _scraper.CreateHtmlDocumentAsync(myDeserializedClass.products[i].html_url));
                     List<string?> ExtraFileNames = await _scraper.CreateExtraFileNameAsync(myDeserializedClass.products[i].full_name, myDeserializedClass.products[i].images.header, ExtraImagesSrc.Count);
-
                     images = await ProductDbHelper.CreateExtraImagesCollectionAsync(ExtraImagesSrc, ExtraFileNames);
                 }
                 else

@@ -17,7 +17,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarColor01" bis_skin_checked="1">
+                <div class="collapse navbar-collapse" style="justify-content: space-evenly; display:flex;" id="navbarColor01" bis_skin_checked="1">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="#">
@@ -26,7 +26,7 @@
                         </li>
                         @*Product for user*@
                         <li class="nav-item">
-                                <a class="nav-link " asp-controller="UserProduct" asp-action="Filter">Товары</a>
+                            <a class="nav-link" asp-controller="UserProduct" asp-action="ShowFilteredProduct">Товары</a>
                         </li>
 
                         @*Product manage*@
@@ -41,8 +41,6 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-
-
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Упавление доступом</a>
                             <div class="dropdown-menu" bis_skin_checked="1">
                                 <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="Index">Роли</a>
@@ -51,17 +49,19 @@
                                 <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="UserList">Список пользователей</a>
                             </div>
                         </li>
+                      
                     </ul>
                     <form class="d-flex" asp-controller="UserProduct" asp-action="SearchProduct">
                         <input class="form-control me-sm-2" name="searchTerm" type="search" placeholder="Введете текст...">
                         <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Поиск</button>
                     </form>
                 </div>
-             
+
             </div>
+
             <partial name="_LoginPartial" />
         </nav>
-        @*todo*@
+
         @if (ViewBag.Title != null)
         {
             <section id="page-title" class="bg-overlay" style="display: flex;  height: auto">

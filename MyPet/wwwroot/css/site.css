@@ -158,3 +158,15 @@ border-radius: 15px;
 .mymargin{
     margin-bottom: 20px;
 }
+.accordion-collapse{
+    border-radius: 15px;
+}
+accordion-item {
+    border-radius: 15px;
+}
+.accordion-button{
+    border-radius: 15px;
+}
+.container {
+    border-radius: 15px;
+}

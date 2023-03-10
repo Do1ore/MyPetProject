@@ -8,7 +8,7 @@
                 <h1 class="card-title text-primary" style="padding-block-end: 20px">@Model.ProductExtendedFullName</h1>
                 <h4 class="card-text text-secondary">Rating: @(Model.Rating / 10.0) / 5</h4>
                 <p class="card-text">@Model.Description</p>
-                <small class="" style="text-align: left">Price from @Model.MinPrice to @Model.MaxPrice BYN</small>
+                <small class="" style="text-align: left">Price from @Math.Round(Model.MinPrice, 0) to @Math.Round(Model.MaxPrice,0) BYN</small>
                 <hr>
             </div>
         </div>
@@ -69,6 +69,6 @@
 </div>
 <div class="row text-center" style="margin: 50px">
     <div class="col">
-        <a class="btn btn-outline-info" asp-action="ShowFilteredProduct" asp-route-id="@Model.Id">Список товаров</a>
+        <a class="btn btn-outline-info" asp-controller="UserProduct" asp-action="ShowFilteredProduct" asp-route-id="@Model.Id">Список товаров</a>
     </div>
 </div>

@@ -19,7 +19,7 @@ namespace DataParser
     public class ProductDbHelper
     {
 
-        private static ProductDbContext db;
+        private static ProductDbContext? db;
 
         private readonly List<char> russianLetters = new List<char>()
         {
@@ -38,7 +38,7 @@ namespace DataParser
 
             db = new ProductDbContext(options);
             db.Add(model);
-            
+
             await db.SaveChangesAsync();
         }
 
@@ -51,7 +51,8 @@ namespace DataParser
             db = new ProductDbContext(options);
             await db.Products.AddRangeAsync(RangeofData);
 
-            await db.SaveChangesAsync();
+            if (RangeofData is not null)
+                await db.SaveChangesAsync();
         }
 
         public static async Task<bool> CheckForRepeatAsync(string url)
@@ -122,7 +123,7 @@ namespace DataParser
 
             List<int?> productIdToEdit = new List<int?>();
 
-            List<string?>? TranslatedShortDescription =null;
+            List<string?>? TranslatedShortDescription = null;
             List<string?>? TranslatedDescription = null;
             List<string?>? TranslatedExtendedFullName = null;
             List<string?>? TranslatedFullName = null;
@@ -131,16 +132,16 @@ namespace DataParser
 
             foreach (var item in db.Products)
             {
-                if (item.Description.Any(c => russianLetters.Contains(c) 
+                if (item.Description.Any(c => russianLetters.Contains(c)
                 || item.ProductFullName.Any(c => russianLetters.Contains(c))))
                 {
                     productIdToEdit.Add(item.Id);
                 }
-                
+
             }
             List<MainProductModel?> ProductsToEdit = await FindModelsAsync(productIdToEdit);
 
-            
+
             if (ProductsToEdit is not null)
             {
                 List<List<string?>> superList = new List<List<string?>>();
@@ -153,7 +154,7 @@ namespace DataParser
                 if (extendedname is not null)
                     superList.Add(extendedname);
 
-                    var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
+                var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
                 if (prodfullname is not null)
                     superList.Add(prodfullname);
 
@@ -182,7 +183,20 @@ namespace DataParser
             MessageBox.Show($"Fields translated: {ProductsToEdit.Count}", "Data info", MessageBoxButton.OK, MessageBoxImage.Information);
 
         }
-        //to do translate
+
+        public static async Task RemoveDublicates()
+        {
+            var options = new DbContextOptionsBuilder<ProductDbContext>()
+    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
+    .Options;
+
+            db = new ProductDbContext(options);
+            int count = await db.Products.CountAsync();
+            db.Products.DistinctBy(p => p.ParsedUrl);
+            db.SaveChanges();
+            int count2 = await db.Products.CountAsync();
+            MessageBox.Show("Dublicates removed. Count: {0}", Convert.ToString(count - count2));
+        }
         private bool IsContainsRussianLetter(List<string?> strings)
         {
             int counter = 0;
@@ -195,21 +209,21 @@ namespace DataParser
                     }
                     else { counter++; }
             }
-            if(counter == strings.Count)
+            if (counter == strings.Count)
             {
                 return false;
             }
             return false;
-            
+
         }
-        private async Task<List<MainProductModel?>> FindModelsAsync (List<int?> idList)
+        private async Task<List<MainProductModel?>> FindModelsAsync(List<int?> idList)
         {
-             List<MainProductModel?> products = new List<MainProductModel?>();
+            List<MainProductModel?> products = new List<MainProductModel?>();
             foreach (var key in idList)
             {
-                if(await db.Products.AnyAsync(i => i.Id==key))
+                if (await db.Products.AnyAsync(i => i.Id == key))
                 {
-                   products.Add(await db.Products.FindAsync(key));
+                    products.Add(await db.Products.FindAsync(key));
                 }
             }
             return products;
@@ -296,6 +310,8 @@ namespace DataParser
                 return null;
             return values;
         }
+
+
 
     }
 }
