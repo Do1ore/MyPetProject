@@ -5,25 +5,46 @@
     ViewBag.Title = "Товары";
     ViewBag.Secondary = "Спикок всех доступных товаров";
     List<string?> categoties = await ProductHelper.GetAllCategoriesAsync();
-   
+
 }
 
 <form asp-action="Filter" method="post">
-    <div class="form-group mymargin">
-        <select name="ProductType" class="form-control">
-            @foreach (var item in categoties)
-            {
-                <option value="@item">@item</option>
-            }
-        </select>
+
+    <div class="form-group">
+        <div class="row">
+    
+            <div class="col-8">
+                <label class="text-muted">Категория товара</label>
+
+                <select name="ProductType" class="form-select">
+                    @foreach (var item in categoties)
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col">
+                <label class="text-muted">Фильтрация по цене</label>
+
+                <select name="SortPrice" class="form-select">
+
+                    <option value="1">Сначала дешевые</option>
+                    <option value="2">Сначала дорогие</option>
+                    <option value="0">Любые</option>
+
+                </select>
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <div class="row">
-            <div class="col">
+            <div class="col-6">
                 <input type="text" name="MinPrice" placeholder="Цена от" class="form-control mymargin" />
             </div>
+
             <div class="col">
-                <input type="text" name="MaxPrice" placeholder="Цена до" class="form-control mymargin" 
+                <input type="text" name="MaxPrice" placeholder="Цена до" class="form-control mymargin" />
             </div>
         </div>
     </div>
@@ -31,4 +52,4 @@
 </form>
 
 
-<partial name="_ProductListPartial"></partial>
+<partial name="_ProductListForUserPartial"></partial>

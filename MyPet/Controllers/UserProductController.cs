@@ -70,8 +70,13 @@ namespace MyPet.Controllers
             if (filter.MaxPrice is not null)
                 products = products.Where(p => p.DefaultPrice <= filter.MaxPrice).Select(p => p).ToList();
 
-            if (filter.Alphabet is not null)
-                products = products.OrderBy(p => p.ProductFullName).ToList();
+            if (filter.SortPrice is not null)
+            {
+                if (filter.SortPrice == 1)
+                    products = products.OrderBy(p => p.DefaultPrice).ToList();
+                else if (filter.SortPrice == 2)
+                    products = products.OrderByDescending(p => p.DefaultPrice).ToList();
+            }
 
             foreach (var item in products)
             {
@@ -99,6 +104,21 @@ namespace MyPet.Controllers
                 productViewModels.Add(mapper.Map<ProductViewModel>(item));
             }
             return View(productViewModels);
+        }
+
+        public async Task<IActionResult?> ViewDetails(int? id)
+        {
+            ProductDetailedViewModel? productView = new();
+            await Task.Run(() =>
+            {
+                MainProductModel? product = db.Products.Include(i => i.ExtraImage).ToList().Find(i => i.Id == id);
+                productView = mapper.Map<ProductDetailedViewModel?>(product);
+                if (product is not null)
+                {
+                    ViewBag.Title = "Детальная информация";
+                }
+            });
+            return View(productView);
         }
     }
 }

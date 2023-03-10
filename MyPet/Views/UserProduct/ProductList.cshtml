@@ -6,11 +6,9 @@
     List<string?> categoties = Model.Select(p => p.ProductType).Distinct().ToList();
     FilterViewModel filterView = new FilterViewModel()
             {
-                Alphabet = false,
                 MaxPrice = 100,
                 MinPrice = 0,
                 ProductType = "Наушники",
-                SortBy = "Наушники",
             };
 }
 
@@ -34,4 +32,4 @@
 </form>
 
 
-<partial name="_ProductListPartial"></partial>
+<partial name="_ProductListForUserPartial"></partial>

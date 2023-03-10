@@ -1,0 +1,74 @@
+﻿<div class="card mb-3" style="max-width: 100%;">
+    <div class="row g-0">
+        <div class="col-md-4 mycenter">
+            <img src="@Model.MainFilePath" class="img-fluid " alt="@Model.ProductFullName" style="padding: 20px">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body" style="padding: 40px">
+                <h1 class="card-title text-primary" style="padding-block-end: 20px">@Model.ProductExtendedFullName</h1>
+                <h4 class="card-text text-secondary">Rating: @(Model.Rating / 10.0) / 5</h4>
+                <p class="card-text">@Model.Description</p>
+                <small class="" style="text-align: left">Price from @Model.MinPrice to @Model.MaxPrice BYN</small>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*Image scrollbox*@
+<div class="scroll-box" style="margin-top: 40px; margin-bottom: 40px;">
+    <div class="scroll-content">
+        @foreach (var item in Model.ExtraImage)
+        {
+            <img src="@item.FileSource">
+        }
+    </div>
+</div>
+
+
+<div class="bd-example" bis_skin_checked="1">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col"><small class="text-muted">Название параметра</small></th>
+                <th scope="col"><small class="text-muted">Значение</small></th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <th scope="row"><span class="text-primary">Категория</span></th>
+                <th> @Model.ProductType</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Краткое описание</span></th>
+                <th> @Model.ShortDescription</th>
+            </tr>
+
+            <tr>
+                <th scope="row"><span class="text-primary">Рейтинг</span></th>
+                <th> @Model.Rating</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Максимальная цена</span></th>
+                <th> @Model.MaxPrice BYN</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Минимальная цена</span></th>
+                <th> @Model.MinPrice BYN</th>
+            </tr>
+            <tr>
+                <th scope="row"><span class="text-primary">Добавлен</span></th>
+                <th> @Model.CreationDateTime.ToString("yyyy.mm.dd")</th>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
+<div class="row text-center" style="margin: 50px">
+    <div class="col">
+        <a class="btn btn-outline-info" asp-action="ShowFilteredProduct" asp-route-id="@Model.Id">Список товаров</a>
+    </div>
+</div>
