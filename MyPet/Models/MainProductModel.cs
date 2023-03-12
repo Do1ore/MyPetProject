@@ -24,6 +24,7 @@ namespace MyPet.Models
         public DateTime? LastTimeEdited { get; set; }
         public string? ParsedUrl { get; set; }
         public ICollection<ExtraImageModel>? ExtraImage { get; set; }
+        public ICollection<CartProduct?>? CartProducts { get; set; }
 
     }
 }

@@ -1,0 +1,9 @@
+﻿@using MyPet.ViewModels;
+@using System.Security.Claims;
+@model IEnumerable<ProductViewModel>
+
+@{
+    ViewBag.Title = "Корзина товаров";
+    ViewBag.Secondary = "Это место для избранных вами товаров";
+}
+<partial name="_CartListPartial" />

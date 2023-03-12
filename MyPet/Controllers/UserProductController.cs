@@ -14,7 +14,7 @@ namespace MyPet.Controllers
     {
         private readonly ProductDbContext db;
         private readonly IMapper mapper;
-        private static FilterViewModel buffilter;
+        private static FilterViewModel? buffilter;
 
         public UserProductController(ProductDbContext db, IMapper mapper)
         {
@@ -150,5 +150,7 @@ namespace MyPet.Controllers
             });
             return View(productView);
         }
+
+
     }
 }

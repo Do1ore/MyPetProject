@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using AutoMapper.Configuration.Conventions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using MyPet.Models;
 using MyPet.ViewModels;
 

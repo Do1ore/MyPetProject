@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPet.Models;
 
@@ -11,9 +12,11 @@ using MyPet.Models;
 namespace MyPet.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    partial class ProductDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230311193443_cartUpdate2")]
+    partial class cartUpdate2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,6 +86,26 @@ namespace MyPet.Migrations
                     b.ToTable("MyPetUser");
                 });
 
+            modelBuilder.Entity("MyPet.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
+                    b.ToTable("Carts");
+                });
+
             modelBuilder.Entity("MyPet.Models.CartProduct", b =>
                 {
                     b.Property<int>("CartId")
@@ -94,15 +117,12 @@ namespace MyPet.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductModelId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("CartId", "ProductId");
 
-                    b.HasIndex("ProductModelId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("CartProducts");
                 });
@@ -132,26 +152,6 @@ namespace MyPet.Migrations
                     b.HasIndex("ProductModelId");
 
                     b.ToTable("ExtraImages");
-                });
-
-            modelBuilder.Entity("MyPet.Models.MainCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
-
-                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("MyPet.Models.MainProductModel", b =>
@@ -209,9 +209,18 @@ namespace MyPet.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("MyPet.Models.Cart", b =>
+                {
+                    b.HasOne("MyPet.Areas.Identity.Data.MyPetUser", "User")
+                        .WithOne("MainProductCart")
+                        .HasForeignKey("MyPet.Models.Cart", "UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MyPet.Models.CartProduct", b =>
                 {
-                    b.HasOne("MyPet.Models.MainCart", "Cart")
+                    b.HasOne("MyPet.Models.Cart", "Cart")
                         .WithMany("CartProducts")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -219,7 +228,9 @@ namespace MyPet.Migrations
 
                     b.HasOne("MyPet.Models.MainProductModel", "ProductModel")
                         .WithMany("CartProducts")
-                        .HasForeignKey("ProductModelId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Cart");
 
@@ -235,22 +246,13 @@ namespace MyPet.Migrations
                     b.Navigation("ProductModel");
                 });
 
-            modelBuilder.Entity("MyPet.Models.MainCart", b =>
-                {
-                    b.HasOne("MyPet.Areas.Identity.Data.MyPetUser", "User")
-                        .WithOne("MainProductCart")
-                        .HasForeignKey("MyPet.Models.MainCart", "UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MyPet.Areas.Identity.Data.MyPetUser", b =>
                 {
                     b.Navigation("MainProductCart")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyPet.Models.MainCart", b =>
+            modelBuilder.Entity("MyPet.Models.Cart", b =>
                 {
                     b.Navigation("CartProducts");
                 });

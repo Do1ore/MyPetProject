@@ -5,7 +5,7 @@
 namespace MyPet.Migrations
 {
     /// <inheritdoc />
-    public partial class intit : Migration
+    public partial class cartUpdate2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

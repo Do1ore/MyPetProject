@@ -1,17 +1,9 @@
-﻿using HtmlAgilityPack;
-using Microsoft.DotNet.MSIdentity.Shared;
-using MyPet.Models;
+﻿using MyPet.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,11 +12,11 @@ namespace DataParser.Parsing
 {
     public class JsonParser
     {
-        
+
         public int PagesCount { get; set; }
         public int Scipped { get; set; }
         private readonly MarketScraper _scraper;
-        private List<MainProductModel> _dataRange;
+        private readonly List<MainProductModel> _dataRange;
         #region Lists
         private readonly List<int> ProductLaunchDates = new() { 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, DateTime.Now.Year };
         private readonly List<string> Appointment = new() { "portable", "gaiming", "sport", "swimming" };
@@ -42,14 +34,14 @@ namespace DataParser.Parsing
         {
             _scraper = new MarketScraper();
             _dataRange = new();
-    }
+        }
 
         public async Task<Root?> GetJsonAsync(Uri url)
         {
-            Root? myDeserializedClass = new Root();
-            using (var httpClient = new HttpClient())
+            Root? myDeserializedClass = new();
+            using (HttpClient httpClient = new())
             {
-                var result = await httpClient.GetStringAsync(url);
+                string result = await httpClient.GetStringAsync(url);
                 if (result != null)
                 {
                     myDeserializedClass = JsonConvert.DeserializeObject<Root?>(result);
@@ -61,12 +53,15 @@ namespace DataParser.Parsing
         public async Task HandleResponse(Root myDeserializedClass)
         {
             PagesCount = myDeserializedClass.page.last;
-            ICollection<ExtraImageModel> images = null;
             for (int i = 0; i < myDeserializedClass.products.Count; i++)
             {
-                if (myDeserializedClass.products[i].html_url != null &&  !(await ProductDbHelper.CheckForRepeatAsync(myDeserializedClass.products[i].html_url)))
+                ICollection<ExtraImageModel>? images;
+                if (myDeserializedClass.products[i].html_url != null && !await ProductDbHelper.CheckForRepeatAsync(myDeserializedClass.products[i].html_url))
                 {
-                    if (myDeserializedClass.products[i].prices is null) continue;
+                    if (myDeserializedClass.products[i].prices is null)
+                    {
+                        continue;
+                    }
 
                     List<string?> ExtraImagesSrc =
                         await _scraper.SelectSecondaryImg(
@@ -81,7 +76,7 @@ namespace DataParser.Parsing
                 }
                 MainProductModel product = new()
                 {
-                    DefaultPrice = Math.Round((ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount) + ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount))/2, 1),
+                    DefaultPrice = Math.Round((ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount) + ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount)) / 2, 1),
                     MinPrice = ConvertToDouble(myDeserializedClass.products[i].prices.price_min.amount),
                     MaxPrice = ConvertToDouble(myDeserializedClass.products[i].prices.price_max.amount),
                     ProductFullName = myDeserializedClass.products[i].full_name,
@@ -103,7 +98,7 @@ namespace DataParser.Parsing
             {
                 await ProductDbHelper.SendRangeOfDataAsync(_dataRange);
             }
-            MessageBox.Show($"Success! Added product: {_dataRange.Count}, Scipped: {Scipped}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            _ = MessageBox.Show($"Success! Added product: {_dataRange.Count}, Scipped: {Scipped}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private double ConvertToDouble(string s)
@@ -113,12 +108,13 @@ namespace DataParser.Parsing
             try
             {
                 if (s != null)
-                    if (!s.Contains(","))
-                        result = double.Parse(s, CultureInfo.InvariantCulture);
-                    else
-                        result = Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
+                {
+                    result = !s.Contains(",")
+                        ? double.Parse(s, CultureInfo.InvariantCulture)
+                        : Convert.ToDouble(s.Replace(".", systemSeparator.ToString()).Replace(",", systemSeparator.ToString()));
+                }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 try
                 {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPet.Models;
 
@@ -11,9 +12,11 @@ using MyPet.Models;
 namespace MyPet.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    partial class ProductDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230311193624_cartUpdate3")]
+    partial class cartUpdate3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,15 +97,12 @@ namespace MyPet.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductModelId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("CartId", "ProductId");
 
-                    b.HasIndex("ProductModelId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("CartProducts");
                 });
@@ -219,7 +219,9 @@ namespace MyPet.Migrations
 
                     b.HasOne("MyPet.Models.MainProductModel", "ProductModel")
                         .WithMany("CartProducts")
-                        .HasForeignKey("ProductModelId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Cart");
 

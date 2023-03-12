@@ -1,4 +1,5 @@
-﻿@foreach (var item in Model)
+﻿@using System.Security.Claims;
+@foreach (var item in Model)
 {
     <div class="card mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
         <div class="row">
@@ -13,7 +14,6 @@
 
                     <p class="card-text">От @Math.Round(item.MinPrice, 0) BYN </p>
 
-
                     <a class="btn btn-outline-info col myspacing" asp-controller="UserProduct" asp-action="ViewDetails" asp-route-Id="@item.Id">
                         <div class="mycenter">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-binoculars" viewBox="0 0 16 16">
@@ -21,9 +21,31 @@
                             </svg>&thinsp;Детали
                         </div>
                     </a>
+
+                    <form asp-controller="Cart" asp-action="AddProductToCart">
+                        <input type="hidden" value="@item.Id" name="ProductId">
+                        <input type="hidden" value="@User.FindFirst(ClaimTypes.NameIdentifier).Value" name="UserId">
+                        <button id="liveToastBtn" type="submit" class="btn btn-outline-success">В корзину</button>
+                    </form>
+
+
                 </div>
             </div>
         </div>
     </div>
 
+
 }
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <img src="..." class="rounded me-2" alt="...">
+            <strong class="me-auto">Bootstrap</strong>
+            <small>11 mins ago</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Hello, world! This is a toast message.
+        </div>
+    </div>
+</div>

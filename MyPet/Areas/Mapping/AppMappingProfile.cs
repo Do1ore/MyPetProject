@@ -24,6 +24,12 @@ public class AppMappingProfile : Profile
         CreateMap<CreateProductViewModel?, MainProductModel?>();
         CreateMap<MainProductModel?, CreateProductViewModel?>();
 
+        CreateMap<CartProduct, CartProductViewModel>();
+        CreateMap<CartProductViewModel, CartProduct>();
+
+        CreateMap<CartProduct?, CartProductViewModel?>();
+        CreateMap<CartProductViewModel?, CartProduct?>();
+
         //CreateMap<ProductViewModel, ProductModel>()
         //    .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyPet.Areas.Identity.Data;
+using MyPet.Models;
 
 namespace MyPet.Areas.Identity.Data;
 
@@ -20,6 +21,7 @@ public class MyIdentityDbContext : IdentityDbContext<MyPetUser>
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
         builder.ApplyConfiguration(new UserEntityConfiguration());
+        
     }
 }
 
@@ -29,5 +31,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<MyPetUser>
     {
         builder.Property(u => u.FirstName).HasMaxLength(255);
         builder.Property(u => u.LastName).HasMaxLength(255);
+
+        
     }
 }
