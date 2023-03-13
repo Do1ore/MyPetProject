@@ -1,9 +1,57 @@
 ﻿@using MyPet.ViewModels;
 @using System.Security.Claims;
-@model IEnumerable<ProductViewModel>
+@model IEnumerable<ProductViewModel?>
 
-@{
+@if (Model.Count() > 0)
+{
     ViewBag.Title = "Корзина товаров";
-    ViewBag.Secondary = "Это место для избранных вами товаров";
+    ViewBag.Secondary = "Добавлено товаров: " + Model.Count();
+    <partial name="_CartListPartial" />
 }
-<partial name="_CartListPartial" />
+else
+{
+    @*    ViewBag.Title = "Корзина товаров";
+
+    ViewBag.Secondary = "Место для добавления избранных товаров";
+*@
+    <div class="mb-5">
+        <h1>Корзина</h1>
+    </div>
+    <div class="row align-items-lg-stretch">
+        <div class="col-lg-6">
+            <div class="p-3">
+                <h3 class="mb-3">Что это такое?</h3>
+                <div class="bg-info text-light bg-overlay2" style="border-radius: 15px; border: 1px thin black; padding: 15px">
+
+                    <span>
+                        Корзина товаров - это функциональный элемент интернет-магазинов и других онлайн-площадок,
+                        который позволяет пользователям добавлять товары в список покупок, который может быть сохранен
+                        и изменен позже, а также оформлен в виде заказа.
+                    </span>
+                </div>
+
+                <br><br>
+                <h3 class="mb-3">Зачем это нужно?</h3>
+                <div class="bg-overlay3 text-light" style="border-radius: 15px; border: 1px thin black; padding: 15px">
+                    <span>
+                        Корзина товаров является очень важным инструментом для удобного и безопасного онлайн-шоппинга.
+                        Она позволяет пользователям выбирать нужные товары из каталога магазина и добавлять их в корзину
+                        для дальнейшего оформления заказа. Это позволяет пользователям не спешить с выбором, а также дает
+                        возможность сравнить товары и выбрать наиболее подходящий вариант.
+                    </span>
+                </div>
+                <br>
+                <span>
+                    Кроме того, корзина товаров обеспечивает безопасность покупок, так как позволяет пользователям проверить и изменить заказ.
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-3">
+                <img class="myimage img-fluid mb-3"
+                 src="~/img/SuperMegaGay_empty_shelves_of_goods_in_market_3d_illustration_w_9ce17383-0c63-46ea-ab1a-f63726de4e9c.png"
+                 style="" alt="">
+            </div>
+        </div>
+    </div>
+}

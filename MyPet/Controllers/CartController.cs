@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MyPet.Areas.Identity.Data;
 using MyPet.Models;
 using MyPet.ViewModels;
+using Newtonsoft.Json.Linq;
 using System.Security.Claims;
 
 namespace MyPet.Controllers
 {
+    [Authorize()]
     public class CartController : Controller
     {
         private readonly ProductDbContext db;
@@ -24,29 +28,38 @@ namespace MyPet.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProductToCart(int productId, string? UserId)
+        public async Task<IActionResult> AddProductToCart(int productId)
         {
-            MyPetUser? user = await userManager.FindByIdAsync(UserId);
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (userId == null)
+            {
+                return RedirectToPage("/Account/Login");
+            }
+            MyPetUser? user = await userManager.FindByIdAsync(userId);
 
             if (user != null)
             {
                 // Получаем корзину пользователя
-                MainCart? cart = await db.Carts.FirstOrDefaultAsync(id => id.UserId == UserId);
+                MainCart? cart = await db.Carts.FirstOrDefaultAsync(id => id.UserId == userId);
 
                 if (cart == null)
                 {
                     // Если у пользователя еще нет корзины, создаем новую
                     cart = new MainCart();
-                    user.MainProductCart = cart;
+                    cart.User = user;
+                    db.Carts.Add(cart);
                 }
+                CartProduct cartProduct = new() { ProductId = productId, Quantity = 1 };
 
                 // Создаем новый объект CartProduct
-                CartProduct cartProduct = new() { ProductId = productId };
-                cart.CartProducts ??= new List<CartProduct?>();
+                if (cart.CartProducts is null)
+                {
+                    cart.CartProducts = new List<CartProduct?>();
+                }
                 // Добавляем его в коллекцию CartProducts корзины пользователя
                 cart.CartProducts.Add(cartProduct);
                 // Сохраняем изменения в базе данных
-                _ = await db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             return RedirectToAction("ShowFilteredProduct", "UserProduct");
 
@@ -61,7 +74,10 @@ namespace MyPet.Controllers
                 .Where(id => id.UserId == userId)
                 .Select(p => p.CartProducts)
                 .FirstOrDefaultAsync();
-
+            if (productsCarts is null)
+            {
+                return View();
+            }
             List<MainProductModel>? products = new();
             foreach (CartProduct? item in productsCarts)
             {
@@ -95,7 +111,7 @@ namespace MyPet.Controllers
 
             MainCart? cart = await db.Carts.FirstOrDefaultAsync(id => id.UserId == UserId);
 
-            await db.CartProducts.Where(cp=> cp.ProductId == ProductId).ExecuteDeleteAsync();
+            await db.CartProducts.Where(cp => cp.ProductId == ProductId).ExecuteDeleteAsync();
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(ChosenProducts));
         }

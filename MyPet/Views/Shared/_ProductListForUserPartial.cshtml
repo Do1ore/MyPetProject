@@ -24,7 +24,6 @@
 
                     <form asp-controller="Cart" asp-action="AddProductToCart">
                         <input type="hidden" value="@item.Id" name="ProductId">
-                        <input type="hidden" value="@User.FindFirst(ClaimTypes.NameIdentifier).Value" name="UserId">
                         <button id="liveToastBtn" type="submit" class="btn btn-outline-success">В корзину</button>
                     </form>
 

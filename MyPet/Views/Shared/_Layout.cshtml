@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/custombtn.css" asp-append-version="true" />
 </head>
 <body>
-    <header style="margin-block-end: 40px;">
+    <header>
         <nav class="navbar navbar-expand-xxl navbar-dark bg-primary mynav" style="z-index: 1000; width: 100%; position:relative;">
             <div class="container-fluid" bis_skin_checked="1">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyPet</a>
@@ -52,7 +52,7 @@
                                 <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="UserList">Список пользователей</a>
                             </div>
                         </li>
-                      
+
                     </ul>
                     <form class="d-flex" asp-controller="UserProduct" asp-action="SearchProduct">
                         <input class="form-control me-sm-2" name="searchTerm" type="search" placeholder="Введете текст...">
