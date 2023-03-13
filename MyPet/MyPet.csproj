@@ -9,7 +9,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="bootstrap" Version="5.2.3" />
     <PackageReference Include="bootstrap.sass" Version="5.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.3" />
@@ -28,7 +27,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\img\" />
     <Folder Include="wwwroot\img\Products\" />
-    <Folder Include="wwwroot\lib\bootstrap\dist\css\" />
     <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
     <Folder Include="wwwroot\lib\bootstrap\mydist\" />
   </ItemGroup>
