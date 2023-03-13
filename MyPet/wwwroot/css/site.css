@@ -95,10 +95,7 @@ body{
 .myspacing{
     margin-right: 5px;
 }
-.nav-masthead .nav-link {
-    color: rgba(255, 255, 255, .5);
-    border-bottom: 0.25rem solid transparent;
-}
+
 .shadow-sm {
     box-shadow: 0 .125rem .25rem rgba(var(--bs-body-color-rgb),.075) !important;
 }

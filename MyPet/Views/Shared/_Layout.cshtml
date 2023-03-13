@@ -3,23 +3,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title - MyPet</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/mydist/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MyPet.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/custombtn.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-xxl navbar-dark bg-primary mynav" style="z-index: 1000; width: 100%; position:relative;">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary" style="z-index: 1000; width: 100%; position:relative;">
             <div class="container-fluid" bis_skin_checked="1">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyPet</a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" style="justify-content: space-evenly; display:flex;" id="navbarColor01" bis_skin_checked="1">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item text-light">
                             <a class="nav-link" href="#">
                                 Дом
                             </a>
