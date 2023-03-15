@@ -1,0 +1,44 @@
+﻿@using MyPet.ViewModels.News;
+@model Article
+@if (Model.UrlToImage is not null)
+{
+    <div class="row align-items-lg-stretch">
+        <div class="col-lg-6">
+            <div class="p-3">
+                <img class="card-img my-border-radius img-fluid mb-3"
+                 src="@Model.UrlToImage"
+                 alt="@Model.Title">
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-3">
+                <h1 class="mb-4 fw-regular">@Model.Title?</h1>
+                <div class="p-4 text-bg-light shadow" style="border-radius: 15px; border: 1px thin black;">
+
+                    <span>@Model.Description</span>
+                    <br>
+                    <span>Источник: @Model.Source.Name</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+   
+        <div class="col mt-4">
+            <div class="flex-column">
+                <a class="btn btn-primary me-2" asp-action="Index">Вернуться</a>
+                <a class="btn btn-secondary" href="@Model.Url">Перейти в источник</a>
+            </div>
+        </div>
+}
+else
+{
+    <div class="p-3">
+        <h3 class="mb-3">@Model.Title?</h3>
+        <div class="bg-info text-light bg-overlay2" style="border-radius: 15px; border: 1px thin black; padding: 15px">
+
+            <span>@Model.Description</span>
+            <span>Источник: @Model.Source.Name</span>
+        </div>
+    </div>
+}

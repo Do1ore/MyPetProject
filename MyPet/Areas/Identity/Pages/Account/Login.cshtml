@@ -3,13 +3,14 @@
 
 @{
     ViewData["Title"] = "Авторизация";
+    ViewBag.Secondary = "Чтобы получить полный доступ к ресурсу, нужно пройти авторизацию";
 }
 
 <div class="row">
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
+                <h2>Используйте аккаунт чтобы войти</h2>
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
@@ -19,7 +20,7 @@
                 </div>
                 <div class="form-floating mb-3">
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="пароль" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
+                    <label asp-for="Input.Password" class="form-label">Пароль</label>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div class="checkbox mb-3">
@@ -29,19 +30,18 @@
                     </label>
                 </div>
                 <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Войти</button>
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary mb-4">Войти</button>
                 </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Забыли пароль?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Создать новый аккаунт</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Отправить заново подтвержение Email</a>
-                    </p>
-                </div>
+                <p>
+                    <a id="forgot-password" asp-page="./ForgotPassword">Забыли пароль?</a>
+                </p>
+                <p>
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Создать новый аккаунт</a>
+                </p>
+
+                <p>
+                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Отправить заново подтвержение Email</a>
+                </p>
             </form>
         </section>
     </div>
@@ -54,8 +54,10 @@
                 {
                     <div>
                         <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                                article
+                                about setting up this ASP.NET application to support logging in via external services
+                            </a>.
                         </p>
                     </div>
                 }

@@ -116,14 +116,6 @@ namespace MyPet.Controllers
             return View(productToShow);
         }
 
-
-        //public IActionResult? ShowFilteredProduct()
-        //{
-        //    var products = productToShow.GetRange(0, productToShow.Count);
-        //    productToShow.Clear();
-
-        //}
-
         [HttpGet]
         public async Task<IActionResult> ProductList()
         {
@@ -151,6 +143,11 @@ namespace MyPet.Controllers
             return View(productView);
         }
 
+        public IActionResult ClearFilter()
+        {
+            buffilter = new FilterViewModel();
+            return RedirectToAction("ShowFilteredProduct");
+        }
 
     }
 }
