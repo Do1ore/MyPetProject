@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Tasks;
+using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels.News;
 using Newtonsoft.Json;
@@ -11,45 +12,21 @@ namespace MyPet.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly string NewsID = "9baebdbe994649a59f38eaf8b7bd5e6a";
-        public HomeController(ILogger<HomeController> logger)
+        private NewsManager managerNews;
+        private readonly ProductDbContext db;
+        public HomeController(ILogger<HomeController> logger, ProductDbContext db)
         {
             _logger = logger;
+            this.db = db;
         }
         private static NewsViewModel? newsViewModel { get; set; }
 
 
         public async Task<IActionResult?> Index()
         {
-            RestClient client = new("https://newsapi.org/v2/everything");
-            //curl https://newsapi.org/v2/everything -G \
-            //-d q = Apple \
-            //-d from = 2023 - 03 - 14 \
-            //-d sortBy = popularity \
-            //-d apiKey = 9baebdbe994649a59f38eaf8b7bd5e6a
-            //        // client.Authenticator = new HttpBasicAuthenticator(username, password);
-            if (newsViewModel is null)
-            {
-                newsViewModel = new NewsViewModel();
-                List<Article> articles = new();
-                RestRequest request = new($"https://newsapi.org/v2/everything", Method.Get);
-                request.AddHeader("X-Api-Key", $"{NewsID}");
-                request.AddParameter("q", "Россия");
-                request.AddParameter("language", "ru");
-                request.AddParameter("pageSize", "50");
-                request.AddParameter("sortBy", "publishedAt");
-                RestResponse response = await client.ExecuteAsync(request);
-
-                NewsViewModel? news = JsonConvert.DeserializeObject<NewsViewModel?>(response.Content);
-                newsViewModel.Articles = articles;
-                foreach (var item in news.Articles)
-                {
-                    if (item.UrlToImage is not null)
-                    {
-                        newsViewModel.Articles.Add(item);
-                    }
-                }
-            }
+            managerNews = new();
+            newsViewModel = new();
+            newsViewModel.Articles = await managerNews.GetNewsAsync();
             return View(newsViewModel);
         }
 
@@ -61,7 +38,7 @@ namespace MyPet.Controllers
 
             return View(SelectedNews);
         }
-        
+
         public IActionResult AllNews()
         {
             ViewBag.Title = "Новости";

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPet.Models;
 
@@ -11,9 +12,11 @@ using MyPet.Models;
 namespace MyPet.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    partial class ProductDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230316180148_news")]
+    partial class news
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,40 +210,6 @@ namespace MyPet.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("MyPet.Models.NewsApiSettingsModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DateFrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateTo")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Domains")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PageSize")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SearchTerm")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sourses")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NewsApiSettings");
                 });
 
             modelBuilder.Entity("MyPet.Models.CartProduct", b =>

@@ -3,21 +3,21 @@
 @if (Model.UrlToImage is not null)
 {
     <div class="row align-items-lg-stretch">
-        <div class="col-lg-6">
+        <div class="col-lg-6 mycenter">
             <div class="p-3">
-                <img class="card-img my-border-radius img-fluid mb-3"
+                <img class="card-img my-border-radius img-fluid" style=""
                  src="@Model.UrlToImage"
                  alt="@Model.Title">
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="p-3">
+            <div class="p-2">
                 <h1 class="mb-4 fw-regular">@Model.Title?</h1>
                 <div class="p-4 text-bg-light shadow" style="border-radius: 15px; border: 1px thin black;">
 
                     <span>@Model.Description</span>
                     <br>
-                    <span>Источник: @Model.Source.Name</span>
+                    <small class="mt-2 badge bg-black text-light fw-normal ">@Model.Source.Name</small>
                 </div>
             </div>
         </div>

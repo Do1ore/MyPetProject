@@ -1,6 +1,7 @@
 using AutoMapper;
 using MyPet.Models;
 using MyPet.ViewModels;
+using MyPet.ViewModels.News;
 using System;
 
 public class AppMappingProfile : Profile
@@ -29,6 +30,13 @@ public class AppMappingProfile : Profile
 
         CreateMap<CartProduct?, CartProductViewModel?>();
         CreateMap<CartProductViewModel?, CartProduct?>();
+
+        CreateMap<NewsApiSettingsModel, NewsSettingsViewModel>();
+        CreateMap<NewsSettingsViewModel, NewsApiSettingsModel>();
+
+        CreateMap<NewsApiSettingsModel?, NewsSettingsViewModel?>();
+        CreateMap<NewsSettingsViewModel?, NewsApiSettingsModel?>();
+
 
         //CreateMap<ProductViewModel, ProductModel>()
         //    .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));

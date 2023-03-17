@@ -1,0 +1,27 @@
+﻿@using MyPet.ViewModels.News;
+@model NewsSettingsViewModel
+@{
+    ViewBag.Title = "Управление новостями";
+    ViewBag.Secondary = "Для администратора";
+}
+
+<form asp-action="ManageNewsSettings" method="post">
+    <h4 class="mb-2 fw-light">Пармаетры контента</h4>
+    <div class="p-3 bg-overlay my-border-radius shadow-sm">
+        <input class="form-control mb-2" asp-for="Sourses" placeholder="Ресурс" name="_sourses" />
+        <input class="form-control mb-2" asp-for="Domains" placeholder="Категория" name="_domains" />
+        <input class="form-control mb-2" placeholder="Запрос" asp-for="SearchTerm" type="text" name="SearchTerm" />
+        <input class="form-control mb-2" asp-for="Language" placeholder="Язык" type="text" name="Language" />
+        <input class="form-control" placeholder="Кол-во символов" asp-for="PageSize" type="number" name="PageSize" />
+
+    </div>
+
+    <h4 class="mt-2 mb-2 fw-light">Времнной промежуток</h4>
+    <div class="p-3 bg-overlay my-border-radius shadow-sm mb-2">
+        <label>От</label>
+        <input class="form-control mb-2" placeholder="От" name="DateFrom" type="date" />
+        <label>До</label>
+        <input class="form-control" placeholder="До" name="DateTo" type="date" />
+    </div>
+    <button class="btn btn-success mb-2" type="submit">Подтвердить</button>
+</form>
