@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels.News;
@@ -27,6 +28,13 @@ namespace MyPet.Controllers
             managerNews = new();
             newsViewModel = new();
             newsViewModel.Articles = await managerNews.GetNewsAsync();
+            List<int> ind = await db.Products.Select(p => p.Id).ToListAsync();
+            var RandId = new Random().Next(0, ind.Count);
+
+            var product = await db.Products.Select(p => p)
+                .FirstOrDefaultAsync(i => i.Id == ind[RandId]);
+            ViewBag.Product = product;
+
             return View(newsViewModel);
         }
 

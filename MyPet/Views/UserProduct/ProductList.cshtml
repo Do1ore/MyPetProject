@@ -13,15 +13,15 @@
 }
 
 <form asp-action="Filter" method="post">
-    <div class="form-group">
-        <select name="ProductType" class="form-control">
+    <div class="form-group shadow">
+        <select name="ProductType" class="form-control shadow">
             @foreach (var item in categoties)
             {
                 <option value="@item">@item</option>
             }
         </select>
     </div>
-    <div class="form-group">
+    <div class="form-group shadow">
 
 
         <input type="text" name="MinPrice" class="form-control" />

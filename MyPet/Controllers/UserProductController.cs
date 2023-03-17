@@ -1,12 +1,10 @@
 ﻿
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Tasks.Deployment.Bootstrapper;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels;
-using System.Net;
 
 namespace MyPet.Controllers
 {
