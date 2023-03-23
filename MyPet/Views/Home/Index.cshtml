@@ -8,48 +8,53 @@
     int count2 = 0;
     int count3 = 0;
 }
-    <div class="row align-items-stretch m-2">
-    <div class="col-4 mycenter bg-overlay5 my-border-radius shadow-sm">
-            <h1 class="text-light">Товар дня</h1>
-        </div>
-        <div class="col-8">
-        <div class="card mb-lg-3 rounded-4 mb-4 h-100 w-auto  border-0 shadow" href="" style="padding: 15px">
-                <div class="row">
-                    <div class="col-md-4 mycenter">
-                        <img src="@ViewBag.Product.MainFilePath" heigth="200px" style="padding: 20px" class="img-fluid rounded-start" value="@ViewBag.Product.ProductFullName" asp-append-version="true">
-                    </div>
+
+<canvas id="myCanvas">
+
+</canvas>
+
+<div class="row align-items-stretch m-2" style="display: flex">
+    <div class="col-4 bg-overlay5 mycenter pt-2 pb-2 my-border-radius shadow-sm">
+        <h1 class="text-light" style="justify-self: center; align-self: center">Товар дня</h1>
+    </div>
+    <div class="col-8">
+        <div class="card mb-lg-3 rounded-4 mb-4 h-100 w-auto border-0 shadow" href="" style="padding: 15px">
+            <div class="row">
+                <div class="col-md-4 mycenter">
+                    <img src="@ViewBag.Product.MainFilePath" heigth="200px" style="padding: 20px" class="img-fluid rounded-start" value="@ViewBag.Product.ProductFullName" asp-append-version="true">
+                </div>
                 <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">@ViewBag.Product.ProductFullName</h5>
-                            <p class="card-text">@ViewBag.Product.ShortDescription</p>
-                            <p><small class="text-muted">@ViewBag.Product.ProductType</small> </p>
+                    <div class="card-body">
+                        <h5 class="card-title">@ViewBag.Product.ProductFullName</h5>
+                        <p class="card-text">@ViewBag.Product.ShortDescription</p>
+                        <p><small class="text-muted">@ViewBag.Product.ProductType</small> </p>
 
-                            <p class="card-text">От @Math.Round(@ViewBag.Product.MinPrice, 0) BYN </p>
+                        <p class="card-text">От @Math.Round(@ViewBag.Product.MinPrice, 0) BYN </p>
 
-                            <div class="d-flex me-2">
-                                <a class="btn btn-primary me-2" style="" asp-controller="UserProduct" asp-action="ViewDetails" asp-route-Id="@ViewBag.Product.Id">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-binoculars" viewBox="0 0 16 16">
-                                        <path d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z" />
-                                    </svg>&thinsp;Детали
-                                </a>
-                                <button id="liveToastBtn" form="AddToCart" type="submit" class="btn btn-outline-success">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
-                                        <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
-                                        <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                    </svg>&thinsp;Добавить
-                                </button>
-                            </div>
-                            <form asp-controller="Cart" id="AddToCart" asp-action="AddProductToCart">
-                                <input type="hidden" value="@ViewBag.Product.Id" name="ProductId">
-                            </form>
-
-
+                        <div class="d-flex me-2">
+                            <a class="btn btn-primary me-2" style="" asp-controller="UserProduct" asp-action="ViewDetails" asp-route-Id="@ViewBag.Product.Id">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-binoculars" viewBox="0 0 16 16">
+                                    <path d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z" />
+                                </svg>&thinsp;Детали
+                            </a>
+                            <button id="liveToastBtn" form="AddToCart" type="submit" class="btn btn-outline-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 4px;" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
+                                    <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
+                                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                </svg>&thinsp;Добавить
+                            </button>
                         </div>
+                        <form asp-controller="Cart" id="AddToCart" asp-action="AddProductToCart">
+                            <input type="hidden" value="@ViewBag.Product.Id" name="ProductId">
+                        </form>
+
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <div class="col-2 shadow-sm mb-4 rounded-2" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
     <small class="text-center text-dark mt-3 mb-4 fw-light" style="text-align: center; font-size: calc(1.5vw + +10px);">Новости</small>
 </div>
@@ -83,94 +88,5 @@
 </div>
 
 <a class="btn btn-outline-dark mb-4 shadow" asp-action="AllNews">Все новости</a>
-
-@*<div class="row">
-    <div id="carouselExampleCaptions" class="carousel slide my-border-radius mb-4">
-        <div class="carousel-indicators" style="position: absolute; bottom: -5px">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-
-            @foreach (var item in Model.Articles)
-            {
-                if (count2 > 0)
-                {
-                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@count2" aria-label="@item.Title"></button>
-                }
-                count2++;
-            }
-        </div>
-        <div class="carousel-inner my-border-radius">
-            <div class="carousel-item active">
-                <img src="@Model.Articles[0].UrlToImage" class="d-block w-100 my-border-radius" style="max-height: 400px" alt="@Model.Articles[0].Title">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>@Model.Articles[0].Title</h5>
-                    <a class="btn btn-primary"><span>Читать</span></a>
-                </div>
-            </div>
-        </div>
-
-
-        @foreach (var item in Model.Articles)
-        {
-            if (count3 > 0)
-            {
-                <div class="carousel-item">
-                    <img src="@item.UrlToImage" class="d-block w-100 my-border-radius" style="max-height: 600px; " alt="@item.Title">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>@item.Title</h5>
-                        <p>Автор: @item.Author</p>
-                    </div>
-                </div>
-            }
-            count3++;
-        }
-
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
-*@
-
-
-
-@*<div class="row">
-    <div class="col-lg-6">
-        <div class="card">
-            <img src="https://picsum.photos/1000/1000" style="max-height: 400px; max-width: auto;" class="card-img-top" alt="...">
-
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col">
-        <div class="card" aria-hidden="true">
-            <img src="https://picsum.photos/2000/2000" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title placeholder-glow">
-                    <span class="placeholder col-6"></span>
-                </h5>
-                <p class="card-text placeholder-glow">
-                    <span class="placeholder col-7"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-4"></span>
-                    <span class="placeholder col-6"></span>
-                    <span class="placeholder col-8"></span>
-                </p>
-                <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-6"></a>
-            </div>
-        </div>
-    </div>
-</div>
-*@
-
-
+<script src="~/lib/threejs/build/three.min.js"></script>
+<script src="js/HomeModel.js"></script>

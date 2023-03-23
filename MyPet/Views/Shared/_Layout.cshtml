@@ -30,7 +30,7 @@
                             <a class="nav-link text-white" asp-controller="Home" asp-action="AllNews">Новости</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="UserProduct" asp-action="ShowFilteredProduct">Товары</a>
+                            <a class="nav-link text-white" asp-controller="UserProduct" asp-route-PageNumber="1" asp-action="ShowFilteredProduct">Товары</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-controller="Cart" asp-action="ChosenProducts">Корзина</a>
@@ -54,7 +54,7 @@
                                 <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="Index">Роли</a>
                                 <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="Create">Создать роль</a>
                                 <div class="dropdown-divider" bis_skin_checked="1"></div>
-                                <a class="text-dark dropdown-item" asp-area="" asp-controller="Role" asp-action="UserList">Список пользователей</a>
+                                <a class="text-dark dropdown-item" asp-area="" asp-controller="User" asp-action="Index">Список пользователей</a>
                             </div>
                         </li>
 

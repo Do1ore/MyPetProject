@@ -28,6 +28,7 @@ namespace MyPet.Models
             modelBuilder.Entity<CartProduct>()
               .HasKey(cp => new { cp.CartId, cp.ProductId });
 
+
             modelBuilder.Entity<NewsApiSettingsModel>()
             .Property(e => e.Sourses)
             .HasConversion(

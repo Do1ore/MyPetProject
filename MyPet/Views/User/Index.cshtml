@@ -1,0 +1,44 @@
+﻿@using MyPet.Areas.Identity.Data;
+@model IEnumerable<MyPetUser>
+
+@{
+    ViewBag.Title = "Список пользователей";
+    ViewBag.Secondary = "Для админимтратора";
+    int counter = 0;
+}
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            counter++;
+            <tr class="">
+                <th scope="row">@counter</th>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Email</td>
+                <td>
+                    <div class="d-flex">
+
+                        <a class="me-2 btn btn-sm btn-dark" asp-action="Edit" asp-controller="Role" asp-route-userId="@item.Id">Доступ</a>
+                        <button type="submit" form="ExplodeForm" class="btn btn-sm btn-danger">Взорвать</button>
+
+                        <form asp-action="Delete" id="ExplodeForm" method="post" class="m-0 p-0">
+                            <input type="hidden" name="Id" value="@item.Id">
+                        </form>
+
+                    </div>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

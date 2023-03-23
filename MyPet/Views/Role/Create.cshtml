@@ -1,19 +1,21 @@
 ﻿@model string
 
+@{
+    ViewBag.Title = "Создать роль";
+    ViewBag.Secondary = "Придумайте название для роли";
+}
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <form asp-action="Create" method="post">
     <div class="form-group ">
  
 
-        <h1 classfor="name">New role</h1>
-        <hr>
         <div class="input-group mb-3" bis_skin_checked="1">
 
-            <input name="name" type="text"  class="form-control" placeholder="Enter your role name here..." aria-label="New role" aria-describedby="button-addon2">
-            <button class="btn btn-outline-primary" type="submit" id="button-addon2">Add role</button>
+            <input name="name" type="text"  class="form-control" placeholder="Введеите название..." aria-label="New role" aria-describedby="button-addon2">
+            <button class="btn btn-outline-primary" type="submit" id="button-addon2">Добавить</button>
         </div>
-        <a class="nav-link text-primary text-center" asp-action="Index">Role list</a>
+        <a class="nav-link text-primary text-center" asp-action="Index">Список ролей</a>
     </div>
     
 </form>

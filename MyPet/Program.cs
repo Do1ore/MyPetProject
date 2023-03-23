@@ -8,7 +8,7 @@ using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("IdentityDbContextConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDbContextConnection' not found.");
-
+var config = builder.Configuration;
 builder.Services.AddDbContext<MyIdentityDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -26,6 +26,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddMvc();
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+
 // Add roles
 builder.Services.AddHealthChecks();
 var app = builder.Build();

@@ -76,7 +76,7 @@ namespace MyPet.Controllers
                 .FirstOrDefaultAsync();
             if (productsCarts is null)
             {
-                return View();
+                return View(new List<ProductViewModel?>());
             }
             List<MainProductModel>? products = new();
             foreach (CartProduct? item in productsCarts)

@@ -1,15 +1,22 @@
 ﻿@using MyPet.Areas.SomeLogics;
 @using MyPet.ViewModels;
-@model IEnumerable<ProductViewModel?>
+@model ProductsAndFilterViewModel?
 @{
-    int count = Model.Count();
+    int CurrentPage = ViewBag.CurrentPage;
+    int PageCount = ViewBag.ProductsOnPage;
+    int count = 0;
+    if (Model is not null)
+    {
+        count = Model.Products.Count(); 
+    }
     if (count > 0)
     {
-        ViewBag.Title = "Список всех товаров";
-        ViewBag.Secondary = "Найдено: " + count;
+        ViewBag.Title = "Товары";
+        ViewBag.Secondary = $"Всего товаров: {ViewBag.Quantity}";
     }
     List<string?> categoties = await ProductHelper.GetAllCategoriesAsync();
 }
+
 <div class="accordion mymargin" id="accordionExample" bis_skin_checked="1">
     <div class="accordion-item" bis_skin_checked="1" style="border-radius: 15px">
         <h2 class="accordion-header" id="headingOne">
@@ -37,9 +44,27 @@
                                     <label class="text-muted">Категория товара</label>
 
                                     <select name="ProductType" class="form-select">
-                                        @foreach (var item in categoties)
+
+                                        @if (Model.Filter is null)
                                         {
-                                            <option value="@item">@item</option>
+                                            <option selected value="All">Все категории</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="All">Все категории</option>
+
+                                        }
+
+                                        @foreach (var item in categoties)
+                                        {   @if (Model.Filter is not null && Model.Filter.ProductType == item)
+                                            {
+                                                <option selected value="@item">@item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item">@item</option>
+
+                                            }
                                         }
                                     </select>
                                 </div>
@@ -47,10 +72,33 @@
                                     <label class="text-muted">Фильтрация по цене</label>
 
                                     <select name="SortPrice" class="form-select">
+                                        @if (Model.Filter.SortPrice == 1)
+                                        {
+                                            <option selected value="1">Сначала дешевые</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="1">Сначала дешевые</option>
 
-                                        <option value="1">Сначала дешевые</option>
-                                        <option value="2">Сначала дорогие</option>
-                                        <option value="0">Любые</option>
+                                        }
+                                        @if (Model.Filter.SortPrice == 2)
+                                        {
+                                            <option selected value="2">Сначала дорогие</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="2">Сначала дорогие</option>
+
+                                        }
+                                        @if (Model.Filter.SortPrice == 0)
+                                        {
+                                            <option selected value="0">Любые</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="0">Любые</option>
+
+                                        }
 
                                     </select>
                                 </div>
@@ -77,7 +125,7 @@
                             </svg> Поиск
                         </button>
 
-                        <a asp-action="ClearFilter" type="submit" class="btn btn-danger mymargin">
+                        <a asp-action="ClearFilter" txype="submit" class="btn btn-danger mymargin">
                             <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 2px" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
@@ -90,7 +138,127 @@
         </div>
     </div>
 </div>
+@if (Model.Products is null)
+{
+
+}
+else
+{
+    @if (PageCount > 1)
+    {
 
 
+        <div style="display: flex; justify-content: center; align-items: center">
+            <nav aria-label="">
+                <ul class="pagination">
+                    @if (CurrentPage == 1)
+                    {
+                        <li class="page-item disabled me-1 ">
+                            <span class="rounded-2 page-link me-1">Назад</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <form>
+                        <li class="page-item me-1">
+                            <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
+                            <button type="submit" class="page-link">Назад</button>
+                        </li>
+                        </form>
+                    }
+                    @for (int i = 1; i <= PageCount; i++)
+                    {
+                        if (i == CurrentPage)
+                        {
+                            <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
+                        }
+                        else
+                        {
+                            <form>
+                            <li class="page-item me-1">
+                                <input type="hidden" value="@i" name="PageNumber" class="page-link">
+                                <button type="submit" class="page-link">@i</button>
+                            </li>
+                            </form>
 
-<partial name="_ProductListForUserPartial"></partial>
+                        }
+                    }
+                    @if (CurrentPage == PageCount)
+                    {
+                        <li class="page-item">
+                            <span class="page-link disabled rounded-2">Дальше</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <form>
+                        <li class="page-item">
+                            <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
+                            <button type="submit" class="page-link">Дальше</button>
+                        </li>
+                        </form>
+                    }
+                </ul>
+
+            </nav>
+        </div>
+    }
+    <partial name="_ProductListForUserPartial"></partial>
+    @if (PageCount > 1)
+    {
+        <div style="display: flex; justify-content: center; align-items: center">
+            <nav aria-label="">
+                <ul class="pagination">
+                    @if (CurrentPage == 1)
+                    {
+                        <li class="page-item disabled me-1 ">
+                            <span class="rounded-2 page-link me-1">Назад</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <form>
+                        <li class="page-item me-1">
+                            <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
+                            <button type="submit" class="page-link">Назад</button>
+                        </li>
+                        </form>
+                    }
+                    @for (int i = 1; i <= PageCount; i++)
+                    {
+                        if (i == CurrentPage)
+                        {
+                            <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
+                        }
+                        else
+                        {
+                            <form>
+                            <li class="page-item me-1">
+                                <input type="hidden" value="@i" name="PageNumber" class="page-link">
+                                <button type="submit" class="page-link">@i</button>
+                            </li>
+                            </form>
+
+                        }
+                    }
+                    @if (CurrentPage == PageCount)
+                    {
+                        <li class="page-item">
+                            <span class="page-link disabled rounded-2">Дальше</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <form>
+                        <li class="page-item">
+                            <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
+                            <button type="submit" class="page-link">Дальше</button>
+                        </li>
+                        </form>
+                    }
+                </ul>
+
+            </nav>
+        </div>
+    }
+}

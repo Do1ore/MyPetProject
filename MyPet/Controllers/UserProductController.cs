@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels;
+using System.Runtime.CompilerServices;
+using System.Transactions;
 
 namespace MyPet.Controllers
 {
@@ -13,6 +15,7 @@ namespace MyPet.Controllers
         private readonly ProductDbContext db;
         private readonly IMapper mapper;
         private static FilterViewModel? buffilter;
+        private const int ProductsOnPage = 30;
 
         public UserProductController(ProductDbContext db, IMapper mapper)
         {
@@ -50,7 +53,7 @@ namespace MyPet.Controllers
 
 
 
-        public async Task<IActionResult> ShowFilteredProduct(FilterViewModel filter)
+        public async Task<IActionResult> ShowFilteredProduct(FilterViewModel filter, int PageNumber)
         {
             if (!ProductHelper.CheckFilterForEmptyness(filter))
             {
@@ -60,6 +63,7 @@ namespace MyPet.Controllers
                     MinPrice = filter.MinPrice,
                     ProductType = filter.ProductType,
                     SortPrice = filter.SortPrice,
+
                 };
             }
 
@@ -79,10 +83,52 @@ namespace MyPet.Controllers
             {
                 ViewBag.Title = "Вы ввели что не так";
                 ViewBag.Secondary = "Введите данные в фильтр правильно";
-                return View(productToShow);
+                return View(new ProductsAndFilterViewModel());
             }
 
-            if (filter.ProductType is not null)
+            products = FilterProducts(filter, products);
+            foreach (var item in products)
+            {
+                productToShow.Add(mapper.Map<ProductViewModel>(item));
+            }
+
+            if (productToShow.Count == 0)
+            {
+                ViewBag.Title = "Товар не найден";
+                ViewBag.Secondary = "Попробуйте ввести другие данные в фильтр";
+
+                ViewBag.Quantity = 0;
+                ViewBag.ProductsOnPage = 0;
+                ViewBag.CurrentPage = 0;
+                var result = new ProductsAndFilterViewModel();
+                result.Filter = new FilterViewModel();
+                result.Products = new List<ProductViewModel?>();
+                return View(result);
+            }
+
+
+            int PageCount = (int)Math.Ceiling(productToShow.Count / (double)ProductsOnPage);
+
+            if (PageNumber == 0)
+            {
+                PageNumber = 1;
+            }
+            List<ProductViewModel> resultProducts = SelectProducts(productToShow, PageNumber);
+
+            ViewBag.Quantity = productToShow.Count;
+            ViewBag.ProductsOnPage = PageCount;
+            ViewBag.CurrentPage = PageNumber;
+
+            ProductsAndFilterViewModel? productsAndFilter = new();
+            productsAndFilter.Products = resultProducts;
+            productsAndFilter.Filter = filter;
+
+            return View(productsAndFilter);
+        }
+
+        private static List<MainProductModel> FilterProducts(FilterViewModel filter, List<MainProductModel> products)
+        {
+            if (filter.ProductType is not null && filter.ProductType != "All")
                 products = products.Where(p => p.ProductType == filter.ProductType).Select(p => p).ToList();
 
             if (filter.MinPrice is not null)
@@ -99,19 +145,24 @@ namespace MyPet.Controllers
                     products = products.OrderByDescending(p => p.DefaultPrice).ToList();
             }
 
-            foreach (var item in products)
-            {
-                productToShow.Add(mapper.Map<ProductViewModel>(item));
-            }
+            return products;
+        }
 
-            if (productToShow.Count == 0)
+        private static List<ProductViewModel> SelectProducts(List<ProductViewModel> products, int CurrentPage)
+        {
+            int page = CurrentPage - 1; 
+            List<ProductViewModel> resultProducts = new();
+            if (products.Count >= CurrentPage * ProductsOnPage)
             {
-                ViewBag.Title = "Товар не найден";
-                ViewBag.Secondary = "Попробуйте ввести другие данные в фильтр";
-                return View(productToShow);
+                resultProducts = products.GetRange(page * ProductsOnPage, ProductsOnPage);
+                return resultProducts;
             }
-
-            return View(productToShow);
+            else if(page > 0 && products.Count - (page * ProductsOnPage) > 0)
+            {
+                resultProducts = products.GetRange(page * ProductsOnPage, products.Count - (page * ProductsOnPage));
+                return resultProducts;
+            }
+            return products;
         }
 
         [HttpGet]
