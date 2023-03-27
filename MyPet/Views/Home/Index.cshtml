@@ -4,14 +4,24 @@
     ViewData["Title"] = "Главная страница";
     ViewBag.Secondary = "Онлайн магазин товаров";
     int counter = 0;
-    int count = 3;
-    int count2 = 0;
-    int count3 = 0;
+   
 }
 
-<canvas id="myCanvas">
+@*<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.139.0/build/three.module.js",
+            "OrbitControls": "https://unpkg.com/three@0.139.0/examples/jsm/controls/OrbitControls.js",
+            "GLTFLoader": "https://unpkg.com/three@0.139.0/examples/jsm/loaders/GLTFLoader.js",
+            "RectAreaLightHelper": "https://unpkg.com/three@0.139.0/examples/jsm/helpers/RectAreaLightHelper.js",
+            "RectAreaLightUniformsLib": "https://unpkg.com/three@0.139.0/examples/jsm/lights/RectAreaLightUniformsLib.js"
+        }
+    }
+</script>
 
-</canvas>
+<div class="container3d"></div>
+<script type="module" src="js/my-3d-model.js"></script>*@
 
 <div class="row align-items-stretch m-2" style="display: flex">
     <div class="col-4 bg-overlay5 mycenter pt-2 pb-2 my-border-radius shadow-sm">
@@ -88,5 +98,5 @@
 </div>
 
 <a class="btn btn-outline-dark mb-4 shadow" asp-action="AllNews">Все новости</a>
-<script src="~/lib/threejs/build/three.min.js"></script>
-<script src="js/HomeModel.js"></script>
+<script type="module" src="~/lib/threejs/build/three.min.js"></script>
+

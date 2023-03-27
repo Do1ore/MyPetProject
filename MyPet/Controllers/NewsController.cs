@@ -21,8 +21,8 @@ namespace MyPet.Controllers
         public async Task<IActionResult> ManageNewsSettings()
         {
             var newSettings = await db.NewsApiSettings.FirstAsync();
-            
-            return View(mapper.Map<NewsSettingsViewModel>(newSettings));
+            var settingsViewModel = mapper.Map<NewsSettingsViewModel>(newSettings);
+            return View(settingsViewModel);
         }
 
         [HttpPost]
@@ -33,11 +33,11 @@ namespace MyPet.Controllers
                 return RedirectToAction("Index", "Home");
             }
             if (_sourses is not null)
-                newsSettings.Sourses = _sourses.Trim().Split(',').ToList();
+                newsSettings.Sourses = _sourses;
 
             if (_domains is not null)
             {
-                newsSettings.Domains = _domains.Trim().Split(',').ToList();
+                newsSettings.Domains = _domains;
             }
 
             if (newsSettings.DateTo is null)

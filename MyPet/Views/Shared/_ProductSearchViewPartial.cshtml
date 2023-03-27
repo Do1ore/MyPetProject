@@ -1,10 +1,10 @@
 ﻿@using System.Security.Claims;
-@foreach (var item in Model.Products)
+@foreach (var item in Model)
 {
     <div class="card mb-lg-3 rounded-4 mb-4 shadow-sm" href="" style="max-width: 100%; padding: 15px">
         <div class="row">
             <div class="col-md-4 mycenter">
-                <img src="@item.MainFilePath" heigth="200px" style="padding: 20px"class="img-fluid rounded-start" value="@item.ProductFullName" asp-append-version="true">
+                <img src="@item.MainFilePath" heigth="200px" style="padding: 20px" class="img-fluid rounded-start" value="@item.ProductFullName" asp-append-version="true">
             </div>
             <div class="col-md-8">
                 <div class="card-body">

@@ -25,8 +25,6 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> SearchProduct(string searchTerm)
         {
-
-
             List<ProductViewModel> productViewModels = new();
 
             var results = await db.Products
@@ -63,6 +61,7 @@ namespace MyPet.Controllers
                     MinPrice = filter.MinPrice,
                     ProductType = filter.ProductType,
                     SortPrice = filter.SortPrice,
+                    SearchTerm = filter.SearchTerm,
 
                 };
             }
@@ -73,6 +72,7 @@ namespace MyPet.Controllers
                 filter.MinPrice = buffilter.MinPrice;
                 filter.MaxPrice = buffilter.MaxPrice;
                 filter.ProductType = buffilter.ProductType;
+                filter.SearchTerm = buffilter.SearchTerm;
             }
 
             List<ProductViewModel> productToShow = new();
@@ -137,6 +137,11 @@ namespace MyPet.Controllers
             if (filter.MaxPrice is not null)
                 products = products.Where(p => p.DefaultPrice <= filter.MaxPrice).Select(p => p).ToList();
 
+            if (filter.SearchTerm is not null)
+                    products = products.Where(p => p.ProductExtendedFullName.ToUpper().Contains(filter.SearchTerm.ToUpper()) ||
+                    p.Description.ToUpper().Contains(filter.SearchTerm))
+                    .Select(p => p).ToList();
+
             if (filter.SortPrice is not null)
             {
                 if (filter.SortPrice == 1)
@@ -150,14 +155,14 @@ namespace MyPet.Controllers
 
         private static List<ProductViewModel> SelectProducts(List<ProductViewModel> products, int CurrentPage)
         {
-            int page = CurrentPage - 1; 
+            int page = CurrentPage - 1;
             List<ProductViewModel> resultProducts = new();
             if (products.Count >= CurrentPage * ProductsOnPage)
             {
                 resultProducts = products.GetRange(page * ProductsOnPage, ProductsOnPage);
                 return resultProducts;
             }
-            else if(page > 0 && products.Count - (page * ProductsOnPage) > 0)
+            else if (page > 0 && products.Count - (page * ProductsOnPage) > 0)
             {
                 resultProducts = products.GetRange(page * ProductsOnPage, products.Count - (page * ProductsOnPage));
                 return resultProducts;

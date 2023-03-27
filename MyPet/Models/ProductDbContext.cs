@@ -30,16 +30,12 @@ namespace MyPet.Models
 
 
             modelBuilder.Entity<NewsApiSettingsModel>()
-            .Property(e => e.Sourses)
-            .HasConversion(
-                v => string.Join(',', v),
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+            .Property(e => e.Sourses);
+
 
             modelBuilder.Entity<NewsApiSettingsModel>()
-            .Property(e => e.Domains)
-            .HasConversion(
-                v => string.Join(',', v),
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+            .Property(e => e.Domains);
+            
         }
 
     }

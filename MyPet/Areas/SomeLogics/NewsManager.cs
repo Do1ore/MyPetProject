@@ -34,11 +34,11 @@ namespace MyPet.Areas.SomeLogics
                 newsSettings = await db.NewsApiSettings.Select(x => x).FirstAsync();
                 if (newsSettings.Sourses is not null)
                 {
-                    request.AddParameter("sourses", JoinList(newsSettings.Sourses.ToList()));
+                    request.AddParameter("sourses", newsSettings.Sourses);
                 }
                 if (newsSettings.Domains is not null)
                 {
-                    request.AddParameter("domains", JoinList(newsSettings.Domains.ToList()));
+                    request.AddParameter("domains", newsSettings.Domains);
                 }
                 if (newsSettings.DateFrom is not null)
                 {
@@ -50,7 +50,7 @@ namespace MyPet.Areas.SomeLogics
                 }
                 if (newsSettings.Language is not null)
                 {
-                    request.AddParameter("langugage", newsSettings.Language);
+                    request.AddParameter("language", newsSettings.Language);
                 }
                 if (newsSettings.PageSize != null || newsSettings.PageSize >= INewsParametres.MaxPageSize || newsSettings.PageSize == 0)
                 {
@@ -74,7 +74,7 @@ namespace MyPet.Areas.SomeLogics
                     return new List<Article>();
                 }
                 newsViewModel.Articles = articles;
-                if(articles == null)
+                if (articles == null)
                 {
                     return new NewsViewModel().Articles;
                 }

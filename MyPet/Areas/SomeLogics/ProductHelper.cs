@@ -46,7 +46,7 @@ namespace MyPet.Areas.SomeLogics
         {
             if (filter is null)
                 return true;
-            else if (filter.ProductType is null && filter.SortPrice is null && filter.MinPrice is null && filter.MaxPrice is null)
+            else if (filter.ProductType is null && filter.SortPrice is null && filter.MinPrice is null && filter.MaxPrice is null && filter.SearchTerm is null)
                 return true;
 
             return false;
