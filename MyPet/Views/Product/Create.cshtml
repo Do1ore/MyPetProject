@@ -1,17 +1,13 @@
 ﻿@model MyPet.ViewModels.CreateProductViewModel
 
 @{
-    ViewData["Title"] = "View";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Добавление товара";
+    ViewBag.Secondary = "Заполните поля, чтобы создать новый товар";
     int count = 0;
 }
 
-<h1>View</h1>
-
-<h4>MainProductModel</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -75,14 +71,11 @@
                 <span asp-validation-for="ParsedUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" value="Create"  class="mt-2 btn btn-primary">Создать</button>
             </div>
         </form>
 
     </div>
 </div>
 
-<div>
-    <a asp-action="ProductToList">Back to List</a>
-</div>
 

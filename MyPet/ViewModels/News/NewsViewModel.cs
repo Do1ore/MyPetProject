@@ -4,6 +4,6 @@
     {
         public string Status;
         public int? TotalResults;
-        public List<Article> Articles;
+        public List<Article?>? Articles;
     }
 }

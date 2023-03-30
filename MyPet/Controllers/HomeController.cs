@@ -27,7 +27,15 @@ namespace MyPet.Controllers
         {
             managerNews = new();
             newsViewModel = new();
-            newsViewModel.Articles = await managerNews.GetNewsAsync();
+            var news = await managerNews.GetNewsAsync();
+            if(news is null)
+            {
+                newsViewModel.Articles = new List<Article?>();
+            }
+            else
+            {
+                newsViewModel.Articles = news;
+            }
             List<int> ind = await db.Products.Select(p => p.Id).ToListAsync();
             var RandId = new Random().Next(0, ind.Count);
 
@@ -40,17 +48,29 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> NewsDetails(string title)
         {
-            var SelectedNews = newsViewModel.Articles.FirstOrDefault(i => i.Title == title);
+            var SelectedNews = newsViewModel?.Articles?.FirstOrDefault(i => i?.Title == title);
             ViewBag.Title = "Новости";
-            ViewBag.Secondary = "Это детальная старница новости " + SelectedNews.Title;
+            ViewBag.Secondary = "Детальная информация";
 
             return View(SelectedNews);
         }
 
         public IActionResult AllNews()
         {
+
+
             ViewBag.Title = "Новости";
-            ViewBag.Secondary = "Найдено: " + newsViewModel.Articles.Count;
+            if (newsViewModel is null)
+            {
+                ViewBag.Secondary = "Новостей не найдено";
+            }
+            else
+            {
+                ViewBag.Secondary = "Найдено: " + newsViewModel.Articles.Count;
+
+            }
+
+
             return View(newsViewModel.Articles);
 
         }

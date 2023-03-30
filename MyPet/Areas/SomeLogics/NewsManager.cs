@@ -20,7 +20,7 @@ namespace MyPet.Areas.SomeLogics
             this.db = new ProductDbContext(options);
         }
 
-        public async Task<List<Article>> GetNewsAsync()
+        public async Task<List<Article?>?> GetNewsAsync()
         {
             RestClient client = new("https://newsapi.org/v2/everything");
             NewsViewModel newsViewModel = new();
@@ -67,11 +67,15 @@ namespace MyPet.Areas.SomeLogics
                 }
                 else request.AddParameter("pageSize", $"{INewsParametres.MaxPageSize}");
 
-                RestResponse response = await client.ExecuteAsync(request);
+                RestResponse? response = await client.ExecuteAsync(request);
+                if (response.ResponseStatus.ToString() == "Error")
+                {
+                    return new List<Article?>();
+                }
                 NewsViewModel? news = JsonConvert.DeserializeObject<NewsViewModel?>(response.Content);
                 if (news == null)
                 {
-                    return new List<Article>();
+                    return new List<Article?>();
                 }
                 newsViewModel.Articles = articles;
                 if (articles == null)

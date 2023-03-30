@@ -12,6 +12,7 @@ namespace MyPet.Controllers
         private UserManager<MyPetUser> userManager;
         private MyIdentityDbContext identityDb;
 
+
         public UserController(MyIdentityDbContext identityDb, UserManager<MyPetUser> userManager)
         {
             this.identityDb = identityDb;

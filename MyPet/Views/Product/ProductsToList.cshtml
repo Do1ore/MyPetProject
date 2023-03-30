@@ -1,15 +1,227 @@
 ﻿@using MyPet.Areas.SomeLogics;
-@model IEnumerable<MyPet.ViewModels.ProductViewModel>
+@using MyPet.ViewModels;
+@model ProductsAndFilterViewModel;
 
 @{
-    ViewBag.Title = "Список товаров";
-    ViewBag.Secondary = "Для администратора";
+    int CurrentPage = ViewBag.CurrentPage;
+    int PageCount = ViewBag.ProductsOnPage;
+    int count = 0;
+    if (Model is not null)
+    {
+        count = Model.Products.Count();
+    }
+    if (count > 0)
+    {
+        ViewBag.Title = "Товары для администратора";
+        ViewBag.Secondary = $"Всего товаров: {ViewBag.Quantity}";
+    }
+    List<string?> categoties = await ProductHelper.GetAllCategoriesAsync();
+
 }
 
-<p>
-    <a asp-action="Create">Create New</a>
+<p class="text-center">
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary w-100" asp-action="Create">Создать новый</a>
+        </div>
+        <div class="col">
+            <a class="btn btn-dark w-100" asp-controller="UserProduct" asp-action="ShowFilteredProduct">Товары для пользователя</a>
+        </div>
+
+    </div>
 </p>
-@foreach (var item in Model)
+<div class="accordion mymargin" id="accordionExample" bis_skin_checked="1">
+    <div class="accordion-item" bis_skin_checked="1" style="border-radius: 15px">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed " style="border-radius: 15px" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+
+                <div class="mycenter">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z" />
+                    </svg> &thinsp; Фильтрация
+
+
+                </div>
+
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" bis_skin_checked="1">
+            <div class="accordion-body" bis_skin_checked="1">
+                <div class="row">
+                    <form asp-action="ProductsToList" id="enable_filter" method="post">
+
+                        <div class="form-group">
+                            <div class="row mymargin">
+
+                                <div class="col-8">
+                                    <label class="text-muted">Категория товара</label>
+
+                                    <select name="ProductType" class="form-select">
+
+                                        @if (Model.Filter is null)
+                                        {
+                                            <option selected value="All">Все категории</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="All">Все категории</option>
+
+                                        }
+
+                                        @foreach (var item in categoties)
+                                        {   @if (Model.Filter is not null && Model.Filter.ProductType == item)
+                                            {
+                                                <option selected value="@item">@item</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item">@item</option>
+
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label class="text-muted">Фильтрация по цене</label>
+
+                                    <select name="SortPrice" class="form-select">
+                                        @if (Model.Filter.SortPrice == 1)
+                                        {
+                                            <option selected value="1">Сначала дешевые</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="1">Сначала дешевые</option>
+
+                                        }
+                                        @if (Model.Filter.SortPrice == 2)
+                                        {
+                                            <option selected value="2">Сначала дорогие</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="2">Сначала дорогие</option>
+
+                                        }
+                                        @if (Model.Filter.SortPrice == 0)
+                                        {
+                                            <option selected value="0">Любые</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="0">Любые</option>
+
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-3">
+                                    <input type="text" name="MinPrice" placeholder="Цена от" class="form-control mymargin" />
+                                </div>
+
+                                <div class="col-3">
+                                    <input type="text" name="MaxPrice" placeholder="Цена до" class="form-control mymargin" />
+                                </div>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                            </svg>
+                                        </span>
+                                        <input class="form-control" type="text" placeholder="Ваш запрос" aria-label="Ваш запрос" name="SearchTerm" value="@Model.Filter.SearchTerm" aria-describedby="basic-addon1" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-6">
+                        </div>
+                    </form>
+                    <div class="d-flex me-2">
+                        <button form="enable_filter" type="submit" class="btn btn-primary mymargin me-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 2px" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                            </svg> Поиск
+                        </button>
+
+                        <a asp-action="ClearFilter" txype="submit" class="btn btn-danger mymargin">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 2px" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                            </svg> Очистить фильтр
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (PageCount > 1)
+{
+    <div style="display: flex; justify-content: center; align-items: center">
+        <nav aria-label="">
+            <ul class="pagination">
+                @if (CurrentPage == 1)
+                {
+                    <li class="page-item disabled me-1 ">
+                        <span class="rounded-2 page-link me-1">Назад</span>
+                    </li>
+                }
+                else
+                {
+                    <form>
+                    <li class="page-item me-1">
+                        <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
+                        <button type="submit" class="page-link">Назад</button>
+                    </li>
+                    </form>
+                }
+                @for (int i = 1; i <= PageCount; i++)
+                {
+                    if (i == CurrentPage)
+                    {
+                        <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
+                    }
+                    else
+                    {
+                        <form>
+                        <li class="page-item me-1">
+                            <input type="hidden" value="@i" name="PageNumber" class="page-link">
+                            <button type="submit" class="page-link">@i</button>
+                        </li>
+                        </form>
+
+                    }
+                }
+                @if (CurrentPage == PageCount)
+                {
+                    <li class="page-item">
+                        <span class="page-link disabled rounded-2">Дальше</span>
+                    </li>
+                }
+                else
+                {
+                    <form>
+                    <li class="page-item">
+                        <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
+                        <button type="submit" class="page-link">Дальше</button>
+                    </li>
+                    </form>
+                }
+            </ul>
+
+        </nav>
+    </div>
+}
+
+@foreach (var item in Model.Products)
 {
     #region Time
     string? value = TimeDifference.GetDifference(item.LastTimeEdited);
@@ -32,7 +244,7 @@
 
 
                     <div class="" style="">
-                        <a class="btn btn-outline-primary col myspacing" asp-controller="Product" asp-action="EditProduct" asp-route-Id="@item.Id">
+                        <a class="btn btn-dark text-light col myspacing" asp-controller="Product" asp-action="EditProduct" asp-route-Id="@item.Id">
                             <div class="mycenter">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
@@ -40,7 +252,7 @@
                             </div>
                         </a>
 
-                        <a class="btn btn-outline-info col myspacing" asp-controller="Product" asp-action="ViewDetails" asp-route-Id="@item.Id">
+                        <a class="btn btn-primary col myspacing" asp-controller="Product" asp-action="ViewDetails" asp-route-Id="@item.Id">
                             <div class="mycenter">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-binoculars" viewBox="0 0 16 16">
                                     <path d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z" />
@@ -50,7 +262,7 @@
 
                         </a>
 
-                        <a class="btn btn-outline-danger col myspacing" asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id">
+                        <a class="btn btn-danger col myspacing" asp-controller="Product" asp-action="Delete" asp-route-Id="@item.Id">
                             <div class="mycenter">
 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -69,3 +281,60 @@
 
 }
 
+@if (PageCount > 1)
+{
+    <div style="display: flex; justify-content: center; align-items: center">
+        <nav aria-label="">
+            <ul class="pagination">
+                @if (CurrentPage == 1)
+                {
+                    <li class="page-item disabled me-1 ">
+                        <span class="rounded-2 page-link me-1">Назад</span>
+                    </li>
+                }
+                else
+                {
+                    <form>
+                    <li class="page-item me-1">
+                        <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
+                        <button type="submit" class="page-link">Назад</button>
+                    </li>
+                    </form>
+                }
+                @for (int i = 1; i <= PageCount; i++)
+                {
+                    if (i == CurrentPage)
+                    {
+                        <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
+                    }
+                    else
+                    {
+                        <form>
+                        <li class="page-item me-1">
+                            <input type="hidden" value="@i" name="PageNumber" class="page-link">
+                            <button type="submit" class="page-link">@i</button>
+                        </li>
+                        </form>
+
+                    }
+                }
+                @if (CurrentPage == PageCount)
+                {
+                    <li class="page-item">
+                        <span class="page-link disabled rounded-2">Дальше</span>
+                    </li>
+                }
+                else
+                {
+                    <form>
+                    <li class="page-item">
+                        <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
+                        <button type="submit" class="page-link">Дальше</button>
+                    </li>
+                    </form>
+                }
+            </ul>
+
+        </nav>
+    </div>
+}

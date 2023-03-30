@@ -40,6 +40,6 @@ namespace MyPet.ViewModels
         public DateTime LastTimeEdited { get; set; }
         [Display(Name = "URL страницы")]
         public string? ParsedUrl { get; set; }
-        public FilterViewModel? Fiter { get; set; }
+        public FilterViewModel? Filter { get; set; }
     }
 }
