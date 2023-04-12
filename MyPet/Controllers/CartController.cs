@@ -8,6 +8,7 @@ using MyPet.Areas.Identity.Data;
 using MyPet.Models;
 using MyPet.ViewModels;
 using Newtonsoft.Json.Linq;
+using NuGet.Common;
 using System.Security.Claims;
 
 namespace MyPet.Controllers
@@ -28,7 +29,7 @@ namespace MyPet.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProductToCart(int productId)
+        public async Task<IActionResult> AddProductToCart(int id)
         {
             string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (userId == null)
@@ -49,7 +50,7 @@ namespace MyPet.Controllers
                     cart.User = user;
                     db.Carts.Add(cart);
                 }
-                CartProduct cartProduct = new() { ProductId = productId, Quantity = 1 };
+                CartProduct cartProduct = new() { ProductId = id, Quantity = 1 };
 
                 // Создаем новый объект CartProduct
                 if (cart.CartProducts is null)
@@ -68,41 +69,40 @@ namespace MyPet.Controllers
         [HttpGet]
         public async Task<IActionResult?> ChosenProducts()
         {
-            string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             ICollection<CartProduct?>? productsCarts = await db.Carts.Include(c => c.CartProducts)
                 .Where(id => id.UserId == userId)
+                .AsNoTracking()
                 .Select(p => p.CartProducts)
-                .FirstOrDefaultAsync();
+                .SingleAsync();
+
             if (productsCarts is null)
             {
-                return View(new List<ProductViewModel?>());
+                return View(new List<ProductAndQuantityViewModel?>());
             }
-            List<MainProductModel>? products = new();
-            foreach (CartProduct? item in productsCarts)
+            IEnumerable<int> ProductIds = productsCarts!.Select(i => i!.ProductId).ToList();
+
+
+            List<ProductAndQuantityViewModel> productViewModels = new();
+            productViewModels = await db.Products.Where(i => ProductIds.Contains(i.Id))
+                .Select(p => mapper.Map<ProductAndQuantityViewModel>(p)).ToListAsync();
+            //add quantity from cart
+
+            foreach (var cartProduct in productsCarts)
             {
-                foreach (MainProductModel? product in await db.Products.ToListAsync())
+                foreach (var viewModel in productViewModels)
                 {
-                    if (product.Id == item.ProductId)
+                    if (cartProduct?.ProductId == viewModel.Id)
                     {
-                        products.Add(product);
+                        viewModel.Quatity = cartProduct.Quantity;
                     }
                 }
-            }
-
-            if (products is not null)
-            {
-                List<ProductViewModel?> productViewModel = new();
-                foreach (MainProductModel item in products)
-                {
-                    productViewModel.Add(mapper.Map<ProductViewModel?>(item));
-
-                }
-                return View(productViewModel);
 
             }
-            return View();
+            return View(productViewModels);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ExplodeFromCart(int ProductId, string? UserId)

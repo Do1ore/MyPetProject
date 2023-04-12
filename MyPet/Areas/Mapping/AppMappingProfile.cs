@@ -38,6 +38,13 @@ public class AppMappingProfile : Profile
         CreateMap<NewsSettingsViewModel?, NewsApiSettingsModel?>();
 
 
+        CreateMap<MainProductModel, ProductAndQuantityViewModel>();
+        CreateMap<ProductAndQuantityViewModel, MainProductModel>();
+
+        CreateMap<MainProductModel?, ProductAndQuantityViewModel?>();
+        CreateMap<ProductAndQuantityViewModel?, MainProductModel?>();
+
+
         //CreateMap<ProductViewModel, ProductModel>()
         //    .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
 

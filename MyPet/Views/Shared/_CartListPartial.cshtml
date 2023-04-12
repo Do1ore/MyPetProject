@@ -1,45 +1,95 @@
 ﻿@using System.Security.Claims;
+@using MyPet.ViewModels;
+@model IEnumerable<ProductAndQuantityViewModel>;
+@*Main part*@
 @if (Model is not null)
-    @foreach (var item in Model)
-    {
-        <div class="card mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
-            <div class="row">
-                <div class="col-md-4 mycenter">
-                    <img src="@item.MainFilePath" heigth="200px" class="img-fluid rounded-start" value="@item.ProductFullName" asp-append-version="true">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.ProductFullName</h5>
-                        <p class="card-text">@item.ShortDescription</p>
-                        <p><small class="text-muted">@item.ProductType</small> </p>
+{
+    <div class="d-flex mycenter rounded-4 p-4 m-4 bg-overlay5 fixed-bottom">
+        <h2 class="text-light">Итоговая стоимость: &ensp;</h2>
+        <h2 class="text-light fw-bold" id="total">@Model!.Select(p=>p.DefaultPrice * p.Quatity).ToArray().Sum()</h2>
+        <h2 class="text-light fw-light">BYN</h2>
+    </div>
+    <section class="pb-5">
+        @foreach (var item in Model)
+        {
+            <div class="card border-0 shadow-sm pt-2 mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
+                <div class="row">
+                    <div class="col-md-4 mycenter">
+                        <img src="@item.MainFilePath" heigth="200px" class="img-fluid rounded-start p-3" value="@item.ProductFullName" asp-append-version="true">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.ProductFullName</h5>
+                            <p class="card-text">@item.ShortDescription</p>
+                            <p><small class="text-muted">@item.ProductType</small> </p>
 
-                        <p class="card-text">От @Math.Round(item.MinPrice, 0) BYN </p>
-                        <div class="row">
+                            <p class="card-text">От @Math.Round((decimal)item.MinPrice!, 0) BYN </p>
+                            <div class="row">
 
-                            <div class="d-flex">
-                                <a class="btn btn-primary me-2" asp-controller="UserProduct" asp-action="ViewDetails" asp-route-Id="@item.Id">
-                                    <div class="mycenter">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-binoculars" viewBox="0 0 16 16">
-                                            <path d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z" />
-                                        </svg>&thinsp;Детали
-                                    </div>
-                                </a>
-                                <button type="submit" form="CartForm" class="btn btn-danger">Убрать из корзины   </button>
+                                <div class="d-flex">
+                                    <a class="btn btn-primary me-2" asp-controller="UserProduct" asp-action="ViewDetails" asp-route-Id="@item.Id">
+                                        <div class="mycenter">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-binoculars" viewBox="0 0 16 16">
+                                                <path d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z" />
+                                            </svg>&thinsp;Детали
+                                        </div>
+                                    </a>
+                                    <button type="submit" form="CartForm" class="btn btn-danger">Убрать из корзины</button>
+                                </div>
+
+
+                                <form asp-controller="Cart" id="CartForm" asp-action="ExplodeFromCart" class="col">
+                                    <input type="hidden" name="UserId" value="@User.FindFirst(ClaimTypes.NameIdentifier)">
+                                    <input type="hidden" name="ProductId" value="@item.Id">
+
+                                </form>
                             </div>
-
-
-                            <form asp-controller="Cart" id="CartForm" asp-action="ExplodeFromCart" class="col">
-                                <input type="hidden" name="UserId" value="@User.FindFirst(ClaimTypes.NameIdentifier)">
-                                <input type="hidden" name="ProductId" value="@item.Id">
-
-                            </form>
-
                         </div>
-
+                    </div>
+                    <div class="card-footer rounded-bottom-4 border-0 px-2">
+                        <div class="row">
+                            <div class="col d-flex mycenter">
+                                <label class="me-2">Количество</label>
+                                <div class="col-2" style="min-width: 50px">
+                                    <input class="product-quantity-input form-control" min="0" onchange="updatePrice(this, @Math.Round((decimal)item.DefaultPrice!), @item.Id)" value="1" type="number">
+                                </div>
+                            </div>
+                            <div class="col d-flex mycenter">
+                                <span class="fw-bold">Итого: &ensp;</span>
+                                <span class="product-subtotal" id="subtotal_@item.Id">
+                                    @(Math.Round((decimal)(item.DefaultPrice * item.Quatity)))
+                                </span>
+                                <span>BYN</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+    </section>
+}
 
+
+<script>
+    function updatePrice(input, price, id) {
+        var subtotalResult = document.getElementById('subtotal_' + id);
+        subtotalResult.innerHTML = input.value * price;
+        updateTotalPrice();
+    }
+
+    function updateTotalPrice() {
+        var subtotalResults = document.getElementsByClassName('product-subtotal');
+        let sum = 0;
+        for (var i = 0; i < subtotalResults.length; i++) {
+            var pureString = subtotalResults[i].innerHTML.replace(/\s/g, '');
+            sum += Number(pureString);
+        }
+        var totalSum = document.getElementById('total');
+        totalSum.innerHTML = sum;
 
     }
+</script>
+
+
+
+

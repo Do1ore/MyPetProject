@@ -1,22 +1,57 @@
 ﻿@using MyPet.ViewModels;
 @using System.Security.Claims;
-@model IEnumerable<ProductViewModel?>
+@model IEnumerable<ProductAndQuantityViewModel?>
 
 @if (Model.Count() > 0)
 {
     ViewBag.Title = "Корзина товаров";
     ViewBag.Secondary = "Добавлено товаров: " + Model.Count();
+    <div class="container mb-3" bis_size="{&quot;x&quot;:431,&quot;y&quot;:183,&quot;w&quot;:1040,&quot;h&quot;:413,&quot;abs_x&quot;:431,&quot;abs_y&quot;:243}">
+        <div class="row align-items-center" bis_size="{&quot;x&quot;:431,&quot;y&quot;:183,&quot;w&quot;:1040,&quot;h&quot;:413,&quot;abs_x&quot;:431,&quot;abs_y&quot;:243}">
+            <div class="col-12 col-md-5 col-lg-6 order-md-2" bis_size="{&quot;x&quot;:951,&quot;y&quot;:183,&quot;w&quot;:520,&quot;h&quot;:413,&quot;abs_x&quot;:951,&quot;abs_y&quot;:243}">
+
+                <!-- Image -->
+                <img src="~/img/Illustrations/mobile-app.svg" class="img-fluid mw-md-150 mw-lg-130 mb-6 mb-md-0 aos-init aos-animate" alt="..." data-aos="fade-up" data-aos-delay="100" bis_size="{&quot;x&quot;:971,&quot;y&quot;:183,&quot;w&quot;:624,&quot;h&quot;:413,&quot;abs_x&quot;:971,&quot;abs_y&quot;:243}">
+
+            </div>
+            <div class="col-12 col-md-7 col-lg-6 order-md-1 aos-init aos-animate" data-aos="fade-up" bis_size="{&quot;x&quot;:431,&quot;y&quot;:237,&quot;w&quot;:520,&quot;h&quot;:303,&quot;abs_x&quot;:431,&quot;abs_y&quot;:297}">
+
+                <!-- Heading -->
+                <h1 class="display-3 fw-bold text-center text-md-start" bis_size="{&quot;x&quot;:451,&quot;y&quot;:237,&quot;w&quot;:480,&quot;h&quot;:115,&quot;abs_x&quot;:451,&quot;abs_y&quot;:297}">
+                    Ваша корзина
+                </h1>
+
+                <!-- Text -->
+                <p class="lead text-center text-md-start text-muted mb-6 mb-lg-8" bis_size="{&quot;x&quot;:451,&quot;y&quot;:369,&quot;w&quot;:480,&quot;h&quot;:67,&quot;abs_x&quot;:451,&quot;abs_y&quot;:429}">
+                    Корзина товаров интернет-магазина представляет собой функционал, который позволяет вам добавлять выбранные товары в "корзину", где они могут просмотреть свой выбор, изменить количество или удалить товары перед оформлением заказа.
+                </p>
+
+                <!-- Buttons -->
+                <div class="text-center text-md-start" bis_size="{&quot;x&quot;:451,&quot;y&quot;:484,&quot;w&quot;:480,&quot;h&quot;:57,&quot;abs_x&quot;:451,&quot;abs_y&quot;:544}">
+                    <a asp-action="AllNews" asp-controller="Home" class="btn btn-primary shadow lift me-1" bis_size="{&quot;x&quot;:451,&quot;y&quot;:484,&quot;w&quot;:182,&quot;h&quot;:57,&quot;abs_x&quot;:451,&quot;abs_y&quot;:544}">
+                        Все новости
+                    </a>
+                    <a href="https://newsapi.org/docs/endpoints/everything" target="_blank" class="btn btn-primary-soft lift" bis_size="{&quot;x&quot;:641,&quot;y&quot;:485,&quot;w&quot;:157,&quot;h&quot;:55,&quot;abs_x&quot;:641,&quot;abs_y&quot;:545}">
+                        Документаци API
+                    </a>
+                </div>
+
+            </div>
+        </div> <!-- / .row -->
+    </div>
+
     <partial name="_CartListPartial" />
 }
 else
 {
     <div class="text-center">
-        <img src="~/img/Illustrations/mobile-app.svg">
+        <img>
     </div>
     <div class="mb-5">
         <h1>Корзина</h1>
     </div>
     <div class="row align-items-lg-stretch">
+
         <div class="col-lg-6">
             <div class="p-3">
                 <h3 class="mb-3">Что это такое?</h3>
@@ -54,3 +89,6 @@ else
         </div>
     </div>
 }
+
+
+    
