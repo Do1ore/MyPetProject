@@ -10,6 +10,6 @@ namespace MyPet.Models
         [ForeignKey("MyPetUser")]
         public string? UserId { get; set; }
         public MyPetUser? User { get; set; }
-        public ICollection<CartProduct?>? CartProducts { get; set; }
-    } 
+        public ICollection<CartProduct?>? CartProducts { get; set; } = new List<CartProduct?>();
+    }
 }

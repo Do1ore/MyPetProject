@@ -2,14 +2,20 @@
 @using MyPet.ViewModels;
 @model IEnumerable<ProductAndQuantityViewModel>;
 @*Main part*@
-@if (Model is not null)
+@if (Model.Count() > 0)
 {
     <div class="d-flex mycenter rounded-4 p-4 m-4 bg-overlay5 fixed-bottom">
         <h2 class="text-light">Итоговая стоимость: &ensp;</h2>
         <h2 class="text-light fw-bold" id="total">@Model!.Select(p=>p.DefaultPrice * p.Quatity).ToArray().Sum()</h2>
-        <h2 class="text-light fw-light">BYN</h2>
+        <h2 class="text-light fw-light me-2">BYN</h2>
+        <button class="btn btn-light text-dark" form="mainForm" type="submit">Сохранить</button>
     </div>
     <section class="pb-5">
+
+
+        @{
+            int index = 0;
+        }
         @foreach (var item in Model)
         {
             <div class="card border-0 shadow-sm pt-2 mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
@@ -34,14 +40,13 @@
                                             </svg>&thinsp;Детали
                                         </div>
                                     </a>
-                                    <button type="submit" form="CartForm" class="btn btn-danger">Убрать из корзины</button>
+
+                                    <button class="btn btn-danger" type="submit" form="CartForm">
+                                        Убрать из корзины
+                                    </button>    
                                 </div>
-
-
                                 <form asp-controller="Cart" id="CartForm" asp-action="ExplodeFromCart" class="col">
-                                    <input type="hidden" name="UserId" value="@User.FindFirst(ClaimTypes.NameIdentifier)">
-                                    <input type="hidden" name="ProductId" value="@item.Id">
-
+                                    <input type="hidden" form="CartForm" name="ProductId" value="@item.Id">
                                 </form>
                             </div>
                         </div>
@@ -51,13 +56,15 @@
                             <div class="col d-flex mycenter">
                                 <label class="me-2">Количество</label>
                                 <div class="col-2" style="min-width: 50px">
-                                    <input class="product-quantity-input form-control" min="0" onchange="updatePrice(this, @Math.Round((decimal)item.DefaultPrice!), @item.Id)" value="1" type="number">
+                                    <input id="input_@index" form="mainForm" name="@item.Id" value="@item.Quatity" class="product-quantity-input form-control" min="0" onchange="updatePrice(this, @Math.Round((decimal)item.DefaultPrice!), @item.Id)" type="number">
                                 </div>
                             </div>
                             <div class="col d-flex mycenter">
                                 <span class="fw-bold">Итого: &ensp;</span>
                                 <span class="product-subtotal" id="subtotal_@item.Id">
-                                    @(Math.Round((decimal)(item.DefaultPrice * item.Quatity)))
+                                    @(
+                                        Math.Round((decimal)(item.DefaultPrice * item.Quatity))
+                                        )
                                 </span>
                                 <span>BYN</span>
                             </div>
@@ -65,12 +72,54 @@
                     </div>
                 </div>
             </div>
+
+            index++;
+
         }
     </section>
 }
+<form id="mainForm">
+</form>
 
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
+    $(document).ready(function () {
+        $('#mainForm').submit(function (event) {
+            // Отменяем действие по умолчанию при отправке формы
+            event.preventDefault();
+            var $cartProducts = [];
+            var $dict = {}
+            var index = 0;
+            // переберём все элементы input, textarea и select формы с id="myForm "
+            $('input[id^="input"]').each(function () {
+
+                // добавим новое свойство к объекту $data
+                // имя свойства – значение атрибута name элемента
+                // значение свойства – значение свойство value элемента
+                $dict = {
+                    id: this.name,
+                    quantity: $(this).val(),
+                }
+                $cartProducts[index] = $dict;
+                index++;
+            });
+            // Отправляем словарь на сервер
+            $.ajax({
+                type: 'POST',
+                url: '/Cart/ChangeCartData',
+                contentType: "application/json",
+                data: JSON.stringify({ cartProducts: $cartProducts }),
+                success: function (result) {
+                    console.log(JSON.stringify({ cartProducts: $cartProducts }));
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Ошибка: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+
+
     function updatePrice(input, price, id) {
         var subtotalResult = document.getElementById('subtotal_' + id);
         subtotalResult.innerHTML = input.value * price;
@@ -86,10 +135,8 @@
         }
         var totalSum = document.getElementById('total');
         totalSum.innerHTML = sum;
-
     }
+
+
 </script>
-
-
-
 

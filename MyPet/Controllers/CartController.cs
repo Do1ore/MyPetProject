@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MyPet.Areas.Identity.Data;
 using MyPet.Models;
 using MyPet.ViewModels;
+using MyPet.ViewModels.CartProductForAJAX;
 using Newtonsoft.Json.Linq;
 using NuGet.Common;
 using System.Security.Claims;
@@ -70,7 +71,11 @@ namespace MyPet.Controllers
         public async Task<IActionResult?> ChosenProducts()
         {
             string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!db.Carts.Any(cart => cart.UserId == userId))
+            {
+                return View(new List<ProductAndQuantityViewModel?>());
 
+            }
             ICollection<CartProduct?>? productsCarts = await db.Carts.Include(c => c.CartProducts)
                 .Where(id => id.UserId == userId)
                 .AsNoTracking()
@@ -103,10 +108,44 @@ namespace MyPet.Controllers
             return View(productViewModels);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ChangeCartData([FromBody] ProductAndQuantityViewModelForAJAX cartProductViewModel)
+        {
+            string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var products = await db.Carts
+            .Join(db.CartProducts,
+                cart => cart.Id,
+                cartProduct => cartProduct.CartId,
+                (cart, cartProduct) => new { Cart = cart, CartProduct = cartProduct })
+            .Where(joined => joined.Cart.UserId == userId)
+            .Select(joined => joined.CartProduct)
+            .ToListAsync();
+
+            foreach (var product in products)
+            {
+                foreach (var cartProduct in cartProductViewModel.cartProducts)
+                {
+                    if (product.ProductId == cartProduct.Id)
+                    {
+                        product.Quantity = cartProduct.Quantity;
+                    }
+                }
+            }
+            db.CartProducts.UpdateRange(products);
+            await db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ChosenProducts));
+        }
 
         [HttpPost]
-        public async Task<IActionResult> ExplodeFromCart(int ProductId, string? UserId)
+        public async Task<IActionResult> ExplodeFromCart(int ProductId)
         {
+            string? UserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             MyPetUser? user = await userManager.FindByIdAsync(UserId);
 
             MainCart? cart = await db.Carts.FirstOrDefaultAsync(id => id.UserId == UserId);
