@@ -39,6 +39,7 @@ namespace MyPet.Controllers
             }
             MyPetUser? user = await userManager.FindByIdAsync(userId);
 
+
             if (user != null)
             {
                 // Получаем корзину пользователя
@@ -51,14 +52,29 @@ namespace MyPet.Controllers
                     cart.User = user;
                     db.Carts.Add(cart);
                 }
-                CartProduct cartProduct = new() { ProductId = id, Quantity = 1 };
 
                 // Создаем новый объект CartProduct
                 if (cart.CartProducts is null)
                 {
                     cart.CartProducts = new List<CartProduct?>();
                 }
-                // Добавляем его в коллекцию CartProducts корзины пользователя
+                var products = await db.Carts
+                      .Join(db.CartProducts,
+                          cart => cart.Id,
+                          cartProd => cartProd.CartId,
+                          (cart, cartProd) => new { Cart = cart, CartProduct = cartProd })
+                      .Where(joined => joined.Cart.UserId == userId)
+                      .AsNoTracking()
+                      .Select(joined => joined.CartProduct)
+                      .ToListAsync();
+
+                // Добавляем CartProduct в коллекцию CartProducts корзины пользователя
+                if (products.Any(i => i.ProductId == id))
+                {
+                    return RedirectToAction("ShowFilteredProduct", "UserProduct");
+                }
+                CartProduct cartProduct = new() { ProductId = id, Quantity = 1 };
+
                 cart.CartProducts.Add(cartProduct);
                 // Сохраняем изменения в базе данных
                 await db.SaveChangesAsync();

@@ -4,11 +4,19 @@
 @*Main part*@
 @if (Model.Count() > 0)
 {
-    <div class="d-flex mycenter rounded-4 p-4 m-4 bg-overlay5 fixed-bottom">
-        <h2 class="text-light">Итоговая стоимость: &ensp;</h2>
-        <h2 class="text-light fw-bold" id="total">@Model!.Select(p=>p.DefaultPrice * p.Quatity).ToArray().Sum()</h2>
-        <h2 class="text-light fw-light me-2">BYN</h2>
-        <button class="btn btn-light text-dark" form="mainForm" type="submit">Сохранить</button>
+    <div class="d-flex mycenter rounded-4 p-4 m-4 bg-overlay5 fixed-bottom opacity-75" style="justify-content: space-evenly">
+        <div class="d-flex">
+            <h2 class="text-light">Итоговая стоимость: &ensp;</h2>
+            <h2 class="text-light fw-bold" id="total">@Model!.Select(p=>p.DefaultPrice * p.Quatity).ToArray().Sum()</h2>
+            <h2 class="text-light fw-light me-2">BYN</h2>
+        </div>
+        <div class="d-flex">
+            <button class="btn btn-primary text-light me-2" id="liveToastBtn">Офромить заказ</button>
+            <button class="btn btn-success text-light me-2" form="mainForm" type="submit">Сохранить</button>
+            <button class="btn btn-light text-dark me-2" id="resetQuantity">Сбросить кол-во</button>
+
+        </div>
+
     </div>
     <section class="pb-5">
 
@@ -43,7 +51,7 @@
 
                                     <button class="btn btn-danger" type="submit" form="CartForm">
                                         Убрать из корзины
-                                    </button>    
+                                    </button>
                                 </div>
                                 <form asp-controller="Cart" id="CartForm" asp-action="ExplodeFromCart" class="col">
                                     <input type="hidden" form="CartForm" name="ProductId" value="@item.Id">
@@ -80,10 +88,23 @@
 }
 <form id="mainForm">
 </form>
+<script src="~/lib/bootstrap/dist/_js/bootstrap.bundle.min.js"></script>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<partial name="_ToastViewShared.cshtml" />
 <script>
-    $(document).ready(function () {
+    const toastTrigger = document.getElementById('liveToastBtn')
+    const toastLiveExample = document.getElementById('liveToast')
+
+    if (toastTrigger) {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastTrigger.addEventListener('click', function (event) {
+            toastBootstrap.show()
+        });
+    }
+
+    $(document).ready(function submitChanges() {
         $('#mainForm').submit(function (event) {
             // Отменяем действие по умолчанию при отправке формы
             event.preventDefault();
@@ -137,6 +158,16 @@
         totalSum.innerHTML = sum;
     }
 
+    var resetButton = document.getElementById("resetQuantity");
+    resetButton.addEventListener('click', function (resetQuantityInInputs) {
+        var elements = document.getElementsByClassName("product-quantity-input");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].value = 1;
+        }
+        updateTotalPrice();
+
+
+    });
 
 </script>
 

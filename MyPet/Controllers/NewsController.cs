@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using MyPet.ViewModels.News;
 
 namespace MyPet.Controllers
 {
+    [Authorize(Roles ="admin")]
     public class NewsController : Controller
     {
         private readonly ProductDbContext db;
