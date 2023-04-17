@@ -1,11 +1,16 @@
 ﻿@using MyPet.ViewModels;
-@model IEnumerable<ProductViewModel>
+@model ProductsAndFilterViewModel;
 
 @{
-    int count = @Model.Count();
+    int? count = @Model?.Products?.Count();
     if (count > 0)
     {
-        <partial name="_ProductSearchViewPartial"></partial>
+        <div class="py-3">
+            <a class="btn btn-small btn-primary w-100" asp-controller="UserProduct" asp-route-pageNumber="1" asp-action="ShowFilteredProduct">Смотреть другие товары</a>
+
+        </div>
     }
-    
+    <partial name="_ProductSearchViewPartial"></partial>
+ 
+
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Policy;
-using System.Threading.Tasks;
-using MessagePack;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 
 namespace MyPet.Areas.Identity.Data;
@@ -20,6 +15,9 @@ public class MyPetUser : IdentityUser
     public string? LastName { get; set; }
     [PersonalData]
     public DateTime RegistrationDateTime { get; set; }
-    public MainCart MainProductCart { get; set; }
+    public MainCart? MainProductCart { get; set; }
+    [NotMapped]
+    public IFormFile? UserProfileImage { get; set; }
+    public string? PathToProfileImage { get; set; } = DefaultUserImage.ImgUrl;
 }
 

@@ -12,8 +12,8 @@
                 <div class="card-body">
                     <h5 class="card-title">@item.ProductFullName</h5>
                     <p class="card-text">@item.ShortDescription</p>
-                    
-                    <p><small class="text-muted">@item.ProductType</small> </p>
+
+                    <p><small class="text-muted"> <mark class="mark text-light bg-dark rounded-3 p-1">@item.ProductType</mark></small> </p>
 
                     <p class="card-text">От @Math.Round((decimal)item.MinPrice!, 0) BYN </p>
 

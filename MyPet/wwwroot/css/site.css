@@ -253,3 +253,20 @@ accordion-item {
 .my-border-radius {
     border-radius: 15px;
 }
+
+.profile-img-normal {
+    min-height: 200px;
+    width: 200px;
+    min-width: 200px;
+    object-fit: cover;
+    border-radius: 100rem;
+}
+
+.profile-img-min {
+    max-height: 40px;
+    min-height: 40px;
+    width: 40px;
+    border: 2px solid white;
+    object-fit: cover;
+    border-radius: 10rem;
+}

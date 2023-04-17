@@ -1,29 +1,43 @@
 ﻿@using System.Security.Claims;
 @using MyPet.ViewModels;
 @model IEnumerable<ProductAndQuantityViewModel>;
+
 @*Main part*@
+
 @if (Model.Count() > 0)
 {
-    <div class="d-flex mycenter rounded-4 p-4 m-4 bg-overlay5 fixed-bottom opacity-75" style="justify-content: space-evenly">
-        <div class="d-flex">
-            <h2 class="text-light">Итоговая стоимость: &ensp;</h2>
-            <h2 class="text-light fw-bold" id="total">@Model!.Select(p=>p.DefaultPrice * p.Quatity).ToArray().Sum()</h2>
-            <h2 class="text-light fw-light me-2">BYN</h2>
+    <div class="d-flex mycenter p-4 fixed-bottom opacity-100 opacity-75 shadow-lg"
+         style="justify-content: space-evenly; backdrop-filter: blur(70px);">
+        <div class="d-flex mycenter">
+            <h2 class="text-dark">Итоговая стоимость: &ensp;</h2>
+            <h2 class="fw-bold me-1" id="total">@Model!.Select(p=>p.DefaultPrice * p.Quatity).ToArray().Sum()</h2>
+            <h2 class=" fw-light me-2"><mark class="text-light mark rounded-3 bg-primary">BYN</mark></h2>
         </div>
         <div class="d-flex">
-            <button class="btn btn-primary text-light me-2" id="liveToastBtn">Офромить заказ</button>
-            <button class="btn btn-success text-light me-2" form="mainForm" type="submit">Сохранить</button>
-            <button class="btn btn-light text-dark me-2" id="resetQuantity">Сбросить кол-во</button>
+            <button class="btn btn-primary text-light me-2 shadow-sm" id="liveToastBtn">Офромить заказ</button>
+            <button class="btn btn-success text-light me-2 shadow-sm" form="mainForm" type="submit">Сохранить</button>
+            <button class="btn btn-light text-dark shadow-sm" id="resetQuantity">Сбросить кол-во</button>
 
         </div>
 
     </div>
     <section class="pb-5">
-
-
         @{
             int index = 0;
         }
+        <div class="d-flex mb-3 justify-content-end">
+            <div class="ml-auto">
+                <form asp-action="ClearCart" asp-controller="Cart">
+                    <button class="btn btn-small btn-light shadow-sm" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 2px" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                        </svg>
+                        Очистить все
+                    </button>
+                </form>
+            </div>
+
+        </div>
         @foreach (var item in Model)
         {
             <div class="card border-0 shadow-sm pt-2 mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
@@ -35,7 +49,7 @@
                         <div class="card-body">
                             <h5 class="card-title">@item.ProductFullName</h5>
                             <p class="card-text">@item.ShortDescription</p>
-                            <p><small class="text-muted">@item.ProductType</small> </p>
+                            <p><small class="text-muted"><mark class="mark text-light bg-dark rounded-3 p-1">@item.ProductType</mark></small> </p>
 
                             <p class="card-text">От @Math.Round((decimal)item.MinPrice!, 0) BYN </p>
                             <div class="row">
@@ -131,7 +145,8 @@
                 contentType: "application/json",
                 data: JSON.stringify({ cartProducts: $cartProducts }),
                 success: function (result) {
-                    console.log(JSON.stringify({ cartProducts: $cartProducts }));
+                    NotifySuccess("Информация сохранена.")
+
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     console.log('Ошибка: ' + xhr.responseText);
@@ -145,6 +160,7 @@
         var subtotalResult = document.getElementById('subtotal_' + id);
         subtotalResult.innerHTML = input.value * price;
         updateTotalPrice();
+
     }
 
     function updateTotalPrice() {
@@ -156,6 +172,7 @@
         }
         var totalSum = document.getElementById('total');
         totalSum.innerHTML = sum;
+
     }
 
     var resetButton = document.getElementById("resetQuantity");
@@ -165,9 +182,18 @@
             elements[i].value = 1;
         }
         updateTotalPrice();
-
-
+        NotifySuccess("Кол-во товара успешно обновлено");
     });
+
+    function NotifySuccess(message) {
+
+        const notification = notyf.success(message)
+        notification.on('click', ({ target, event }) => {
+            // target: the notification being clicked
+            // event: the mouseevent
+            notyf.dismiss(notification);
+        });
+    }
 
 </script>
 

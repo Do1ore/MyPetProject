@@ -10,7 +10,7 @@ using System.Transactions;
 
 namespace MyPet.Controllers
 {
-    public class UserProductController : Controller
+    public sealed class UserProductController : Controller
     {
         private readonly ProductDbContext db;
         private readonly IMapper mapper;
@@ -25,6 +25,7 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> SearchProduct(string searchTerm)
         {
+            ProductsAndFilterViewModel productAndFilerViewModel = new ProductsAndFilterViewModel();
             List<ProductViewModel> productViewModels = new();
 
             var results = await db.Products
@@ -46,12 +47,18 @@ namespace MyPet.Controllers
                 ViewBag.Secondary = $"Вы можете найти нужный товар во вкладке 'Товары'";
 
             }
-            return View(productViewModels);
+            FilterViewModel filterViewModel = new FilterViewModel()
+            {
+                SearchTerm = searchTerm,
+            };
+            productAndFilerViewModel.Products = productViewModels;
+            productAndFilerViewModel.Filter = filterViewModel;
+            return View(productAndFilerViewModel);
         }
 
 
 
-        public async Task<IActionResult> ShowFilteredProduct(FilterViewModel filter, int PageNumber)
+        public async Task<IActionResult> ShowFilteredProduct(FilterViewModel filter, int pageNumber)
         {
             if (!ProductHelper.CheckFilterForEmptyness(filter))
             {
@@ -109,15 +116,15 @@ namespace MyPet.Controllers
 
             int PageCount = (int)Math.Ceiling(productToShow.Count / (double)ProductsOnPage);
 
-            if (PageNumber == 0)
+            if (pageNumber == 0)
             {
-                PageNumber = 1;
+                pageNumber = 1;
             }
-            List<ProductViewModel> resultProducts = SelectProducts(productToShow, PageNumber);
+            List<ProductViewModel> resultProducts = SelectProducts(productToShow, pageNumber);
 
             ViewBag.Quantity = productToShow.Count;
             ViewBag.ProductsOnPage = PageCount;
-            ViewBag.CurrentPage = PageNumber;
+            ViewBag.CurrentPage = pageNumber;
 
             ProductsAndFilterViewModel? productsAndFilter = new();
             productsAndFilter.Products = resultProducts;
@@ -138,9 +145,9 @@ namespace MyPet.Controllers
                 products = products.Where(p => p.DefaultPrice <= filter.MaxPrice).Select(p => p).ToList();
 
             if (filter.SearchTerm is not null)
-                    products = products.Where(p => p.ProductExtendedFullName.ToUpper().Contains(filter.SearchTerm.ToUpper()) ||
-                    p.Description.ToUpper().Contains(filter.SearchTerm))
-                    .Select(p => p).ToList();
+                products = products.Where(p => p.ProductExtendedFullName.ToUpper().Contains(filter.SearchTerm.ToUpper()) ||
+                p.Description.ToUpper().Contains(filter.SearchTerm))
+                .Select(p => p).ToList();
 
             if (filter.SortPrice is not null)
             {

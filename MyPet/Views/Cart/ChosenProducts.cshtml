@@ -6,7 +6,7 @@
 {
     ViewBag.Title = "Корзина товаров";
     ViewBag.Secondary = "Добавлено товаров: " + Model.Count();
-    <div class="container mb-3" bis_size="{&quot;x&quot;:431,&quot;y&quot;:183,&quot;w&quot;:1040,&quot;h&quot;:413,&quot;abs_x&quot;:431,&quot;abs_y&quot;:243}">
+    <div class="container mb-5" bis_size="{&quot;x&quot;:431,&quot;y&quot;:183,&quot;w&quot;:1040,&quot;h&quot;:413,&quot;abs_x&quot;:431,&quot;abs_y&quot;:243}">
         <div class="row align-items-center" bis_size="{&quot;x&quot;:431,&quot;y&quot;:183,&quot;w&quot;:1040,&quot;h&quot;:413,&quot;abs_x&quot;:431,&quot;abs_y&quot;:243}">
             <div class="col-12 col-md-5 col-lg-6 order-md-2" bis_size="{&quot;x&quot;:951,&quot;y&quot;:183,&quot;w&quot;:520,&quot;h&quot;:413,&quot;abs_x&quot;:951,&quot;abs_y&quot;:243}">
 
@@ -28,11 +28,11 @@
 
                 <!-- Buttons -->
                 <div class="text-center text-md-start" bis_size="{&quot;x&quot;:451,&quot;y&quot;:484,&quot;w&quot;:480,&quot;h&quot;:57,&quot;abs_x&quot;:451,&quot;abs_y&quot;:544}">
-                    <a asp-action="AllNews" asp-controller="Home" class="btn btn-primary shadow lift me-1" bis_size="{&quot;x&quot;:451,&quot;y&quot;:484,&quot;w&quot;:182,&quot;h&quot;:57,&quot;abs_x&quot;:451,&quot;abs_y&quot;:544}">
-                        Все новости
+                    <a asp-action="ShowFilteredProduct" asp-controller="UserProduct" class="btn btn-primary shadow lift me-1" bis_size="{&quot;x&quot;:451,&quot;y&quot;:484,&quot;w&quot;:182,&quot;h&quot;:57,&quot;abs_x&quot;:451,&quot;abs_y&quot;:544}">
+                        Все товары
                     </a>
-                    <a href="https://newsapi.org/docs/endpoints/everything" target="_blank" class="btn btn-primary-soft lift" bis_size="{&quot;x&quot;:641,&quot;y&quot;:485,&quot;w&quot;:157,&quot;h&quot;:55,&quot;abs_x&quot;:641,&quot;abs_y&quot;:545}">
-                        Документаци API
+                    <a asp-action="AllNews" asp-controller="Home" class="btn btn-primary-soft lift" bis_size="{&quot;x&quot;:641,&quot;y&quot;:485,&quot;w&quot;:157,&quot;h&quot;:55,&quot;abs_x&quot;:641,&quot;abs_y&quot;:545}">
+                        Новости
                     </a>
                 </div>
 

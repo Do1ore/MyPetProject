@@ -1,3 +1,5 @@
+using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.Identity.Data;
@@ -12,7 +14,7 @@ builder.Services.AddDbContext<MyIdentityDbContext>(options =>
 builder.Services.AddDbContext<ProductDbContext>(options =>
 options.UseSqlServer(connectionString));
 
-
+builder.Services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
 builder.Services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
         .AddEntityFrameworkStores<MyIdentityDbContext>()
         .AddDefaultTokenProviders()
@@ -35,7 +37,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseNotyf();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseDefaultFiles();

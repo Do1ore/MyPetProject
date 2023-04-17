@@ -5,20 +5,32 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
+<h3 class="mt-sm-4 mt-4 mt-lg-0 mt-xl-0 text-sm-center text-lg-start text-xl-start text-center">@ViewData["Title"]</h3>
+
+<div class="text-center text-sm-center text-center text-lg-start">
+    <img src="@Model.UserProfileImagePath" class="profile-img-normal border border-2 border-dark shadow mb-3" />
+</div>
+
 <partial name="_StatusMessage" for="StatusMessage" />
+
+
 <div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
+    <div class="col-12">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
                 <input asp-for="Username" class="form-control" placeholder="Придумайте никнейм." disabled />
                 <label asp-for="Username" class="form-label"></label>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Пожалуйста введите свой номер телефона."/>
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Пожалуйста введите свой номер телефона." />
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Input.UserProfileImage" class="form-label" for="formFile"></label>
+
+                <input asp-for="Input.UserProfileImage" placeholder="Выберите изображение" id="formFile" type="file" class="form-control" />
             </div>
             <button id="update-profile-button" type="submit" class="w-100 btn btn-success">Сохранить</button>
         </form>

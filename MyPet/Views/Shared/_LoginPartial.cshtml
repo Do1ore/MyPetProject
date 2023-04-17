@@ -1,14 +1,26 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MyPet.Areas.Identity.Data
+@using MyPet.Areas.SomeLogics;
 
 @inject SignInManager<MyPetUser> SignInManager
 @inject UserManager<MyPetUser> UserManager
 
+
+
 <ul class="navbar-nav mycenter" style="margin-left: 20px">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Управление">@UserManager.GetUserName(User)!</a>
+        var user = await UserManager.FindByIdAsync(UserManager.GetUserId(User)!);
+        var profileImgPath = user.PathToProfileImage;
+        if(profileImgPath is null)
+        {
+            profileImgPath = DefaultUserImage.ImgUrl;
+        }
+        <li class="nav-item d-flex mt-sm-3 mt-lg-0 mt-xl-0">
+            <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                <img src="@profileImgPath" class="profile-img-min me-2" />
+            </a>
+            <a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Управление">@UserManager.GetUserName(User)</a>
         </li>
         <li class="nav-item mycenter">
             <button id="logout" form="logoutForm" type="submit" class="nav-link text-danger p-1 rounded-3 my-border-radius btn bg-danger-subtle">

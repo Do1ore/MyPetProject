@@ -1,15 +1,13 @@
-﻿using AutoMapper;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using MyPet.Areas.Identity.Data;
 using MyPet.Models;
 using MyPet.ViewModels;
 using MyPet.ViewModels.CartProductForAJAX;
-using Newtonsoft.Json.Linq;
-using NuGet.Common;
 using System.Security.Claims;
 
 namespace MyPet.Controllers
@@ -21,12 +19,14 @@ namespace MyPet.Controllers
         private readonly UserManager<MyPetUser> userManager;
         private readonly MyIdentityDbContext userDb;
         private readonly IMapper mapper;
-        public CartController(ProductDbContext db, UserManager<MyPetUser> userManager, IMapper mapper, MyIdentityDbContext users)
+        private readonly INotyfService notifyService;
+        public CartController(ProductDbContext db, UserManager<MyPetUser> userManager, IMapper mapper, MyIdentityDbContext userDb, INotyfService notyfyService)
         {
             this.db = db;
             this.userManager = userManager;
             this.mapper = mapper;
-            userDb = users;
+            this.userDb = userDb;
+            this.notifyService = notyfyService;
         }
 
         [HttpPost]
@@ -35,6 +35,8 @@ namespace MyPet.Controllers
             string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (userId == null)
             {
+                notifyService.Error("Пользователь не найден", 10);
+
                 return RedirectToPage("/Account/Login");
             }
             MyPetUser? user = await userManager.FindByIdAsync(userId);
@@ -71,6 +73,8 @@ namespace MyPet.Controllers
                 // Добавляем CartProduct в коллекцию CartProducts корзины пользователя
                 if (products.Any(i => i.ProductId == id))
                 {
+                    notifyService.Warning("Товар уже добавлен в корзину", 10);
+
                     return RedirectToAction("ShowFilteredProduct", "UserProduct");
                 }
                 CartProduct cartProduct = new() { ProductId = id, Quantity = 1 };
@@ -78,6 +82,7 @@ namespace MyPet.Controllers
                 cart.CartProducts.Add(cartProduct);
                 // Сохраняем изменения в базе данных
                 await db.SaveChangesAsync();
+                notifyService.Success("Успешно добвлено!", 10);
             }
             return RedirectToAction("ShowFilteredProduct", "UserProduct");
 
@@ -130,6 +135,7 @@ namespace MyPet.Controllers
             string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
             {
+                notifyService.Warning($"Что-то пошло не так");
                 return BadRequest(ModelState);
             }
             var products = await db.Carts
@@ -153,6 +159,7 @@ namespace MyPet.Controllers
             }
             db.CartProducts.UpdateRange(products);
             await db.SaveChangesAsync();
+            notifyService.Information($"Информация обновлена. Товаров изменено: {products.Count}, 10");
 
             return RedirectToAction(nameof(ChosenProducts));
         }
@@ -168,7 +175,30 @@ namespace MyPet.Controllers
 
             await db.CartProducts.Where(cp => cp.ProductId == ProductId).ExecuteDeleteAsync();
             await db.SaveChangesAsync();
+            notifyService.Success("Успешно удалено");
             return RedirectToAction(nameof(ChosenProducts));
+        }
+        public async Task<IActionResult> ClearCart()
+        {
+            string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            ICollection<CartProduct?>? productsCarts = await db.Carts.Include(c => c.CartProducts)
+               .Where(id => id.UserId == userId)
+               .AsNoTracking()
+               .Select(p => p.CartProducts)
+               .SingleAsync();
+
+            if(productsCarts is null)
+            {
+                notifyService.Information("Ваша корзина и так пуста");
+                return RedirectToAction(nameof(ChosenProducts));
+            }
+
+            db.CartProducts.RemoveRange(productsCarts!);
+            await db.SaveChangesAsync();
+            notifyService.Success($"Корзина товара очищена. Очещено товаров: {productsCarts.Count}");
+            return RedirectToAction(nameof(ChosenProducts));
+
         }
 
     }

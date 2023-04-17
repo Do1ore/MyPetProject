@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card-body" style="padding: 40px;">
                 <h1 class="card-title display-6 fw-semibold">@Model.ProductExtendedFullName</h1>
-                <span class="badge card-text bg-overlay2 fw-normal p-2">Rating: @(Model.Rating / 10.0) / 5</span>
+                <span class="badge card-text bg-overlay2 fw-normal p-2">Рейтинг: @(Model.Rating / 10.0) / 5</span>
                 <br><br>
                 <p class="card-text">@Model.Description</p>
                 <span class="fw-medium" style="text-align: left;">Цена от @Math.Round(Model.MinPrice, 0) до @Math.Round(Model.MaxPrice,0) BYN</span>
