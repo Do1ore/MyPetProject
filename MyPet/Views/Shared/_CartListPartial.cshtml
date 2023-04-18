@@ -102,21 +102,16 @@
 }
 <form id="mainForm">
 </form>
-<script src="~/lib/bootstrap/dist/_js/bootstrap.bundle.min.js"></script>
 
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial.cshtml" />
+
+}
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-<partial name="_ToastViewShared.cshtml" />
 <script>
-    const toastTrigger = document.getElementById('liveToastBtn')
-    const toastLiveExample = document.getElementById('liveToast')
-
-    if (toastTrigger) {
-        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-        toastTrigger.addEventListener('click', function (event) {
-            toastBootstrap.show()
-        });
-    }
 
     $(document).ready(function submitChanges() {
         $('#mainForm').submit(function (event) {

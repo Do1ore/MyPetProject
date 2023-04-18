@@ -8,7 +8,7 @@ namespace MyPet.Areas.Identity.Data;
 // Add profile data for application userDb by adding properties to the MyPetUser class
 public class MyPetUser : IdentityUser
 {
-    
+
     [PersonalData]
     public string? FirstName { get; set; }
     [PersonalData]

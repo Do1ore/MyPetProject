@@ -1,12 +1,14 @@
-﻿
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels;
+using System.Drawing;
 using System.Runtime.CompilerServices;
-using System.Transactions;
+using System.Security.Claims;
 
 namespace MyPet.Controllers
 {
@@ -14,13 +16,15 @@ namespace MyPet.Controllers
     {
         private readonly ProductDbContext db;
         private readonly IMapper mapper;
+        private readonly INotyfService notify;
         private static FilterViewModel? buffilter;
         private const int ProductsOnPage = 30;
 
-        public UserProductController(ProductDbContext db, IMapper mapper)
+        public UserProductController(ProductDbContext db, IMapper mapper, INotyfService notify)
         {
             this.db = db;
             this.mapper = mapper;
+            this.notify = notify;
         }
 
         public async Task<IActionResult> SearchProduct(string searchTerm)
@@ -191,16 +195,32 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult?> ViewDetails(int? id)
         {
+
             ProductDetailedViewModel? productView = new();
-            await Task.Run(() =>
+
+            var product = await db.Products.Include(u => u.ExtraImage)
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .SingleOrDefaultAsync();
+
+            productView = mapper.Map<ProductDetailedViewModel>(product);
+            if (product is not null)
             {
-                MainProductModel? product = db.Products.Include(i => i.ExtraImage).ToList().Find(i => i.Id == id);
-                productView = mapper.Map<ProductDetailedViewModel?>(product);
-                if (product is not null)
-                {
-                    ViewBag.Title = "Детальная информация";
-                }
-            });
+                ViewBag.Title = "Детальная информация";
+            }
+
+
+            var reviews = await db.ReviewStorages.Join(db.ProductReviews,
+                                storage => storage.ReviewStorageId,
+                                review => review.ReviewStorageId,
+                                (joined, joinedR) => new { Reviews = joinedR, Storage = joined })
+                                .Where(p => p.Reviews.ProductId == id)
+                                .AsNoTracking()
+                                .Select(u => u.Reviews)
+                                .ToListAsync();
+            if (reviews is not null)
+                productView.Reviews = reviews;
+
             return View(productView);
         }
 
@@ -208,6 +228,52 @@ namespace MyPet.Controllers
         {
             buffilter = new FilterViewModel();
             return RedirectToAction("ShowFilteredProduct");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendReview([FromBody] ReviewViewModel review)
+        {
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (!ModelState.IsValid)
+            {
+                notify.Warning("Форма не правильно заполнена");
+                return RedirectToAction(nameof(ViewDetails), "UserProduct", new { id = review.ProductId });
+
+            }
+            //is there a storage for current user
+            if (!db.ReviewStorages.Any(i => i.MyPetUserId == userId))
+            {
+                await CreateReviewStorageForUser(userId);
+            }
+
+            var reviewStorage = await db.ReviewStorages.Where(u => u.MyPetUserId == userId)
+                                  .Select(a => a)
+                                  .SingleOrDefaultAsync();
+            //creating review in current review storage
+            ProductReview? reviewModel = new()
+            {
+                ProductId = review.ProductId,
+                ReviewText = review.Text,
+                ReviewMark = (int)review.Rating!,
+                ReviewStorage = reviewStorage!,
+                PublishedAt = DateTime.Now,
+            };
+
+            await db.ProductReviews.AddAsync(reviewModel);
+
+            await db.SaveChangesAsync();
+            return new JsonResult(new { id = review.ProductId, success = true });
+
+        }
+
+        private async Task CreateReviewStorageForUser(string userId)
+        {
+            var reviewStorage = new ReviewStorage()
+            {
+                MyPetUserId = userId,
+            };
+            await db.ReviewStorages.AddAsync(reviewStorage);
+            await db.SaveChangesAsync();
         }
 
     }

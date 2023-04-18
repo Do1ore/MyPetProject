@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPet.Models;
 
@@ -11,9 +12,11 @@ using MyPet.Models;
 namespace MyPet.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    partial class ProductDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230418173146_review23")]
+    partial class review23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,9 +258,6 @@ namespace MyPet.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("PublishedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("ReviewMark")
                         .HasColumnType("int");
 
@@ -273,7 +273,7 @@ namespace MyPet.Migrations
 
                     b.HasIndex("ReviewStorageId");
 
-                    b.ToTable("ProductReviews");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("MyPet.Models.ReviewStorage", b =>
@@ -289,7 +289,7 @@ namespace MyPet.Migrations
 
                     b.HasIndex("MyPetUserId");
 
-                    b.ToTable("ReviewStorages");
+                    b.ToTable("ProductReviews");
                 });
 
             modelBuilder.Entity("MyPet.Models.CartProduct", b =>

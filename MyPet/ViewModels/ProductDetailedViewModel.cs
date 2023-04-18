@@ -29,5 +29,6 @@ namespace MyPet.ViewModels
         public DateTime LastTimeEdited { get; set; }
         public string? ParsedUrl { get; set; }
         public ICollection<ExtraImageModel>? ExtraImage { get; set; }
+        public ICollection<ProductReview>? Reviews { get; set; }  = new List<ProductReview?>();
     }
 }

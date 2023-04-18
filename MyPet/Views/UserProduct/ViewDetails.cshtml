@@ -4,3 +4,110 @@
     ViewBag.Secondary = Model.ProductType;
 }
 <partial name="_ProductDetailsForUserPartial" />
+
+<form id="reviewForm">
+    <input type="hidden" id="productId" value="@Model.Id" />
+
+    <div class="row">
+        <div class="col-8">
+            <input type="text" id="textReviewInput" class="form-control" placeholder="Оствьте отзыв" />
+        </div>
+        <div class="col-2">
+            <input type="number" class="form-control" value="25" max="50" min="0" id="ratingReviewInput">
+        </div>
+        <div class="col">
+            <button type="submit" class="w-100  btn btn-success">Отправить</button>
+        </div>
+    </div>
+</form>
+<div class="row text-center" style="margin: 50px">
+    <div class="col">
+        <a class="btn btn-primary" asp-controller="UserProduct" asp-action="ShowFilteredProduct" asp-route-id="@Model.Id">Список товаров</a>
+    </div>
+    <div class="col">
+        <button id="liveToastBtn" form="AddToCart" type="submit" class="btn btn-success">
+            <div class="mycenter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
+                    <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
+                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                </svg>&thinsp;Добавить
+            </div>
+        </button>
+    </div>
+    <form asp-controller="Cart" id="AddToCart" asp-action="AddProductToCart">
+        <input type="hidden" value="@Model.Id" name="ProductId">
+    </form>
+</div>
+
+@if (Model.Reviews is not null)
+{
+    <section class="bg-secondary rounded-3 p-5">
+        <div class="row-cols-1"></div>
+        @foreach (var review in Model.Reviews)
+        {
+            <div class="col d-flex">
+                <span class="text-light me-2">@review.ReviewMark</span>
+                <span class="text-light me-2">@review.ReviewText</span>
+                <span class="text-light">@review.PublishedAt</span>
+            </div>
+        }
+    </section>
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function submitChanges() {
+        $('#reviewForm').submit(function (event) {
+            // Отменяем действие по умолчанию при отправке формы
+            event.preventDefault();
+
+
+            var productId = document.getElementById("productId").value;
+            var reviewText = document.getElementById("textReviewInput").value;
+            var rating = document.getElementById("ratingReviewInput").value;
+
+            var reviewModel = {
+                ProductId: productId,
+                Rating: rating,
+                Text: reviewText
+            }
+
+            // Отправляем объект на сервер
+            $.ajax({
+                type: 'POST',
+                url: '/UserProduct/SendReview',
+                data: JSON.stringify(reviewModel),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    NotifySuccess("Ваш отзыв сохранен")
+
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    NotifyError('Ошибка');
+                    console.log('Ошибка: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+    function NotifySuccess(message) {
+
+        const notification = notyf.success(message)
+        notification.on('click', ({ target, event }) => {
+            // target: the notification being clicked
+            // event: the mouseevent
+            notyf.dismiss(notification);
+        });
+    }
+
+    function NotifyError(message) {
+
+        const notification = notyf.error(message)
+        notification.on('click', ({ target, event }) => {
+            // target: the notification being clicked
+            // event: the mouseevent
+            notyf.dismiss(notification);
+        });
+    }
+</script>

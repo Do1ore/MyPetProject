@@ -57,7 +57,7 @@
                                 <a class="text-dark dropdown-item" asp-area="" asp-controller="User" asp-action="Index">Список пользователей</a>
                             </div>
                         </li>
-                     
+
                     </ul>
                     @*Search*@
                     <div class="d-flex">
@@ -70,7 +70,7 @@
                     <form id="searchForm" style="" role="search" asp-controller="UserProduct" asp-action="SearchProduct">
                     </form>
                 </div>
-              
+
             </div>
         </nav>
 
@@ -101,6 +101,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/_js/bootstrap.bundle.min.js"></script>
+
     @await Component.InvokeAsync("Notyf")
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPet.Models;
 
@@ -11,9 +12,11 @@ using MyPet.Models;
 namespace MyPet.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    partial class ProductDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230418123735_review")]
+    partial class review
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,48 +251,50 @@ namespace MyPet.Migrations
 
             modelBuilder.Entity("MyPet.Models.ProductReview", b =>
                 {
-                    b.Property<Guid>("ReviewId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("PublishedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ReviewMark")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ReviewStorageId")
+                    b.Property<Guid>("ReviewId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ReviewText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ReviewId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ReviewStorageId");
+                    b.HasIndex("ReviewId");
 
                     b.ToTable("ProductReviews");
                 });
 
-            modelBuilder.Entity("MyPet.Models.ReviewStorage", b =>
+            modelBuilder.Entity("MyPet.Models.Review", b =>
                 {
-                    b.Property<Guid>("ReviewStorageId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("MyPetUserId")
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ReviewStorageId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("MyPetUserId");
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("ReviewStorages");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("MyPet.Models.CartProduct", b =>
@@ -332,25 +337,33 @@ namespace MyPet.Migrations
                     b.HasOne("MyPet.Models.MainProductModel", "Product")
                         .WithMany("ProductReviews")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MyPet.Models.ReviewStorage", "ReviewStorage")
-                        .WithMany("ProductReviews")
-                        .HasForeignKey("ReviewStorageId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("MyPet.Models.Review", "Review")
+                        .WithMany()
+                        .HasForeignKey("ReviewId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Product");
 
-                    b.Navigation("ReviewStorage");
+                    b.Navigation("Review");
                 });
 
-            modelBuilder.Entity("MyPet.Models.ReviewStorage", b =>
+            modelBuilder.Entity("MyPet.Models.Review", b =>
                 {
-                    b.HasOne("MyPet.Areas.Identity.Data.MyPetUser", "User")
+                    b.HasOne("MyPet.Models.MainProductModel", "Product")
                         .WithMany()
-                        .HasForeignKey("MyPetUserId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyPet.Areas.Identity.Data.MyPetUser", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
 
                     b.Navigation("User");
                 });
@@ -358,6 +371,8 @@ namespace MyPet.Migrations
             modelBuilder.Entity("MyPet.Areas.Identity.Data.MyPetUser", b =>
                 {
                     b.Navigation("MainProductCart");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("MyPet.Models.MainCart", b =>
@@ -371,11 +386,6 @@ namespace MyPet.Migrations
 
                     b.Navigation("ExtraImage");
 
-                    b.Navigation("ProductReviews");
-                });
-
-            modelBuilder.Entity("MyPet.Models.ReviewStorage", b =>
-                {
                     b.Navigation("ProductReviews");
                 });
 #pragma warning restore 612, 618

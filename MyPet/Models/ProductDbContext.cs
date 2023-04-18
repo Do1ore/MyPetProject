@@ -13,6 +13,9 @@ namespace MyPet.Models
         public DbSet<MainCart> Carts { get; set; }
         public DbSet<CartProduct> CartProducts { get; set; }
         public DbSet<NewsApiSettingsModel> NewsApiSettings { get; set; }
+        public DbSet<ReviewStorage> ReviewStorages { get; set; }
+        public DbSet<ProductReview> ProductReviews { get; set; }
+
         public ProductDbContext(DbContextOptions<ProductDbContext> options)
                 : base(options)
         {
@@ -26,16 +29,28 @@ namespace MyPet.Models
                 .WithOne(e => e.ProductModel);
 
             modelBuilder.Entity<CartProduct>()
-              .HasKey(cp => new { cp.CartId, cp.ProductId });
+                .HasKey(cp => new { cp.CartId, cp.ProductId });
 
 
             modelBuilder.Entity<NewsApiSettingsModel>()
-            .Property(e => e.Sourses);
-
+                .Property(e => e.Sourses);
 
             modelBuilder.Entity<NewsApiSettingsModel>()
-            .Property(e => e.Domains);
-            
+                .Property(e => e.Domains);
+
+
+            //Review model relations set up
+
+            modelBuilder.Entity<ReviewStorage>()
+                .HasMany(r => r.ProductReviews)
+                .WithOne(s => s.ReviewStorage);
+
+            modelBuilder.Entity<ReviewStorage>()
+                .HasOne(r => r.User);
+
+            modelBuilder.Entity<MainProductModel>()
+                .HasMany(p => p.ProductReviews);
+
         }
 
     }

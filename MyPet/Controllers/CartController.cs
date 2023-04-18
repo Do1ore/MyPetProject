@@ -159,7 +159,6 @@ namespace MyPet.Controllers
             }
             db.CartProducts.UpdateRange(products);
             await db.SaveChangesAsync();
-            notifyService.Information($"Информация обновлена. Товаров изменено: {products.Count}, 10");
 
             return RedirectToAction(nameof(ChosenProducts));
         }
