@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyPet.ViewModels.News
+namespace MyPet.ViewModels.DTOs.News
 {
     public class NewsSettingsViewModel
     {

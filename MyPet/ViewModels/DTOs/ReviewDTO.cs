@@ -1,6 +1,6 @@
-﻿namespace MyPet.ViewModels
+﻿namespace MyPet.ViewModels.DTOs
 {
-    public class ReviewViewModel
+    public class ReviewDTO
     {
         public int ProductId { get; set; }
         public int? Rating { get; set; }

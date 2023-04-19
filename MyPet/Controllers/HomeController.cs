@@ -3,7 +3,7 @@ using Microsoft.Build.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
-using MyPet.ViewModels.News;
+using MyPet.ViewModels.DTOs.News;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Diagnostics;

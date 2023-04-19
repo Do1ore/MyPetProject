@@ -3,6 +3,8 @@ using AspNetCoreHero.ToastNotification.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.Identity.Data;
+using MyPet.Areas.Services.Abstractions;
+using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +27,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddMvc();
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
-
+builder.Services.AddScoped<ITimeDifference, TimeDifference>();
 // Add roles
 builder.Services.AddHealthChecks();
 var app = builder.Build();

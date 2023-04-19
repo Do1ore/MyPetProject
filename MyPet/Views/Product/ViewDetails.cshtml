@@ -1,5 +1,7 @@
-﻿@using MyPet.Areas.SomeLogics
+﻿@using MyPet.Areas.Services.Abstractions;
+
 @model MyPet.ViewModels.ProductDetailedViewModel
+@inject ITimeDifference timeDifference;
 
 <div class="card mb-3" style="max-width: 100%;">
     <div class="row g-0">
@@ -13,7 +15,7 @@
                 <p class="card-text">@Model.Description</p>
                 <small class="" style="text-align: left">Price from @Model.MinPrice to @Model.MinPrice BYN</small>
                 <hr>
-                <small class="text-muted" style="text-align: right">Last time edited @TimeDifference.GetDifference(Model.LastTimeEdited)</small>
+                <small class="text-muted" style="text-align: right">Last time edited @timeDifference.GetDifference(Model.LastTimeEdited)</small>
             </div>
         </div>
     </div>

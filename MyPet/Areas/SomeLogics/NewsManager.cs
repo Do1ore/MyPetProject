@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyPet.Models;
-using MyPet.ViewModels.News;
+using MyPet.ViewModels.DTOs.News;
 using Newtonsoft.Json;
 using RestSharp;
 

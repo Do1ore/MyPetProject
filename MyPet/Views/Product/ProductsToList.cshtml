@@ -1,7 +1,9 @@
-﻿@using MyPet.Areas.SomeLogics;
+﻿
+@using MyPet.Areas.Services.Abstractions;
+@using MyPet.Areas.SomeLogics;
 @using MyPet.ViewModels;
 @model ProductsAndFilterViewModel;
-
+@inject ITimeDifference timeDifference;
 @{
     int CurrentPage = ViewBag.CurrentPage;
     int PageCount = ViewBag.ProductsOnPage;
@@ -224,7 +226,7 @@
 @foreach (var item in Model.Products)
 {
     #region Time
-    string? value = TimeDifference.GetDifference(item.LastTimeEdited);
+    string? value = timeDifference.GetDifference(item.LastTimeEdited);
     #endregion
     <div class="card mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
         <div class="row">
@@ -239,7 +241,7 @@
 
 
                     <p class="card-text">От @item.MinPrice BYN </p>
-                    <p class="card-text"><small class="text-muted">Поледний раз редактирован @TimeDifference.GetDifference(item.LastTimeEdited)</small></p>
+                    <p class="card-text"><small class="text-muted">Поледний раз редактирован @timeDifference.GetDifference(item.LastTimeEdited)</small></p>
 
 
 

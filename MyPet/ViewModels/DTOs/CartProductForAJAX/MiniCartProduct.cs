@@ -1,4 +1,4 @@
-﻿namespace MyPet.ViewModels.CartProductForAJAX
+﻿namespace MyPet.ViewModels.DTOs.CartProductForAJAX
 {
     /// <summary>
     /// To accept data from ajax post request in _CartListPartial.cshtml

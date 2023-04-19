@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyPet.Areas.Identity.Data;
 
 namespace MyPet.ViewModels
 {
@@ -29,6 +30,8 @@ namespace MyPet.ViewModels
         public DateTime LastTimeEdited { get; set; }
         public string? ParsedUrl { get; set; }
         public ICollection<ExtraImageModel>? ExtraImage { get; set; }
-        public ICollection<ProductReview>? Reviews { get; set; }  = new List<ProductReview?>();
+        public ICollection<ProductReviewViewModel>? Reviews { get; set; }  = new List<ProductReviewViewModel>();
+        public MyPetUser? User { get; set; } 
+
     }
 }

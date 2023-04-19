@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Models;
-using MyPet.ViewModels.News;
+using MyPet.ViewModels.DTOs.News;
 
 namespace MyPet.Controllers
 {

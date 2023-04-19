@@ -1,12 +1,18 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using MyPet.Areas.Identity.Data;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels;
+using MyPet.ViewModels.DTOs;
+using NuGet.Packaging.Signing;
 using System.Drawing;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
@@ -15,16 +21,18 @@ namespace MyPet.Controllers
     public sealed class UserProductController : Controller
     {
         private readonly ProductDbContext db;
+        private readonly UserManager<MyPetUser> userManager;
         private readonly IMapper mapper;
         private readonly INotyfService notify;
         private static FilterViewModel? buffilter;
         private const int ProductsOnPage = 30;
 
-        public UserProductController(ProductDbContext db, IMapper mapper, INotyfService notify)
+        public UserProductController(ProductDbContext db, IMapper mapper, INotyfService notify, UserManager<MyPetUser> userManager)
         {
             this.db = db;
             this.mapper = mapper;
             this.notify = notify;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> SearchProduct(string searchTerm)
@@ -199,9 +207,9 @@ namespace MyPet.Controllers
             ProductDetailedViewModel? productView = new();
 
             var product = await db.Products.Include(u => u.ExtraImage)
-                .AsNoTracking()
-                .Where(p => p.Id == id)
-                .SingleOrDefaultAsync();
+                                            .AsNoTracking()
+                                            .Where(p => p.Id == id)
+                                            .SingleOrDefaultAsync();
 
             productView = mapper.Map<ProductDetailedViewModel>(product);
             if (product is not null)
@@ -209,7 +217,7 @@ namespace MyPet.Controllers
                 ViewBag.Title = "Детальная информация";
             }
 
-
+            //get reviews for current product
             var reviews = await db.ReviewStorages.Join(db.ProductReviews,
                                 storage => storage.ReviewStorageId,
                                 review => review.ReviewStorageId,
@@ -218,8 +226,20 @@ namespace MyPet.Controllers
                                 .AsNoTracking()
                                 .Select(u => u.Reviews)
                                 .ToListAsync();
+
+            var StorageIds = reviews.Select(i => i.ReviewStorageId).ToList();
+
+            List<ProductReviewViewModel> reviewViewModel = new List<ProductReviewViewModel>();
+
+            foreach (var item in reviews)
+            {
+                reviewViewModel.Add(mapper.Map<ProductReviewViewModel>(item));
+            }
+            var fullReviewViewModel = await GetFullViewModelForReviewAsync(reviewViewModel, StorageIds);
+
             if (reviews is not null)
-                productView.Reviews = reviews;
+                productView.Reviews = fullReviewViewModel;
+
 
             return View(productView);
         }
@@ -230,8 +250,9 @@ namespace MyPet.Controllers
             return RedirectToAction("ShowFilteredProduct");
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> SendReview([FromBody] ReviewViewModel review)
+        public async Task<IActionResult> SendReview([FromBody] ReviewDTO review)
         {
             string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (!ModelState.IsValid)
@@ -249,6 +270,7 @@ namespace MyPet.Controllers
             var reviewStorage = await db.ReviewStorages.Where(u => u.MyPetUserId == userId)
                                   .Select(a => a)
                                   .SingleOrDefaultAsync();
+
             //creating review in current review storage
             ProductReview? reviewModel = new()
             {
@@ -270,10 +292,31 @@ namespace MyPet.Controllers
         {
             var reviewStorage = new ReviewStorage()
             {
-                MyPetUserId = userId,
+                User = await userManager.FindByIdAsync(userId)
             };
+
             await db.ReviewStorages.AddAsync(reviewStorage);
             await db.SaveChangesAsync();
+        }
+
+        private async Task<ICollection<ProductReviewViewModel>> GetFullViewModelForReviewAsync(List<ProductReviewViewModel> productReviews, List<Guid> ids)
+        {
+            var storages = await db.ReviewStorages.Where(i => ids.Contains(i.ReviewStorageId))
+                                              .Select(a => a)
+                                              .ToListAsync();
+
+            foreach (var storage in storages)
+            {
+                foreach (var review in productReviews)
+                {
+                    if (review.ReviewStorageId == storage.ReviewStorageId)
+                    {
+                        review.AppUser = await userManager.FindByIdAsync(storage.MyPetUserId);
+                    }
+                }
+            }
+
+            return productReviews;
         }
 
     }

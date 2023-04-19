@@ -1,6 +1,6 @@
 ﻿using MyPet.Models;
 
-namespace MyPet.ViewModels.CartProductForAJAX
+namespace MyPet.ViewModels.DTOs.CartProductForAJAX
 {
     /// <summary>
     /// List of data to accept request

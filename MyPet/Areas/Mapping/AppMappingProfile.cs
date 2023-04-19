@@ -1,7 +1,7 @@
 using AutoMapper;
 using MyPet.Models;
 using MyPet.ViewModels;
-using MyPet.ViewModels.News;
+using MyPet.ViewModels.DTOs.News;
 using System;
 
 public class AppMappingProfile : Profile
@@ -44,6 +44,8 @@ public class AppMappingProfile : Profile
         CreateMap<MainProductModel?, ProductAndQuantityViewModel?>();
         CreateMap<ProductAndQuantityViewModel?, MainProductModel?>();
 
+        CreateMap<ProductReview, ProductReviewViewModel>();
+        CreateMap<ProductReviewViewModel, ProductReview>();
 
         //CreateMap<ProductViewModel, ProductModel>()
         //    .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));

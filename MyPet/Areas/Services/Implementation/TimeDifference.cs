@@ -1,11 +1,11 @@
+using MyPet.Areas.Services.Abstractions;
 using System;
 
 namespace MyPet.Areas.SomeLogics
 {
-    public class TimeDifference
+    public class TimeDifference : ITimeDifference
     {
-
-        public static string GetDifference(DateTime dateTime)
+        public string GetDifference(DateTime dateTime)
         {
             TimeSpan timeSpan = DateTime.Now - dateTime;
             int seconds = (int)timeSpan.TotalSeconds;
@@ -13,7 +13,7 @@ namespace MyPet.Areas.SomeLogics
             int hours = (int)timeSpan.TotalHours;
             int days = (int)timeSpan.TotalDays;
 
-            if(seconds == 0)
+            if (seconds == 0)
             {
                 return $"только что";
             }
@@ -35,9 +35,9 @@ namespace MyPet.Areas.SomeLogics
             }
         }
 
-        public static string GetDifferenceEng(DateTime _dateTime)
+        public string GetDifferenceEng(DateTime _dateTime)
         {
-            
+
             TimeSpan timeSpan = DateTime.Now - _dateTime;
 
             if (timeSpan.TotalSeconds < 60)

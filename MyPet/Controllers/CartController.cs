@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.Identity.Data;
 using MyPet.Models;
 using MyPet.ViewModels;
-using MyPet.ViewModels.CartProductForAJAX;
+using MyPet.ViewModels.DTOs.CartProductForAJAX;
 using System.Security.Claims;
 
 namespace MyPet.Controllers
