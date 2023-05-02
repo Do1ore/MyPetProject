@@ -11,7 +11,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         var user = await UserManager.FindByIdAsync(UserManager.GetUserId(User)!);
-        var profileImgPath = user.PathToProfileImage;
+        var profileImgPath = user?.PathToProfileImage;
         if(profileImgPath is null)
         {
             profileImgPath = DefaultUserImage.ImgUrl;

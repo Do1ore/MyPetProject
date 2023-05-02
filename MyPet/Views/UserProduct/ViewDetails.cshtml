@@ -40,10 +40,10 @@
         {
             <div class="row mycenter mb-3 shadow rounded-3 p-2 p-xl-4 p-sm-2 p-lg-4 bg-light">
                 <div class="col-1">
-                    <img src="@review.AppUser.PathToProfileImage" class="profile-img-min me-2">
+                    <img src="@review?.AppUser?.PathToProfileImage" class="profile-img-min me-2">
                 </div>
                 <div class="col-2">
-                    <span class="fw-bold">@review.AppUser.FirstName</span>
+                    <span class="fw-bold">@review?.AppUser?.FirstName</span>
                 </div>
                 <div class="col-6">
                     <span class="">@review.ReviewText</span>

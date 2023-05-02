@@ -4,16 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using MyPet.Areas.Identity.Data;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels;
 using MyPet.ViewModels.DTOs;
-using NuGet.Packaging.Signing;
-using System.Drawing;
-using System.Net;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace MyPet.Controllers
@@ -254,6 +249,7 @@ namespace MyPet.Controllers
         [HttpPost]
         public async Task<IActionResult> SendReview([FromBody] ReviewDTO review)
         {
+            bool StorageNotCreated = false;
             string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (!ModelState.IsValid)
             {
@@ -261,43 +257,29 @@ namespace MyPet.Controllers
                 return RedirectToAction(nameof(ViewDetails), "UserProduct", new { id = review.ProductId });
 
             }
-            //is there a storage for current user
+
             if (!db.ReviewStorages.Any(i => i.MyPetUserId == userId))
             {
-                await CreateReviewStorageForUser(userId);
+                await db.ReviewStorages.AddAsync(new ReviewStorage { MyPetUserId = userId });
+                await db.SaveChangesAsync();
             }
 
-            var reviewStorage = await db.ReviewStorages.Where(u => u.MyPetUserId == userId)
-                                  .Select(a => a)
-                                  .SingleOrDefaultAsync();
+            var reviewStorage = await db.ReviewStorages.SingleOrDefaultAsync(i => i.MyPetUserId == userId);
 
-            //creating review in current review storage
-            ProductReview? reviewModel = new()
+            ProductReview productReview = new()
             {
-                ProductId = review.ProductId,
-                ReviewText = review.Text,
-                ReviewMark = (int)review.Rating!,
-                ReviewStorage = reviewStorage!,
                 PublishedAt = DateTime.Now,
+                ReviewStorageId = reviewStorage!.ReviewStorageId,
+                ProductId = review.ProductId,
+                ReviewMark = (int)review.Rating!,
+                ReviewText = review.Text,
             };
-
-            await db.ProductReviews.AddAsync(reviewModel);
-
+            reviewStorage.ProductReviews.Add(productReview);
             await db.SaveChangesAsync();
             return new JsonResult(new { id = review.ProductId, success = true });
-
         }
 
-        private async Task CreateReviewStorageForUser(string userId)
-        {
-            var reviewStorage = new ReviewStorage()
-            {
-                User = await userManager.FindByIdAsync(userId)
-            };
 
-            await db.ReviewStorages.AddAsync(reviewStorage);
-            await db.SaveChangesAsync();
-        }
 
         private async Task<ICollection<ProductReviewViewModel>> GetFullViewModelForReviewAsync(List<ProductReviewViewModel> productReviews, List<Guid> ids)
         {

@@ -32,61 +32,54 @@ namespace MyPet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProductToCart(int id)
         {
-            string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
-                notifyService.Error("Пользователь не найден", 10);
+                notifyService.Information("Авторизуйтесь");
+                return RedirectToAction("ShowFilteredProduct", "UserProduct");
 
-                return RedirectToPage("/Account/Login");
             }
-            MyPetUser? user = await userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId!);
 
-
-            if (user != null)
+            if (!db.Carts.Any(i => i.UserId == userId))
             {
-                // Получаем корзину пользователя
-                MainCart? cart = await db.Carts.FirstOrDefaultAsync(id => id.UserId == userId);
-
-                if (cart == null)
-                {
-                    // Если у пользователя еще нет корзины, создаем новую
-                    cart = new MainCart();
-                    cart.User = user;
-                    db.Carts.Add(cart);
-                }
-
-                // Создаем новый объект CartProduct
-                if (cart.CartProducts is null)
-                {
-                    cart.CartProducts = new List<CartProduct?>();
-                }
-                var products = await db.Carts
-                      .Join(db.CartProducts,
-                          cart => cart.Id,
-                          cartProd => cartProd.CartId,
-                          (cart, cartProd) => new { Cart = cart, CartProduct = cartProd })
-                      .Where(joined => joined.Cart.UserId == userId)
-                      .AsNoTracking()
-                      .Select(joined => joined.CartProduct)
-                      .ToListAsync();
-
-                // Добавляем CartProduct в коллекцию CartProducts корзины пользователя
-                if (products.Any(i => i.ProductId == id))
-                {
-                    notifyService.Warning("Товар уже добавлен в корзину", 10);
-
-                    return RedirectToAction("ShowFilteredProduct", "UserProduct");
-                }
-                CartProduct cartProduct = new() { ProductId = id, Quantity = 1 };
-
-                cart.CartProducts.Add(cartProduct);
-                // Сохраняем изменения в базе данных
+                await db.Carts.AddAsync(new MainCart { UserId = userId, User = user });
                 await db.SaveChangesAsync();
-                notifyService.Success("Успешно добвлено!", 10);
             }
-            return RedirectToAction("ShowFilteredProduct", "UserProduct");
 
+            var cart = await db.Carts.SingleOrDefaultAsync(i => i.UserId == userId);
+
+            var products = await db.Carts
+                     .Join(db.CartProducts,
+                         cart => cart.Id,
+                         cartProd => cartProd.CartId,
+                         (cart, cartProd) => new { Cart = cart, CartProduct = cartProd })
+                     .Where(joined => joined.Cart.UserId == userId)
+                     .AsNoTracking()
+                     .Select(joined => joined.CartProduct)
+                     .ToListAsync();
+
+            if (products.Any(p => p.ProductId == id))
+            {
+                notifyService.Warning("Этот товар уже добавлен в корзину");
+                return RedirectToAction("ShowFilteredProduct", "UserProduct");
+
+            }
+            CartProduct cartProduct = new CartProduct()
+            {
+                Cart = cart,
+                ProductId = id,
+                Quantity = 1,
+            };
+
+            await db.CartProducts.AddAsync(cartProduct);
+            await db.SaveChangesAsync();
+            notifyService.Success("Успешно добвлено!", 10);
+
+            return RedirectToAction("ShowFilteredProduct", "UserProduct");
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult?> ChosenProducts()
@@ -187,7 +180,7 @@ namespace MyPet.Controllers
                .Select(p => p.CartProducts)
                .SingleAsync();
 
-            if(productsCarts is null)
+            if (productsCarts is null)
             {
                 notifyService.Information("Ваша корзина и так пуста");
                 return RedirectToAction(nameof(ChosenProducts));

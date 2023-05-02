@@ -45,9 +45,6 @@ namespace MyPet.Models
                 .HasMany(r => r.ProductReviews)
                 .WithOne(s => s.ReviewStorage);
 
-            modelBuilder.Entity<ReviewStorage>()
-                .HasOne(r => r.User);
-
             modelBuilder.Entity<MainProductModel>()
                 .HasMany(p => p.ProductReviews);
 

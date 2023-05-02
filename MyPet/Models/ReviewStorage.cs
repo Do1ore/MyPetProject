@@ -8,8 +8,8 @@ namespace MyPet.Models
     public class ReviewStorage
     {
         public Guid ReviewStorageId { get; set; }
-        public string? MyPetUserId { get; set; }
         public MyPetUser? User { get; set; }
+        public string? MyPetUserId { get; set; }
         public ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
 
     }

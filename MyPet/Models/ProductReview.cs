@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPet.Models
 {
@@ -13,6 +14,7 @@ namespace MyPet.Models
         public string? ReviewText { get; set; }
 
         public DateTime PublishedAt { get; set; }
+        [ForeignKey("ReviewStorage")]
         public Guid ReviewStorageId { get; set; }
         public ReviewStorage ReviewStorage { get; set; } = new ReviewStorage();
     }
