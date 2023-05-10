@@ -10,9 +10,8 @@ using System.Windows;
 
 namespace DataParser.Parsing
 {
-    public class JsonParser
+    public class JsonParser : IAsyncDisposable
     {
-
         public int PagesCount { get; set; }
         public int Scipped { get; set; }
         private readonly MarketScraper _scraper;
@@ -29,6 +28,7 @@ namespace DataParser.Parsing
         private readonly List<double> BatteryCapacity = new() { 30, 40, 45, 50, 24, 25, 10 };
         private readonly List<double> CharginngTime = new() { 1, 1.5, 2, 0.5 };
         private readonly List<double> MaxRunTime = new() { 2, 4, 6, 4.6, 4.7, 5.5, 6.5 };
+        private bool disposedValue;
         #endregion
         public JsonParser()
         {
@@ -36,6 +36,32 @@ namespace DataParser.Parsing
             _dataRange = new();
         }
 
+        private bool _disposed = false;
+
+        // Реализация метода DisposeAsync
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Метод для освобождения ресурсов
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    
+                }
+                _disposed = true;
+            }
+        }
+
+        ~JsonParser()
+        {
+            DisposeAsync(false).AsTask().Wait();
+        }
         public async Task<Root?> GetJsonAsync(Uri url)
         {
             Root? myDeserializedClass = new();
@@ -94,6 +120,7 @@ namespace DataParser.Parsing
                 };
                 _dataRange.Add(product);
             }
+
             if (_dataRange is not null)
             {
                 await ProductDbHelper.SendRangeOfDataAsync(_dataRange);
@@ -134,6 +161,7 @@ namespace DataParser.Parsing
             }
             return result;
         }
+
 
     }
 }

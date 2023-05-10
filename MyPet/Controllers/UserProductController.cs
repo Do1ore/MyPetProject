@@ -63,8 +63,6 @@ namespace MyPet.Controllers
             return View(productAndFilerViewModel);
         }
 
-
-
         public async Task<IActionResult> ShowFilteredProduct(FilterViewModel filter, int pageNumber)
         {
             if (!ProductHelper.CheckFilterForEmptyness(filter))
@@ -235,7 +233,6 @@ namespace MyPet.Controllers
             if (reviews is not null)
                 productView.Reviews = fullReviewViewModel;
 
-
             return View(productView);
         }
 
@@ -276,17 +273,26 @@ namespace MyPet.Controllers
             };
             reviewStorage.ProductReviews.Add(productReview);
             await db.SaveChangesAsync();
+            await UpdateProductRatingAsync(review.ProductId);
             return new JsonResult(new { id = review.ProductId, success = true });
         }
 
+        private async Task UpdateProductRatingAsync(int productId)
+        {
+            var reviews = await db.ProductReviews
+                .Where(i => i.ProductId == productId)
+                .Select(a => a.ReviewMark).ToListAsync();
 
+            await db.Products
+                .Where(i => i.Id == productId)             
+                .ExecuteUpdateAsync(p => p.SetProperty(a => a.Rating, reviews.Sum() / reviews.Count));
+        }
 
         private async Task<ICollection<ProductReviewViewModel>> GetFullViewModelForReviewAsync(List<ProductReviewViewModel> productReviews, List<Guid> ids)
         {
             var storages = await db.ReviewStorages.Where(i => ids.Contains(i.ReviewStorageId))
                                               .Select(a => a)
                                               .ToListAsync();
-
             foreach (var storage in storages)
             {
                 foreach (var review in productReviews)

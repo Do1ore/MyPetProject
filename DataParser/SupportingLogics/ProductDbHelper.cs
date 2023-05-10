@@ -10,11 +10,10 @@ using System.Windows;
 
 namespace DataParser
 {
-    public class ProductDbHelper
+    public class ProductDbHelper : IAsyncDisposable
     {
 
         private static ProductDbContext? db;
-
         private readonly List<char> russianLetters = new List<char>()
         {
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М',
@@ -23,6 +22,35 @@ namespace DataParser
             'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х',
             'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'
         };
+        private bool _disposed = false;
+
+        // Реализация метода DisposeAsync
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Метод для освобождения ресурсов
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (db is not null)
+                        await db.DisposeAsync();
+                }
+
+                _disposed = true;
+            }
+        }
+
+        // Деструктор
+        ~ProductDbHelper()
+        {
+            DisposeAsync(false).AsTask().Wait();
+        }
 
         public static async Task SendDataAsync(MainProductModel model)
         {
@@ -45,6 +73,7 @@ namespace DataParser
             db = new ProductDbContext(options);
             await db.Products.AddRangeAsync(RangeofData);
 
+            await Task.WhenAll();
             if (RangeofData is not null)
                 await db.SaveChangesAsync();
         }

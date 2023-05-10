@@ -12,7 +12,7 @@
         <a class="btn btn-primary" asp-controller="UserProduct" asp-action="ShowFilteredProduct" asp-route-id="@Model.Id">Список товаров</a>
     </div>
     <div class="col">
-        <button id="liveToastBtn" form="AddToCart" type="submit" class="btn btn-success">
+        <button id="liveToastBtn" form="AddToCart_@Model.Id" type="submit" class="btn btn-success">
             <div class="mycenter">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
                     <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
@@ -21,8 +21,8 @@
             </div>
         </button>
     </div>
-    <form asp-controller="Cart" id="AddToCart" asp-action="AddProductToCart">
-        <input type="hidden" value="@Model.Id" name="ProductId">
+    <form asp-controller="Cart" id="AddToCart_@Model.Id" asp-action="AddProductToCart">
+        <input type="hidden" value="@Model.Id" name="id">
     </form>
 </div>
 
