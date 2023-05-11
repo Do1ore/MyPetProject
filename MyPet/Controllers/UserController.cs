@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -7,6 +8,7 @@ using MyPet.Areas.Identity.Data;
 
 namespace MyPet.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class UserController : Controller
     {
         private UserManager<MyPetUser> userManager;
@@ -82,7 +84,7 @@ namespace MyPet.Controllers
         {
             var user = await userManager.FindByIdAsync(Id);
             await userManager.DeleteAsync(user);
-           
+
             return RedirectToAction(nameof(Index));
         }
     }

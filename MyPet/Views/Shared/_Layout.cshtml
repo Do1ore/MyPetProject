@@ -1,4 +1,4 @@
-﻿<html lang="en">
+﻿<html lang="ru">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="~/css/custombtn.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/news.css" asp-append-version="true" />
 </head>
+
 <body>
-    <header style="margin-bottom: 4rem">
+    <header style="z-index: 1000; margin-bottom: 4rem">
 
         <nav class="navbar navbar-dark navbar-expand-xl bg-dark" style="backdrop-filter: blur(20px)">
             <div class="container-fluid" bis_skin_checked="1">
@@ -76,7 +77,7 @@
 
         @if (ViewBag.Title != null)
         {
-            <section id="page-title" class="bg-overlay shadow-lg" style="display: flex; min-height: 30dvh; height: auto">
+            <section id="page-title" class="bg-overlay shadow-lg" style="display: flex; min-height: 30dvh; height: auto; z-index: -1">
                 <div class="container clearfix px-sm-3 px-3 px-lg-4 px-xl-3" style="justify-content:flex-start;">
                     <h1 class="text-light">@ViewBag.Title</h1>
                     <div class="row">
@@ -87,17 +88,73 @@
         }
 
     </header>
-    <div class="container">
+    <div class="container pb-5">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container text-center">
-            &copy; 2023 - MyPet - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> - All rights reserved
-        </div>
-    </footer>
+    <div class="border-top container mt-5" bis_skin_checked="1">
+        <footer class="py-5 pb-2 mb-2">
+            <div class="row" bis_skin_checked="1">
+                <div class="col-6 col-md-2 mb-3" bis_skin_checked="1">
+                    <h5>Section</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-md-2 mb-3" bis_skin_checked="1">
+                    <h5>Section</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-md-2 mb-3" bis_skin_checked="1">
+                    <h5>Section</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-5 offset-md-1 mb-3" bis_skin_checked="1">
+                    <form id="searchForm" style="" role="search" asp-controller="UserProduct" asp-action="SearchProduct">
+                        <h5>Найдете все что угодно!</h5>
+                        <p>Огромный выбор и <a class="link-primary" asp-action="ShowFilteredProduct" asp-controller="UserProduct">удобные фильтры</a>. Начните прямо сейчас</p>
+                        <div class="d-flex flex-column flex-sm-row w-100 gap-2" bis_skin_checked="1">
+                            <label for="newsletter1" class="visually-hidden">Email address</label>
+                            <input id="newsletter1" name="searchTerm" type="search" class="form-control" placeholder="Ваш запрос">
+                            <button class="btn btn-primary" type="submit">Поиск</button>
+                        </div>
+                    </form>
+                   
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top" bis_skin_checked="1">
+                <p>© 2024 MyPet, Inc. Все <a asp-action="Privacy" asp-controller="Home">права</a> защищены.</p>
+                <ul class="list-unstyled d-flex">
+                    <li class="ms-3"><a class="link-dark" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
+                    <li class="ms-3"><a class="link-dark" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
+                    <li class="ms-3"><a class="link-dark" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
 
     <script src="~/js/three.min.js"></script>
     <script src="~/js/vanta.cells.min.js"></script>

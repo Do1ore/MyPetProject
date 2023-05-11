@@ -10,7 +10,7 @@
          style="justify-content: space-evenly; backdrop-filter: blur(70px);">
         <div class="d-flex mycenter">
             <h2 class="text-dark">Итоговая стоимость: &ensp;</h2>
-            <h2 class="fw-bold me-1" id="total">@(Math.Round(Convert.ToDecimal(Model!.Select(p => p.DefaultPrice * p.Quatity).ToArray().Sum()))</h2>
+            <h2 class="fw-bold me-1" id="total">@(Math.Round(Convert.ToDecimal(Model!.Select(p => p.DefaultPrice * p.Quatity).ToArray().Sum())))</h2>
             <h2 class=" fw-light me-2"><mark class="text-light mark rounded-3 bg-primary">BYN</mark></h2>
         </div>
         <div class="d-flex">
