@@ -284,7 +284,7 @@ namespace MyPet.Controllers
                 .Select(a => a.ReviewMark).ToListAsync();
 
             await db.Products
-                .Where(i => i.Id == productId)             
+                .Where(i => i.Id == productId)
                 .ExecuteUpdateAsync(p => p.SetProperty(a => a.Rating, reviews.Sum() / reviews.Count));
         }
 

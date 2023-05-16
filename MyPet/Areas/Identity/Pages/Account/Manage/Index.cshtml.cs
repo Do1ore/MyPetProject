@@ -35,7 +35,7 @@ namespace MyPet.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         ///
-        [Display(Name ="Никнейм")]
+        [Display(Name = "Никнейм")]
         public string Username { get; set; }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -87,12 +87,11 @@ namespace MyPet.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber
-
             };
         }
 
         public async Task<IActionResult> OnGetAsync()
-            {
+        {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -128,6 +127,16 @@ namespace MyPet.Areas.Identity.Pages.Account.Manage
             }
             if (Input.UserProfileImage != null)
             {
+                //delete previos user profile image if exists
+                if (user.PathToProfileImage != null)
+                {
+
+                    var localPathToFile = _environment.WebRootPath + user.PathToProfileImage;
+                    if (System.IO.File.Exists(localPathToFile))
+                    {
+                        System.IO.File.Delete(localPathToFile);
+                    }
+                }
                 var extension = Path.GetExtension(Input.UserProfileImage.FileName);
                 var fileName = "UserProfileImg" + Guid.NewGuid().ToString() + extension;
                 var defaultFilepath = Path.Combine("img", "user", "uploads", fileName);
