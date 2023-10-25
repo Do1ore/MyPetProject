@@ -1,15 +1,8 @@
-using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using MyPet.Areas.Identity.Data;
-using MyPet.Areas.Services.Abstractions;
-using MyPet.Areas.SomeLogics;
 using MyPet.Extensions;
-using MyPet.Models;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -20,9 +13,11 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.ConfigureCustomServices(builder.Configuration);
 
 builder.Services.AddHealthChecks();
+
+builder.WebHost.ConfigureCustomMetrics();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -42,4 +37,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+
+app.UseMetricServer();
+app.UseHttpMetrics();
 app.Run();

@@ -36,5 +36,8 @@ public static class ServiceExtensions
             .AddDefaultUI();
         
       services.AddScoped<ITimeDifference, TimeDifference>();
+        
     }
+
+
 }

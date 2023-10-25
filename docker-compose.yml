@@ -1,0 +1,24 @@
+﻿services:
+#  mypet:
+#    image: mypet
+#    build:
+#      context: .
+#      dockerfile: MyPet/Dockerfile
+        
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - D:\Docker\Prometheus:/etc/prometheus
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - D:\Projects\Docker\Grafana:/var/lib/grafana
+      
+  

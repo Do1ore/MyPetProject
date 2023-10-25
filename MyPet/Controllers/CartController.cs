@@ -15,18 +15,16 @@ namespace MyPet.Controllers
     [Authorize()]
     public class CartController : Controller
     {
-        private readonly ProductDbContext db;
-        private readonly UserManager<MyPetUser> userManager;
-        private readonly MyIdentityDbContext userDb;
-        private readonly IMapper mapper;
-        private readonly INotyfService notifyService;
+        private readonly ProductDbContext _db;
+        private readonly UserManager<MyPetUser> _userManager;
+        private readonly IMapper _mapper;
+        private readonly INotyfService _notifyService;
         public CartController(ProductDbContext db, UserManager<MyPetUser> userManager, IMapper mapper, MyIdentityDbContext userDb, INotyfService notyfyService)
         {
-            this.db = db;
-            this.userManager = userManager;
-            this.mapper = mapper;
-            this.userDb = userDb;
-            this.notifyService = notyfyService;
+           _db = db;
+           _userManager = userManager;
+           _mapper = mapper;
+           _notifyService = notyfyService;
         }
 
         [HttpPost]
@@ -35,22 +33,22 @@ namespace MyPet.Controllers
             string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
-                notifyService.Information("Авторизуйтесь");
+                _notifyService.Information("Авторизуйтесь");
                 return RedirectToAction("ShowFilteredProduct", "UserProduct");
 
             }
-            var user = await userManager.FindByIdAsync(userId!);
+            var user = await _userManager.FindByIdAsync(userId!);
 
-            if (!db.Carts.Any(i => i.UserId == userId))
+            if (!_db.Carts.Any(i => i.UserId == userId))
             {
-                await db.Carts.AddAsync(new MainCart { UserId = userId, User = user });
-                await db.SaveChangesAsync();
+                await _db.Carts.AddAsync(new MainCart { UserId = userId, User = user });
+                await _db.SaveChangesAsync();
             }
 
-            var cart = await db.Carts.SingleOrDefaultAsync(i => i.UserId == userId);
+            var cart = await _db.Carts.SingleOrDefaultAsync(i => i.UserId == userId);
 
-            var products = await db.Carts
-                     .Join(db.CartProducts,
+            var products = await _db.Carts
+                     .Join(_db.CartProducts,
                          cart => cart.Id,
                          cartProd => cartProd.CartId,
                          (cart, cartProd) => new { Cart = cart, CartProduct = cartProd })
@@ -61,7 +59,7 @@ namespace MyPet.Controllers
 
             if (products.Any(p => p.ProductId == id))
             {
-                notifyService.Warning("Этот товар уже добавлен в корзину");
+                _notifyService.Warning("Этот товар уже добавлен в корзину");
                 return RedirectToAction("ShowFilteredProduct", "UserProduct");
 
             }
@@ -72,9 +70,9 @@ namespace MyPet.Controllers
                 Quantity = 1,
             };
 
-            await db.CartProducts.AddAsync(cartProduct);
-            await db.SaveChangesAsync();
-            notifyService.Success("Успешно добвлено!", 10);
+            await _db.CartProducts.AddAsync(cartProduct);
+            await _db.SaveChangesAsync();
+            _notifyService.Success("Успешно добвлено!", 10);
 
             return RedirectToAction("ShowFilteredProduct", "UserProduct");
         }
@@ -85,12 +83,12 @@ namespace MyPet.Controllers
         public async Task<IActionResult?> ChosenProducts()
         {
             string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!db.Carts.Any(cart => cart.UserId == userId))
+            if (!_db.Carts.Any(cart => cart.UserId == userId))
             {
                 return View(new List<ProductAndQuantityViewModel?>());
 
             }
-            ICollection<CartProduct?>? productsCarts = await db.Carts.Include(c => c.CartProducts)
+            ICollection<CartProduct?>? productsCarts = await _db.Carts.Include(c => c.CartProducts)
                 .Where(id => id.UserId == userId)
                 .AsNoTracking()
                 .Select(p => p.CartProducts)
@@ -104,8 +102,8 @@ namespace MyPet.Controllers
 
 
             List<ProductAndQuantityViewModel> productViewModels = new();
-            productViewModels = await db.Products.Where(i => ProductIds.Contains(i.Id))
-                .Select(p => mapper.Map<ProductAndQuantityViewModel>(p)).ToListAsync();
+            productViewModels = await _db.Products.Where(i => ProductIds.Contains(i.Id))
+                .Select(p => _mapper.Map<ProductAndQuantityViewModel>(p)).ToListAsync();
             //add quantity from cart
 
             foreach (var cartProduct in productsCarts)
@@ -128,11 +126,11 @@ namespace MyPet.Controllers
             string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
             {
-                notifyService.Warning($"Что-то пошло не так");
+                _notifyService.Warning($"Что-то пошло не так");
                 return BadRequest(ModelState);
             }
-            var products = await db.Carts
-            .Join(db.CartProducts,
+            var products = await _db.Carts
+            .Join(_db.CartProducts,
                 cart => cart.Id,
                 cartProduct => cartProduct.CartId,
                 (cart, cartProduct) => new { Cart = cart, CartProduct = cartProduct })
@@ -150,8 +148,8 @@ namespace MyPet.Controllers
                     }
                 }
             }
-            db.CartProducts.UpdateRange(products);
-            await db.SaveChangesAsync();
+            _db.CartProducts.UpdateRange(products);
+            await _db.SaveChangesAsync();
 
             return RedirectToAction(nameof(ChosenProducts));
         }
@@ -161,20 +159,20 @@ namespace MyPet.Controllers
         {
             string? UserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            MyPetUser? user = await userManager.FindByIdAsync(UserId);
+            await _userManager.FindByIdAsync(UserId);
 
-            MainCart? cart = await db.Carts.FirstOrDefaultAsync(id => id.UserId == UserId);
+            await _db.Carts.FirstOrDefaultAsync(id => id.UserId == UserId);
 
-            await db.CartProducts.Where(cp => cp.ProductId == ProductId).ExecuteDeleteAsync();
-            await db.SaveChangesAsync();
-            notifyService.Success("Успешно удалено");
+            await _db.CartProducts.Where(cp => cp.ProductId == ProductId).ExecuteDeleteAsync();
+            await _db.SaveChangesAsync();
+            _notifyService.Success("Успешно удалено");
             return RedirectToAction(nameof(ChosenProducts));
         }
         public async Task<IActionResult> ClearCart()
         {
             string? userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            ICollection<CartProduct?>? productsCarts = await db.Carts.Include(c => c.CartProducts)
+            ICollection<CartProduct?>? productsCarts = await _db.Carts.Include(c => c.CartProducts)
                .Where(id => id.UserId == userId)
                .AsNoTracking()
                .Select(p => p.CartProducts)
@@ -182,13 +180,13 @@ namespace MyPet.Controllers
 
             if (productsCarts is null)
             {
-                notifyService.Information("Ваша корзина и так пуста");
+                _notifyService.Information("Ваша корзина и так пуста");
                 return RedirectToAction(nameof(ChosenProducts));
             }
 
-            db.CartProducts.RemoveRange(productsCarts!);
-            await db.SaveChangesAsync();
-            notifyService.Success($"Корзина товара очищена. Очещено товаров: {productsCarts.Count}");
+            _db.CartProducts.RemoveRange(productsCarts!);
+            await _db.SaveChangesAsync();
+            _notifyService.Success($"Корзина товара очищена. Очещено товаров: {productsCarts.Count}");
             return RedirectToAction(nameof(ChosenProducts));
 
         }

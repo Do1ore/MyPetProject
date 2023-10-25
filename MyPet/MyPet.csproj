@@ -4,11 +4,15 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="wwwroot\lib\bootstrap\dist\js\**" />
     <Content Remove="wwwroot\lib\bootstrap\dist\js\**" />
+    <Content Include="..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
     <EmbeddedResource Remove="wwwroot\lib\bootstrap\dist\js\**" />
     <None Remove="wwwroot\lib\bootstrap\dist\js\**" />
   </ItemGroup>
@@ -44,6 +48,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.5" />
+    <PackageReference Include="prometheus-net" Version="8.0.1" />
+    <PackageReference Include="prometheus-net.aspnetcore" Version="8.0.1" />
     <PackageReference Include="RestSharp" Version="109.0.1" />
   </ItemGroup>
 
