@@ -1,6 +1,7 @@
 using AspNetCoreHero.ToastNotification.Extensions;
 using MyPet.Extensions;
 using Prometheus;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ builder.Services.AddHealthChecks();
 
 builder.WebHost.ConfigureCustomMetrics();
 
+ServiceExtensions.ConfigureSerilog(builder.Configuration);
+
+builder.Host.UseSerilog();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -42,3 +46,6 @@ app.MapRazorPages();
 app.UseMetricServer();
 app.UseHttpMetrics();
 app.Run();
+
+Log.Information("Serilog works {@Info}", 234234);
+

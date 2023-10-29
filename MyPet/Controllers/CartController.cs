@@ -9,6 +9,7 @@ using MyPet.Models;
 using MyPet.ViewModels;
 using MyPet.ViewModels.DTOs.CartProductForAJAX;
 using System.Security.Claims;
+using Serilog;
 
 namespace MyPet.Controllers
 {
@@ -25,6 +26,7 @@ namespace MyPet.Controllers
            _userManager = userManager;
            _mapper = mapper;
            _notifyService = notyfyService;
+           Log.Debug("Controller {@ControllerName} invoked", nameof(CartController));
         }
 
         [HttpPost]
@@ -88,6 +90,7 @@ namespace MyPet.Controllers
                 return View(new List<ProductAndQuantityViewModel?>());
 
             }
+            
             ICollection<CartProduct?>? productsCarts = await _db.Carts.Include(c => c.CartProducts)
                 .Where(id => id.UserId == userId)
                 .AsNoTracking()

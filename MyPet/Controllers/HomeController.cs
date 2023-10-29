@@ -1,33 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using MyPet.ViewModels.DTOs.News;
-using Newtonsoft.Json;
-using RestSharp;
 using System.Diagnostics;
+using Serilog;
 
 namespace MyPet.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private NewsManager managerNews;
-        private readonly ProductDbContext db;
-        public HomeController(ILogger<HomeController> logger, ProductDbContext db)
+        private NewsManager? _managerNews;
+        private readonly ProductDbContext _db;
+        public HomeController(ProductDbContext db)
         {
-            _logger = logger;
-            this.db = db;
+            _db = db;
+            Log.Debug("Controller {@ControllerName} invoked", nameof(HomeController));
         }
         private static NewsViewModel? newsViewModel { get; set; }
 
 
         public async Task<IActionResult?> Index()
         {
-            managerNews = new();
+            _managerNews = new();
             newsViewModel = new();
-            var news = await managerNews.GetNewsAsync();
+            var news = await _managerNews.GetNewsAsync();
             if(news is null)
             {
                 newsViewModel.Articles = new List<Article?>();
@@ -36,10 +33,10 @@ namespace MyPet.Controllers
             {
                 newsViewModel.Articles = news;
             }
-            List<int> ind = await db.Products.Select(p => p.Id).ToListAsync();
+            List<int> ind = await _db.Products.Select(p => p.Id).ToListAsync();
             var RandId = new Random().Next(0, ind.Count);
 
-            var product = await db.Products.Select(p => p)
+            var product = await _db.Products.Select(p => p)
                 .FirstOrDefaultAsync(i => i.Id == ind[RandId]);
             ViewBag.Product = product;
 

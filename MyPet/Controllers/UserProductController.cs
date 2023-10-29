@@ -22,7 +22,8 @@ namespace MyPet.Controllers
         private static FilterViewModel? _buffilter;
         private const int ProductsOnPage = 30;
 
-        public UserProductController(ProductDbContext db, IMapper mapper, INotyfService notify, UserManager<MyPetUser> userManager)
+        public UserProductController(ProductDbContext db, IMapper mapper, INotyfService notify,
+            UserManager<MyPetUser> userManager)
         {
             this._db = db;
             this._mapper = mapper;
@@ -36,8 +37,8 @@ namespace MyPet.Controllers
             List<ProductViewModel> productViewModels = new();
 
             var results = await _db.Products
-            .Where(p => p.ProductFullName.Contains(searchTerm) || p.Description.Contains(searchTerm)
-            || p.ProductType.Contains(searchTerm)).ToListAsync();
+                .Where(p => p.ProductFullName.Contains(searchTerm) || p.Description.Contains(searchTerm)
+                                                                   || p.ProductType.Contains(searchTerm)).ToListAsync();
             List<ProductViewModel> viewmodel = new List<ProductViewModel>();
             if (results.Count > 0)
             {
@@ -45,6 +46,7 @@ namespace MyPet.Controllers
                 {
                     productViewModels.Add(_mapper.Map<ProductViewModel?>(item));
                 }
+
                 ViewBag.Title = $"Товары по запросу: '{searchTerm}'";
                 ViewBag.Secondary = $"Товаров: {productViewModels.Count}";
             }
@@ -52,8 +54,8 @@ namespace MyPet.Controllers
             {
                 ViewBag.Title = $"Товар не найден по запросу: '{searchTerm}'";
                 ViewBag.Secondary = $"Вы можете найти нужный товар во вкладке 'Товары'";
-
             }
+
             FilterViewModel filterViewModel = new FilterViewModel()
             {
                 SearchTerm = searchTerm,
@@ -74,7 +76,6 @@ namespace MyPet.Controllers
                     ProductType = filter.ProductType,
                     SortPrice = filter.SortPrice,
                     SearchTerm = filter.SearchTerm,
-
                 };
             }
 
@@ -125,6 +126,7 @@ namespace MyPet.Controllers
             {
                 pageNumber = 1;
             }
+
             List<ProductViewModel> resultProducts = SelectProducts(productToShow, pageNumber);
 
             ViewBag.Quantity = productToShow.Count;
@@ -150,9 +152,10 @@ namespace MyPet.Controllers
                 products = products.Where(p => p.DefaultPrice <= filter.MaxPrice).Select(p => p).ToList();
 
             if (filter.SearchTerm is not null)
-                products = products.Where(p => p.ProductExtendedFullName.ToUpper().Contains(filter.SearchTerm.ToUpper()) ||
-                p.Description.ToUpper().Contains(filter.SearchTerm))
-                .Select(p => p).ToList();
+                products = products.Where(p =>
+                        p.ProductExtendedFullName.ToUpper().Contains(filter.SearchTerm.ToUpper()) ||
+                        p.Description.ToUpper().Contains(filter.SearchTerm))
+                    .Select(p => p).ToList();
 
             if (filter.SortPrice is not null)
             {
@@ -179,6 +182,7 @@ namespace MyPet.Controllers
                 resultProducts = products.GetRange(page * ProductsOnPage, products.Count - (page * ProductsOnPage));
                 return resultProducts;
             }
+
             return products;
         }
 
@@ -191,18 +195,18 @@ namespace MyPet.Controllers
             {
                 productViewModels.Add(_mapper.Map<ProductViewModel>(item));
             }
+
             return View(productViewModels);
         }
 
         public async Task<IActionResult?> ViewDetails(int? id)
         {
-
             ProductDetailedViewModel? productView = new();
 
             var product = await _db.Products.Include(u => u.ExtraImage)
-                                            .AsNoTracking()
-                                            .Where(p => p.Id == id)
-                                            .SingleOrDefaultAsync();
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .SingleOrDefaultAsync();
 
             productView = _mapper.Map<ProductDetailedViewModel>(product);
             if (product is not null)
@@ -212,15 +216,15 @@ namespace MyPet.Controllers
 
             //get reviews for current product
             var reviews = await _db.ReviewStorages.Join(_db.ProductReviews,
-                                storage => storage.ReviewStorageId,
-                                review => review.ReviewStorageId,
-                                (joined, joinedR) => new { Reviews = joinedR, Storage = joined })
-                                .Where(p => p.Reviews.ProductId == id)
-                                .AsNoTracking()
-                                .Select(u => u.Reviews)
-                                .ToListAsync();
+                    storage => storage.ReviewStorageId,
+                    review => review.ReviewStorageId,
+                    (joined, joinedR) => new { Reviews = joinedR, Storage = joined })
+                .Where(p => p.Reviews.ProductId == id)
+                .AsNoTracking()
+                .Select(u => u.Reviews)
+                .ToListAsync();
 
-            var StorageIds = reviews.Select(i => i.ReviewStorageId).ToList();
+            var storageIds = reviews.Select(i => i.ReviewStorageId).ToList();
 
             List<ProductReviewViewModel> reviewViewModel = new List<ProductReviewViewModel>();
 
@@ -228,10 +232,10 @@ namespace MyPet.Controllers
             {
                 reviewViewModel.Add(_mapper.Map<ProductReviewViewModel>(item));
             }
-            var fullReviewViewModel = await GetFullViewModelForReviewAsync(reviewViewModel, StorageIds);
 
-            if (reviews is not null)
-                productView.Reviews = fullReviewViewModel;
+            var fullReviewViewModel = await GetFullViewModelForReviewAsync(reviewViewModel, storageIds);
+
+            productView.Reviews = fullReviewViewModel;
 
             return View(productView);
         }
@@ -246,13 +250,11 @@ namespace MyPet.Controllers
         [HttpPost]
         public async Task<IActionResult> SendReview([FromBody] ReviewDTO review)
         {
-            bool StorageNotCreated = false;
-            string? userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!ModelState.IsValid)
             {
                 _notify.Warning("Форма не правильно заполнена");
                 return RedirectToAction(nameof(ViewDetails), "UserProduct", new { id = review.ProductId });
-
             }
 
             if (!_db.ReviewStorages.Any(i => i.MyPetUserId == userId))
@@ -279,6 +281,7 @@ namespace MyPet.Controllers
 
         private async Task UpdateProductRatingAsync(int productId)
         {
+            if (productId <= 0) throw new ArgumentOutOfRangeException(nameof(productId));
             var reviews = await _db.ProductReviews
                 .Where(i => i.ProductId == productId)
                 .Select(a => a.ReviewMark).ToListAsync();
@@ -288,11 +291,12 @@ namespace MyPet.Controllers
                 .ExecuteUpdateAsync(p => p.SetProperty(a => a.Rating, reviews.Sum() / reviews.Count));
         }
 
-        private async Task<ICollection<ProductReviewViewModel>> GetFullViewModelForReviewAsync(List<ProductReviewViewModel> productReviews, List<Guid> ids)
+        private async Task<ICollection<ProductReviewViewModel>> GetFullViewModelForReviewAsync(
+            List<ProductReviewViewModel> productReviews, List<Guid> ids)
         {
             var storages = await _db.ReviewStorages.Where(i => ids.Contains(i.ReviewStorageId))
-                                              .Select(a => a)
-                                              .ToListAsync();
+                .Select(a => a)
+                .ToListAsync();
             foreach (var storage in storages)
             {
                 foreach (var review in productReviews)
@@ -306,6 +310,5 @@ namespace MyPet.Controllers
 
             return productReviews;
         }
-
     }
 }
