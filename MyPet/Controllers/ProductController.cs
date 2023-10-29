@@ -33,7 +33,7 @@ namespace MyPet.Controllers
             }
 
             ProductsAndFilterViewModel? productsAndFilter = new();
-            if (!ProductHelper.CheckFilterForEmptyness(filter))
+            if (!ProductHelper.CheckFilterForEmpty(filter))
             {
                 buffilter = new FilterViewModel()
                 {
@@ -46,7 +46,7 @@ namespace MyPet.Controllers
                 };
             }
 
-            if (ProductHelper.CheckFilterForEmptyness(filter) && !ProductHelper.CheckFilterForEmptyness(buffilter))
+            if (ProductHelper.CheckFilterForEmpty(filter) && !ProductHelper.CheckFilterForEmpty(buffilter))
             {
                 filter.SortPrice = buffilter.SortPrice;
                 filter.MinPrice = buffilter.MinPrice;

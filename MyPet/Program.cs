@@ -1,5 +1,6 @@
 using AspNetCoreHero.ToastNotification.Extensions;
 using MyPet.Extensions;
+using MyPet.Middlewares;
 using Prometheus;
 using Serilog;
 
@@ -41,11 +42,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseMetricServer();
 app.UseHttpMetrics();
 app.Run();
-
-Log.Information("Serilog works {@Info}", 234234);
-

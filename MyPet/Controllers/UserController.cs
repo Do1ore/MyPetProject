@@ -8,35 +8,29 @@ using MyPet.Areas.Identity.Data;
 
 namespace MyPet.Controllers
 {
-    [Authorize(Roles = "admin")]
     public class UserController : Controller
     {
-        private UserManager<MyPetUser> userManager;
-        private MyIdentityDbContext identityDb;
+        private readonly UserManager<MyPetUser> _userManager;
 
 
         public UserController(MyIdentityDbContext identityDb, UserManager<MyPetUser> userManager)
         {
-            this.identityDb = identityDb;
-            this.userManager = userManager;
+            _userManager = userManager;
         }
 
-        // GET: UserController
         public async Task<ActionResult> Index()
         {
-            var users = await userManager.Users.ToListAsync();
+            var users = await _userManager.Users.ToListAsync();
             return View(users);
         }
 
-        
 
-        // POST: UserController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(string Id)
         {
-            var user = await userManager.FindByIdAsync(Id);
-            await userManager.DeleteAsync(user);
+            MyPetUser? user = await _userManager.FindByIdAsync(Id);
+            await _userManager.DeleteAsync(user ?? throw new InvalidOperationException());
 
             return RedirectToAction(nameof(Index));
         }

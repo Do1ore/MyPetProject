@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using MyPet.Areas.Identity.Data;
 using MyPet.ViewModels;
 
 namespace MyPet.Controllers
 {
-    [Authorize(Roles ="admin")]
+   
     public class RoleController : Controller
     {
-
-        RoleManager<IdentityRole> _roleManager;
-        UserManager<MyPetUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<MyPetUser> _userManager;
         public RoleController(RoleManager<IdentityRole> roleManager, UserManager<MyPetUser> userManager)
         {
             _roleManager = roleManager;

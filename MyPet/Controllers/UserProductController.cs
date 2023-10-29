@@ -67,7 +67,7 @@ namespace MyPet.Controllers
 
         public async Task<IActionResult> ShowFilteredProduct(FilterViewModel filter, int pageNumber)
         {
-            if (!ProductHelper.CheckFilterForEmptyness(filter))
+            if (!ProductHelper.CheckFilterForEmpty(filter))
             {
                 _buffilter = new FilterViewModel()
                 {
@@ -79,7 +79,7 @@ namespace MyPet.Controllers
                 };
             }
 
-            if (ProductHelper.CheckFilterForEmptyness(filter) && !ProductHelper.CheckFilterForEmptyness(_buffilter))
+            if (ProductHelper.CheckFilterForEmpty(filter) && !ProductHelper.CheckFilterForEmpty(_buffilter))
             {
                 filter.SortPrice = _buffilter.SortPrice;
                 filter.MinPrice = _buffilter.MinPrice;
@@ -120,7 +120,7 @@ namespace MyPet.Controllers
             }
 
 
-            int PageCount = (int)Math.Ceiling(productToShow.Count / (double)ProductsOnPage);
+            int pageCount = (int)Math.Ceiling(productToShow.Count / (double)ProductsOnPage);
 
             if (pageNumber == 0)
             {
@@ -130,7 +130,7 @@ namespace MyPet.Controllers
             List<ProductViewModel> resultProducts = SelectProducts(productToShow, pageNumber);
 
             ViewBag.Quantity = productToShow.Count;
-            ViewBag.ProductsOnPage = PageCount;
+            ViewBag.ProductsOnPage = pageCount;
             ViewBag.CurrentPage = pageNumber;
 
             ProductsAndFilterViewModel? productsAndFilter = new();
