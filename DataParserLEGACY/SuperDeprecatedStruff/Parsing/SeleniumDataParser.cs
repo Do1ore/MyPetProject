@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using DataParserLEGACY.SupportingLogics;
+using DataParserLEGACY.SuperDeprecatedStruff.SupportingLogics;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-namespace DataParserLEGACY.Parsing
+namespace DataParserLEGACY.SuperDeprecatedStruff.Parsing
 {
     public class SeleniumDataParser
     {

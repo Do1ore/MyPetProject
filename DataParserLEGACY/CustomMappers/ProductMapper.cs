@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using DataParserLEGACY.Models;
 using DataParserLEGACY.OnlinerScraper;
-using DataParserLEGACY.Parsing;
+using DataParserLEGACY.SuperDeprecatedStruff.Parsing;
 using MyPet.Models;
 
 namespace DataParserLEGACY.CustomMappers;
 
 public static class ProductMapper
 {
-    private static readonly MarketScraper _scraper = new();
+    private static readonly MarketScraper Scraper = new();
 
     public static MainProductModel MapToMainProductModel(Product t, ICollection<ExtraImageModel> images)
     {
@@ -25,13 +25,13 @@ public static class ProductMapper
             ProductFullName = t.full_name,
             ProductExtendedFullName = t.extended_name,
             MainFilePath = t.images.header,
-            MainFileName = _scraper.CreateFileName(t.full_name, t.images.header),
+            MainFileName = Scraper.CreateFileName(t.full_name, t.images.header),
             ShortDescription = t.micro_description,
             Description = t.description,
             ProductType = t.name_prefix,
             Rating = t.reviews.rating,
-            CreationDateTime = DateTime.Now,
-            LastTimeEdited = DateTime.Now,
+            CreationDateTime = DateTime.UtcNow,
+            LastTimeEdited = DateTime.UtcNow,
             ParsedUrl = t.html_url,
             ExtraImage = images,
         };
@@ -53,13 +53,13 @@ public static class ProductMapper
             ProductFullName = t.full_name,
             ProductExtendedFullName = t.extended_name,
             MainFilePath = t.images.header,
-            MainFileName = _scraper.CreateFileName(t.full_name, t.images.header),
+            MainFileName = Scraper.CreateFileName(t.full_name, t.images.header),
             ShortDescription = t.micro_description,
             Description = t.description,
             ProductType = t.name_prefix,
             Rating = t.reviews.rating,
-            CreationDateTime = DateTime.Now,
-            LastTimeEdited = DateTime.Now,
+            CreationDateTime = DateTime.UtcNow,
+            LastTimeEdited = DateTime.UtcNow,
             ParsedUrl = t.html_url
         };
 

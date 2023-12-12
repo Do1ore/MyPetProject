@@ -7,13 +7,13 @@ using DataParserLEGACY.DbContext;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Models;
 
-namespace DataParserLEGACY.SupportingLogics
+namespace DataParserLEGACY.SuperDeprecatedStruff.SupportingLogics
 {
-    public class ProductDbHelper : IAsyncDisposable
+    public abstract class ProductDbHelper : IAsyncDisposable
     {
-        private static ProductDbContext? db;
+        private static ProductDbContext? _db;
 
-        private readonly List<char> russianLetters = new List<char>()
+        private readonly List<char> _russianLetters = new List<char>()
         {
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М',
             'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ',
@@ -23,32 +23,32 @@ namespace DataParserLEGACY.SupportingLogics
         };
 
         private bool _disposed = false;
-        
+
+        ~ProductDbHelper()
+        {
+            DisposeAsync(false).AsTask().Wait();
+        }
+
         public async ValueTask DisposeAsync()
         {
             await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
-        
+
         protected virtual async ValueTask DisposeAsync(bool disposing)
         {
             if (!_disposed)
             {
                 if (disposing)
                 {
-                    if (db is not null)
-                        await db.DisposeAsync();
+                    if (_db is not null)
+                        await _db.DisposeAsync();
                 }
 
                 _disposed = true;
             }
         }
 
-        // Деструктор
-        ~ProductDbHelper()
-        {
-            DisposeAsync(false).AsTask().Wait();
-        }
 
         public static async Task SendDataAsync(MainProductModel model)
         {
@@ -57,13 +57,12 @@ namespace DataParserLEGACY.SupportingLogics
                     "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
                 .Options;
 
-            db = new ProductDbContext(options);
-            db.Add(model);
+            _db = new ProductDbContext(options);
+            _db.Add(model);
 
-            await db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
-       
 
         public static async Task<bool> CheckForRepeatAsync(string url)
         {
@@ -72,8 +71,8 @@ namespace DataParserLEGACY.SupportingLogics
                     "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
                 .Options;
 
-            db = new ProductDbContext(options);
-            if (await db.Products.AnyAsync(x => x.ParsedUrl == url))
+            _db = new ProductDbContext(options);
+            if (await _db.Products.AnyAsync(x => x.ParsedUrl == url))
             {
                 return true;
             }
@@ -88,8 +87,8 @@ namespace DataParserLEGACY.SupportingLogics
                     "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
                 .Options;
 
-            db = new ProductDbContext(options);
-            if (db.Products.Any(x => x.ParsedUrl == url))
+            _db = new ProductDbContext(options);
+            if (_db.Products.Any(x => x.ParsedUrl == url))
             {
                 return true;
             }
@@ -102,9 +101,8 @@ namespace DataParserLEGACY.SupportingLogics
         public static ICollection<ExtraImageModel> CreateExtraImagesCollectionAsync(List<string?> imageSrc,
             List<string?> fileName)
         {
+            _db = EntityFrameworkDbFactory.GetDbContext();
 
-            db = EntityFrameworkDbFactory.GetDbContext();
-            
             ICollection<ExtraImageModel> imageModels = new List<ExtraImageModel>();
 
             ExtraImageModel extraImage;
@@ -131,11 +129,11 @@ namespace DataParserLEGACY.SupportingLogics
                     "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
                 .Options;
 
-            db = new ProductDbContext(options);
-            int count = await db.Products.CountAsync();
-            db.Products.DistinctBy(p => p.ParsedUrl);
-            db.SaveChanges();
-            int count2 = await db.Products.CountAsync();
+            _db = new ProductDbContext(options);
+            int count = await _db.Products.CountAsync();
+            _db.Products.DistinctBy(p => p.ParsedUrl);
+            _db.SaveChanges();
+            int count2 = await _db.Products.CountAsync();
             MessageBox.Show("Dublicates removed. Count: {0}", Convert.ToString(count - count2));
         }
 
@@ -145,7 +143,7 @@ namespace DataParserLEGACY.SupportingLogics
             foreach (var item in strings)
             {
                 if (item != null)
-                    if (item.Any(c => russianLetters.Contains(c)))
+                    if (item.Any(c => _russianLetters.Contains(c)))
                     {
                         return true;
                     }
@@ -168,9 +166,9 @@ namespace DataParserLEGACY.SupportingLogics
             List<MainProductModel?> products = new List<MainProductModel?>();
             foreach (var key in idList)
             {
-                if (await db.Products.AnyAsync(i => i.Id == key))
+                if (await _db.Products.AnyAsync(i => i.Id == key))
                 {
-                    products.Add(await db.Products.FindAsync(key));
+                    products.Add(await _db.Products.FindAsync(key));
                 }
             }
 

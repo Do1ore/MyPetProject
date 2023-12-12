@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Windows;
 using DataParserLEGACY.Models;
 using DataParserLEGACY.OnlinerScraper;
-using ProductDbHelper = DataParserLEGACY.SupportingLogics.ProductDbHelper;
 
 namespace DataParserLEGACY
 {
@@ -25,7 +24,7 @@ namespace DataParserLEGACY
 
             Root? productModel = await parser.GetMainJsonModelAsync(new Uri(input));
 
-            var productHelper = new OnlinerScraper.ProductDbHelper();
+            var productHelper = new ProductDbHelper();
             var res = await productHelper.GetCorrectProductsWithNoRepeatAsync(productModel!.products);
             Debug.WriteLine("With no repeat: " + res.Count);
 
@@ -37,13 +36,12 @@ namespace DataParserLEGACY
                 Debug.WriteLine("Added: " + product);
             }
 
-
             MessageBox.Show("Completed!");
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            await ProductDbHelper.RemoveDublicates();
+            await SuperDeprecatedStruff.SupportingLogics.ProductDbHelper.RemoveDublicates();
         }
 
         private void textBox1_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)

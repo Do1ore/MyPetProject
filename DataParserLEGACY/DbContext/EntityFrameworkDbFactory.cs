@@ -8,8 +8,8 @@ public static class EntityFrameworkDbFactory
     public static ProductDbContext GetDbContext()
     {
         var options = new DbContextOptionsBuilder<ProductDbContext>()
-            .UseSqlServer(
-                "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
+            .UseNpgsql(
+                "User ID=postgres;Password=postgre;Host=localhost;Port=5432;Database=MyPet;Pooling=true;")
             .Options;
 
         return new ProductDbContext(options);

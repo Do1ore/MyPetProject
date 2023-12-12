@@ -104,8 +104,8 @@
 //                     Description = t.description,
 //                     ProductType = t.name_prefix,
 //                     Rating = t.reviews.rating,
-//                     CreationDateTime = DateTime.Now,
-//                     LastTimeEdited = DateTime.Now,
+//                     CreationDateTime = DateTime.UtcNow,
+//                     LastTimeEdited = DateTime.UtcNow,
 //                     ParsedUrl = t.html_url,
 //                     ExtraImage = images,
 //                 };

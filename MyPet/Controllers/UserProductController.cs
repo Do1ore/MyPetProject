@@ -267,7 +267,7 @@ namespace MyPet.Controllers
 
             ProductReview productReview = new()
             {
-                PublishedAt = DateTime.Now,
+                PublishedAt = DateTime.UtcNow,
                 ReviewStorageId = reviewStorage!.ReviewStorageId,
                 ProductId = review.ProductId,
                 ReviewMark = (int)review.Rating!,

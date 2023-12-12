@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DataParserLEGACY.CustomMappers;
 using DataParserLEGACY.Models;
-using DataParserLEGACY.Parsing;
+using DataParserLEGACY.SuperDeprecatedStruff.Parsing;
 using MyPet.Models;
 using Newtonsoft.Json;
 
@@ -46,7 +45,7 @@ public class OnlinerParser
                 _scraper.CreateExtraFileNameAsync(t.full_name, t.images.header, extraImagesSrc.Count);
 
             ICollection<ExtraImageModel>? images =
-                SupportingLogics.ProductDbHelper.CreateExtraImagesCollectionAsync(extraImagesSrc, extraFileNames);
+                SuperDeprecatedStruff.SupportingLogics.ProductDbHelper.CreateExtraImagesCollectionAsync(extraImagesSrc, extraFileNames);
 
             var product = ProductMapper.MapToMainProductModel(t, images);
 

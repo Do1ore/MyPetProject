@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DataParserLEGACY.CustomMappers;
 using DataParserLEGACY.DbContext;
 using DataParserLEGACY.Models;
 using Microsoft.EntityFrameworkCore;
@@ -26,17 +25,17 @@ public class ProductDbHelper
         return productModels.Where(p => !existingProductIds.Contains(p.url)).ToList();
     }
 
-    public static double ConvertToDouble(string? s)
+    public static double ConvertToDouble(string? stringNumber)
     {
         char systemSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator[0];
         double result = 0;
         try
         {
-            if (s != null)
+            if (stringNumber != null)
             {
-                result = !s.Contains(",")
-                    ? double.Parse(s, CultureInfo.InvariantCulture)
-                    : Convert.ToDouble(s.Replace(".", systemSeparator.ToString())
+                result = !stringNumber.Contains(",")
+                    ? double.Parse(stringNumber, CultureInfo.InvariantCulture)
+                    : Convert.ToDouble(stringNumber.Replace(".", systemSeparator.ToString())
                         .Replace(",", systemSeparator.ToString()));
             }
         }
@@ -44,13 +43,16 @@ public class ProductDbHelper
         {
             try
             {
-                result = Convert.ToDouble(s);
+                result = Convert.ToDouble(stringNumber);
             }
             catch
             {
                 try
                 {
-                    result = Convert.ToDouble(s.Replace(",", ";").Replace(".", ",").Replace(";", "."));
+                    result = Convert.ToDouble(stringNumber?
+                        .Replace(",", ";")
+                        .Replace(".", ",")
+                        .Replace(";", "."));
                 }
                 catch
                 {
@@ -62,10 +64,10 @@ public class ProductDbHelper
         return result;
     }
 
-    public async Task SendRangeOfDataAsync(List<MainProductModel> RangeofData)
+    public async Task SendRangeOfDataAsync(List<MainProductModel> rangeOfData)
     {
         var db = EntityFrameworkDbFactory.GetDbContext();
-        await db.Products.AddRangeAsync(RangeofData);
+        await db.Products.AddRangeAsync(rangeOfData);
 
         await db.SaveChangesAsync();
     }

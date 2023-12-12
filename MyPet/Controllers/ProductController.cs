@@ -186,7 +186,7 @@ namespace MyPet.Controllers
             {
                 try
                 {
-                    product.LastTimeEdited = DateTime.Now;
+                    product.LastTimeEdited = DateTime.UtcNow;
 
                     db.Update(product);
                     await db.SaveChangesAsync();
@@ -243,8 +243,8 @@ namespace MyPet.Controllers
             {
                 if (imageModel != null && ExtaImageCount is not null)
                     product.ExtraImage.Add(imageModel);
-                product.CreationDateTime = DateTime.Now;
-                product.LastTimeEdited = DateTime.Now;
+                product.CreationDateTime = DateTime.UtcNow;
+                product.LastTimeEdited = DateTime.UtcNow;
                 await db.AddAsync(_mapper.Map<MainProductModel>(product));
                 await db.SaveChangesAsync();
             }

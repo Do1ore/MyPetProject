@@ -20,4 +20,8 @@
     <ProjectReference Include="..\MyPet\MyPet.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SuperDeprecatedStruff\" />
+  </ItemGroup>
+
 </Project>

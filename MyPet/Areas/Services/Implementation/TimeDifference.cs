@@ -6,7 +6,7 @@ namespace MyPet.Areas.Services.Implementation
     {
         public string GetDifference(DateTime dateTime)
         {
-            TimeSpan timeSpan = DateTime.Now - dateTime;
+            TimeSpan timeSpan = DateTime.UtcNow - dateTime;
             int seconds = (int)timeSpan.TotalSeconds;
             int minutes = (int)timeSpan.TotalMinutes;
             int hours = (int)timeSpan.TotalHours;
@@ -37,7 +37,7 @@ namespace MyPet.Areas.Services.Implementation
         public string GetDifferenceEng(DateTime _dateTime)
         {
 
-            TimeSpan timeSpan = DateTime.Now - _dateTime;
+            TimeSpan timeSpan = DateTime.UtcNow - _dateTime;
 
             if (timeSpan.TotalSeconds < 60)
             {

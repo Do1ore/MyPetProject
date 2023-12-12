@@ -46,7 +46,7 @@ namespace MyPet.Controllers
                 newsSettings.Domains = domains;
             }
 
-            newsSettings.DateTo ??= DateTime.Now;
+            newsSettings.DateTo ??= DateTime.UtcNow;
             NewsApiSettingsModel? toUpdate = new();
             if (!_db.NewsApiSettings.Any())
                 await _db.NewsApiSettings.AddAsync(_mapper.Map<NewsApiSettingsModel>(newsSettings));

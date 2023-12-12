@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using HtmlAgilityPack;
 
-namespace DataParserLEGACY.Parsing
+namespace DataParserLEGACY.SuperDeprecatedStruff.Parsing
 {
     public class MarketScraper
     {
@@ -52,17 +52,17 @@ namespace DataParserLEGACY.Parsing
         public string? CreateFileName(string Title, string src)
         {
             List<string> words = Title.Split(' ').ToList();
-            string? FileName = null;
+            string? fileName = null;
             for (int i = 0; i < words.Count; i++)
             {
-                FileName = words.Count >= 2
+                fileName = words.Count >= 2
                     ? words[0].Trim() + words[1].Trim() + $"Part{i}"
                     : words.First().Trim() + $"Part{i}";
             }
 
-            FileName += DateTime.Now.ToString();
-            FileName += Path.GetExtension(src);
-            return FileName;
+            fileName += DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            fileName += Path.GetExtension(src);
+            return fileName;
         }
 
 
@@ -93,30 +93,33 @@ namespace DataParserLEGACY.Parsing
             string? result = null;
             await Task.Run(() =>
             {
-                HtmlNode productNode =
-                    _htmlDocument.DocumentNode.SelectSingleNode("//div[@class='offers-description__preview']");
-                string outerHtml = "";
-
-                outerHtml = productNode.SelectSingleNode(".//img").OuterHtml;
-                Match match = Regex.Match(outerHtml, pattern);
-                if (match.Success)
+                if (_htmlDocument != null)
                 {
-                    result = match.Groups[1].Value.Trim();
+                    HtmlNode productNode =
+                        _htmlDocument.DocumentNode.SelectSingleNode("//div[@class='offers-description__preview']");
+                    string outerHtml = "";
+
+                    outerHtml = productNode.SelectSingleNode(".//img").OuterHtml;
+                    Match match = Regex.Match(outerHtml, pattern);
+                    if (match.Success)
+                    {
+                        result = match.Groups[1].Value.Trim();
+                    }
                 }
             });
-            return result is not null ? result : throw new NullReferenceException("Null!");
+            return result ?? throw new NullReferenceException("Null!");
         }
 
         private async Task<string> SelectSummaryTitle(HtmlDocument htmlDocument)
         {
-            string SummaryTitle = "";
+            string summaryTitle = "";
             await Task.Run(() =>
             {
                 HtmlNode productNode =
                     htmlDocument.DocumentNode.SelectSingleNode("//h1[@class='catalog-masthead__title js-nav-header']");
-                SummaryTitle = productNode.InnerHtml.Trim().Replace("\n", "");
+                summaryTitle = productNode.InnerHtml.Trim().Replace("\n", "");
             });
-            return SummaryTitle.Trim();
+            return summaryTitle.Trim();
         }
 
         private async Task<string> SelectShortDescription(HtmlDocument htmlDocument)
