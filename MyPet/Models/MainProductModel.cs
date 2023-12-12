@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPet.Models
 {
-    public class MainProductModel
+    public record MainProductModel
     {
         [Key]
         public int Id { get; set; }

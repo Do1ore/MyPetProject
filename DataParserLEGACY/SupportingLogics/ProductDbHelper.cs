@@ -1,19 +1,18 @@
-﻿using DataParser.Parsing;
-using Microsoft.EntityFrameworkCore;
-using MyPet.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using DataParserLEGACY.DbContext;
+using Microsoft.EntityFrameworkCore;
+using MyPet.Models;
 
-
-namespace DataParser
+namespace DataParserLEGACY.SupportingLogics
 {
     public class ProductDbHelper : IAsyncDisposable
     {
-
         private static ProductDbContext? db;
+
         private readonly List<char> russianLetters = new List<char>()
         {
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М',
@@ -22,6 +21,7 @@ namespace DataParser
             'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х',
             'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'
         };
+
         private bool _disposed = false;
 
         // Реализация метода DisposeAsync
@@ -55,8 +55,9 @@ namespace DataParser
         public static async Task SendDataAsync(MainProductModel model)
         {
             var options = new DbContextOptionsBuilder<ProductDbContext>()
-    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-    .Options;
+                .UseSqlServer(
+                    "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
+                .Options;
 
             db = new ProductDbContext(options);
             db.Add(model);
@@ -64,42 +65,30 @@ namespace DataParser
             await db.SaveChangesAsync();
         }
 
-        public static async Task SendRangeOfDataAsync(List<MainProductModel> RangeofData)
-        {
-            var options = new DbContextOptionsBuilder<ProductDbContext>()
-    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-    .Options;
-
-            db = new ProductDbContext(options);
-            await db.Products.AddRangeAsync(RangeofData);
-
-            await Task.WhenAll();
-            if (RangeofData is not null)
-                await db.SaveChangesAsync();
-        }
+       
 
         public static async Task<bool> CheckForRepeatAsync(string url)
         {
             var options = new DbContextOptionsBuilder<ProductDbContext>()
-    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-    .Options;
+                .UseSqlServer(
+                    "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
+                .Options;
 
             db = new ProductDbContext(options);
             if (await db.Products.AnyAsync(x => x.ParsedUrl == url))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public static bool CheckForRepeat(string url)
         {
             var options = new DbContextOptionsBuilder<ProductDbContext>()
-    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-    .Options;
+                .UseSqlServer(
+                    "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
+                .Options;
 
             db = new ProductDbContext(options);
             if (db.Products.Any(x => x.ParsedUrl == url))
@@ -112,106 +101,37 @@ namespace DataParser
             }
         }
 
-        public async static Task<ICollection<ExtraImageModel>> CreateExtraImagesCollectionAsync(List<string?> ImageSrc, List<string?> FileName)
+        public static ICollection<ExtraImageModel> CreateExtraImagesCollectionAsync(List<string?> imageSrc,
+            List<string?> fileName)
         {
-            var options = new DbContextOptionsBuilder<ProductDbContext>()
-    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-    .Options;
-            db = new ProductDbContext(options);
+
+            db = EntityFrameworkDbFactory.GetDbContext();
+            
             ICollection<ExtraImageModel> imageModels = new List<ExtraImageModel>();
 
-            ExtraImageModel extraImage = new();
-            if (ImageSrc.Count != FileName.Count) throw new Exception("Invalid data");
-            await Task.Run(() =>
+            ExtraImageModel extraImage;
+            if (imageSrc.Count != fileName.Count) throw new Exception("Invalid data");
+
+            for (int i = 0; i < imageSrc.Count; i++)
             {
-                for (int i = 0; i < ImageSrc.Count; i++)
+                extraImage = new ExtraImageModel()
                 {
-                    extraImage = new ExtraImageModel()
-                    {
-                        FileName = FileName[i],
-                        FileSource = ImageSrc[i],
-                    };
-                    imageModels.Add(extraImage);
-                }
-            });
+                    FileName = fileName[i],
+                    FileSource = imageSrc[i],
+                };
+                imageModels.Add(extraImage);
+            }
+
             return imageModels;
         }
 
-        public async Task TranslateDataFromDbAsync()
-        {
-            var options = new DbContextOptionsBuilder<ProductDbContext>()
-    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-    .Options;
-            db = new ProductDbContext(options);
-
-            List<int?> productIdToEdit = new List<int?>();
-
-            List<string?>? TranslatedShortDescription = null;
-            List<string?>? TranslatedDescription = null;
-            List<string?>? TranslatedExtendedFullName = null;
-            List<string?>? TranslatedFullName = null;
-            List<string?>? TranslatedProductType = null;
-
-
-            foreach (var item in db.Products)
-            {
-                if (item.Description.Any(c => russianLetters.Contains(c)
-                || item.ProductFullName.Any(c => russianLetters.Contains(c))))
-                {
-                    productIdToEdit.Add(item.Id);
-                }
-
-            }
-            List<MainProductModel?> ProductsToEdit = await FindModelsAsync(productIdToEdit);
-
-
-            if (ProductsToEdit is not null)
-            {
-                List<List<string?>> superList = new List<List<string?>>();
-
-                var shortdesc = await FindShortDescriptionAsync(ProductsToEdit);
-                if (shortdesc is not null)
-                    superList.Add(shortdesc);
-
-                var extendedname = await FindExtenderProductNameAsync(ProductsToEdit);
-                if (extendedname is not null)
-                    superList.Add(extendedname);
-
-                var prodfullname = await FindProductFullNameAsync(ProductsToEdit);
-                if (prodfullname is not null)
-                    superList.Add(prodfullname);
-
-                var description = await FindDescriptionAsync(ProductsToEdit);
-                if (description is not null)
-                    superList.Add(description);
-
-                var prodtype = await FindProductTypeAsync(ProductsToEdit);
-                if (prodtype is not null)
-                    superList.Add(prodtype);
-
-                List<List<string?>> translatedData = await SeleniumDataParser.TranslateListOfLists(superList);
-                for (int i = 0; i < productIdToEdit.Count; i++)
-                {
-
-                    ProductsToEdit[i].ShortDescription = translatedData[0][i];
-                    ProductsToEdit[i].Description = translatedData[1][i];
-                    ProductsToEdit[i].ProductExtendedFullName = translatedData[2][i];
-                    ProductsToEdit[i].ProductType = translatedData[3][i];
-                    ProductsToEdit[i].ProductFullName = translatedData[4][i];
-                    db.Products.Update(ProductsToEdit[i]);
-
-                }
-            }
-            await db.SaveChangesAsync();
-            MessageBox.Show($"Fields translated: {ProductsToEdit.Count}", "Data info", MessageBoxButton.OK, MessageBoxImage.Information);
-
-        }
 
         public static async Task RemoveDublicates()
         {
             var options = new DbContextOptionsBuilder<ProductDbContext>()
-    .UseSqlServer("Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-    .Options;
+                .UseSqlServer(
+                    "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
+                .Options;
 
             db = new ProductDbContext(options);
             int count = await db.Products.CountAsync();
@@ -220,6 +140,7 @@ namespace DataParser
             int count2 = await db.Products.CountAsync();
             MessageBox.Show("Dublicates removed. Count: {0}", Convert.ToString(count - count2));
         }
+
         private bool IsContainsRussianLetter(List<string?> strings)
         {
             int counter = 0;
@@ -230,15 +151,20 @@ namespace DataParser
                     {
                         return true;
                     }
-                    else { counter++; }
+                    else
+                    {
+                        counter++;
+                    }
             }
+
             if (counter == strings.Count)
             {
                 return false;
             }
-            return false;
 
+            return false;
         }
+
         private async Task<List<MainProductModel?>> FindModelsAsync(List<int?> idList)
         {
             List<MainProductModel?> products = new List<MainProductModel?>();
@@ -249,15 +175,16 @@ namespace DataParser
                     products.Add(await db.Products.FindAsync(key));
                 }
             }
+
             return products;
         }
+
         private async Task<List<string?>?> FindProductFullNameAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
 
             await Task.Run(() =>
             {
-
                 foreach (var product in products)
                 {
                     if (product is not null)
@@ -268,12 +195,12 @@ namespace DataParser
                 return null;
             return values;
         }
+
         private async Task<List<string?>?> FindExtenderProductNameAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
             await Task.Run(() =>
             {
-
                 foreach (var product in products)
                 {
                     if (product is not null)
@@ -284,12 +211,12 @@ namespace DataParser
                 return null;
             return values;
         }
+
         private async Task<List<string?>?> FindProductTypeAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
             await Task.Run(() =>
             {
-
                 foreach (var product in products)
                 {
                     if (product is not null)
@@ -300,13 +227,13 @@ namespace DataParser
                 return null;
             return values;
         }
+
         private async Task<List<string?>?> FindShortDescriptionAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
 
             await Task.Run(() =>
             {
-
                 foreach (var product in products)
                 {
                     if (product is not null)
@@ -317,12 +244,12 @@ namespace DataParser
                 return null;
             return values;
         }
+
         private async Task<List<string?>?> FindDescriptionAsync(List<MainProductModel?> products)
         {
             List<string?> values = new List<string?>();
             await Task.Run(() =>
             {
-
                 foreach (var product in products)
                 {
                     if (product is not null)
@@ -333,8 +260,5 @@ namespace DataParser
                 return null;
             return values;
         }
-
-
-
     }
 }

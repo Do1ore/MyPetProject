@@ -62,7 +62,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Mapping\" />
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\img\Products\" />
     <Folder Include="wwwroot\img\user\uploads\" />
     <Folder Include="wwwroot\lib\bootstrap\mydist\" />

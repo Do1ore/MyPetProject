@@ -1,20 +1,13 @@
-﻿using Apertium.Net;
-using AutoMapper.Configuration.Conventions;
-using LibreTranslate.Net;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.DevTools.V108.Network;
-using OpenQA.Selenium.Support.UI;
-using RestSharp.Authenticators.OAuth;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+using DataParserLEGACY.SupportingLogics;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
-namespace DataParser.Parsing
+namespace DataParserLEGACY.Parsing
 {
     public class SeleniumDataParser
     {
@@ -134,19 +127,14 @@ namespace DataParser.Parsing
                         result.Add(outputField.GetAttribute("textContent"));
 
                         inputField.SendKeys(Keys.Alt + "d");
-                        // Output the translated list to the console
-
-                        // Close the browser window
+                     
                     }
 
                     catch (DriverServiceNotFoundException)
                     {
                         Thread.Sleep(5000);
                     }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                 
                     // Find the input field and enter the Russian list to be translated
                 }
                 driver.Quit();

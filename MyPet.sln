@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyPet", "MyPet\MyPet.csproj", "{04A57F5E-DBD4-4A20-98F6-01CA1711DF71}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataParser", "DataParser\DataParser.csproj", "{CAEAD0AD-C80B-499F-B2D1-996CD367C6F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataParserLEGACY", "DataParserLEGACY\DataParserLEGACY.csproj", "{CAEAD0AD-C80B-499F-B2D1-996CD367C6F4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FDAF21CE-0C96-463D-A302-B21A9C4700C7}"
 	ProjectSection(SolutionItems) = preProject
