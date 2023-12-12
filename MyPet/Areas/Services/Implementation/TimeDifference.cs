@@ -14,23 +14,23 @@ namespace MyPet.Areas.Services.Implementation
 
             if (seconds == 0)
             {
-                return $"òîëüêî ÷òî";
+                return $"Только что";
             }
             if (seconds < 60)
             {
-                return $"{seconds} {(seconds == 1 ? "ñåêóíäó" : seconds < 5 ? "ñåêóíäû" : "ñåêóíä")} íàçàä";
+                return $"{seconds} {(seconds == 1 ? "секунду" : seconds < 5 ? "секунды" : "секунд")} назад";
             }
             else if (minutes < 60)
             {
-                return $"{minutes} {(minutes == 1 ? "ìèíóòó" : minutes < 5 ? "ìèíóòû" : "ìèíóò")} íàçàä";
+                return $"{minutes} {(minutes == 1 ? "минуту" : minutes < 5 ? "минуты" : "минут")} назад";
             }
             else if (hours < 24)
             {
-                return $"{hours} {(hours == 1 ? "÷àñ" : hours < 5 ? "÷àñà" : "÷àñîâ")} íàçàä";
+                return $"{hours} {(hours == 1 ? "час" : hours < 5 ? "часа" : "часов")} назад";
             }
             else
             {
-                return $"{days} {(days == 1 ? "äåíü" : days < 5 ? "äíÿ" : "äíåé")} íàçàä";
+                return $"{days} {(days == 1 ? "день" : days < 5 ? "дня" : "дней")} назад";
             }
         }
 

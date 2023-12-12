@@ -28,11 +28,15 @@ namespace DataParserLEGACY
             var res = await productHelper.GetCorrectProductsWithNoRepeatAsync(productModel!.products);
             Debug.WriteLine("With no repeat: " + res.Count);
 
+            textBox1.Text += "With no repeat: " + res.Count + "\n";
+
+
             var products = parser.GetFullProductsModel(res);
 
             await foreach (var product in products)
             {
                 await productHelper.AddProductToDb(product);
+                textBox1.Text += "Added: " + product + "\n";
                 Debug.WriteLine("Added: " + product);
             }
 
