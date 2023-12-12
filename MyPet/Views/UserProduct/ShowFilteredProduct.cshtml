@@ -1,19 +1,25 @@
 ﻿@using MyPet.Areas.SomeLogics;
 @using MyPet.ViewModels;
 @model ProductsAndFilterViewModel?
+@inject ProductHelper ProductHelper
 @{
-    int CurrentPage = ViewBag.CurrentPage;
-    int PageCount = ViewBag.ProductsOnPage;
+    int currentPage = ViewBag.CurrentPage;
+    int productsOnPage = ViewBag.ProductsOnPage;
     int count = 0;
     if (Model is not null)
     {
-        count = Model.Products.Count();
+        if (Model.Products != null)
+        {
+            count = Model.Products.Count();
+        }
     }
+
     if (count > 0)
     {
         ViewBag.Title = "Товары";
         ViewBag.Secondary = $"Всего товаров: {ViewBag.Quantity}";
     }
+
     List<string?> categoties = await ProductHelper.GetAllCategoriesAsync();
 }
 
@@ -24,7 +30,7 @@
 
                 <div class="mycenter">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
-                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z" />
+                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
                     </svg> &thinsp; Фильтрация
 
 
@@ -52,18 +58,17 @@
                                         else
                                         {
                                             <option value="All">Все категории</option>
-
                                         }
 
                                         @foreach (var item in categoties)
-                                        {   @if (Model.Filter is not null && Model.Filter.ProductType == item)
+                                        {
+                                            @if (Model.Filter is not null && Model.Filter.ProductType == item)
                                             {
                                                 <option selected value="@item">@item</option>
                                             }
                                             else
                                             {
                                                 <option value="@item">@item</option>
-
                                             }
                                         }
                                     </select>
@@ -79,7 +84,6 @@
                                         else
                                         {
                                             <option value="1">Сначала дешевые</option>
-
                                         }
                                         @if (Model.Filter.SortPrice == 2)
                                         {
@@ -88,7 +92,6 @@
                                         else
                                         {
                                             <option value="2">Сначала дорогие</option>
-
                                         }
                                         @if (Model.Filter.SortPrice == 0)
                                         {
@@ -97,7 +100,6 @@
                                         else
                                         {
                                             <option value="0">Любые</option>
-
                                         }
 
                                     </select>
@@ -107,20 +109,20 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-3">
-                                    <input type="text" name="MinPrice" placeholder="Цена от" class="form-control mymargin" />
+                                    <input type="text" name="MinPrice" placeholder="Цена от" class="form-control mymargin"/>
                                 </div>
 
                                 <div class="col-3">
-                                    <input type="text" name="MaxPrice" placeholder="Цена до" class="form-control mymargin" />
+                                    <input type="text" name="MaxPrice" placeholder="Цена до" class="form-control mymargin"/>
                                 </div>
                                 <div class="col-sm">
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                                             </svg>
                                         </span>
-                                        <input class="form-control" type="text" placeholder="Ваш запрос" aria-label="Ваш запрос" name="SearchTerm" value="@Model.Filter.SearchTerm" aria-describedby="basic-addon1" />
+                                        <input class="form-control" type="text" placeholder="Ваш запрос" aria-label="Ваш запрос" name="SearchTerm" value="@Model.Filter.SearchTerm" aria-describedby="basic-addon1"/>
                                     </div>
                                 </div>
 
@@ -132,14 +134,14 @@
                     <div class="d-flex me-2">
                         <button form="enable_filter" type="submit" class="btn btn-primary mymargin me-2">
                             <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 2px" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                             </svg> Поиск
                         </button>
 
                         <a asp-action="ClearFilter" txype="submit" class="btn btn-danger mymargin">
                             <svg xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 2px" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg> Очистить фильтр
                         </a>
                     </div>
@@ -151,16 +153,15 @@
 </div>
 @if (Model.Products is null)
 {
-
 }
 else
 {
-    @if (PageCount > 1)
+    @if (productsOnPage > 1)
     {
         <div style="display: flex; justify-content: center; align-items: center">
             <nav aria-label="">
                 <ul class="pagination">
-                    @if (CurrentPage == 1)
+                    @if (currentPage == 1)
                     {
                         <li class="page-item disabled me-1 ">
                             <span class="rounded-2 page-link me-1">Назад</span>
@@ -169,30 +170,31 @@ else
                     else
                     {
                         <form>
-                        <li class="page-item me-1">
-                            <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
-                            <button type="submit" class="page-link">Назад</button>
-                        </li>
+                            <li class="page-item me-1">
+                                <input type="hidden" name="PageNumber" value="@(currentPage - 1)">
+                                <button type="submit" class="page-link">Назад</button>
+                            </li>
                         </form>
                     }
-                    @for (int i = 1; i <= PageCount; i++)
+                    @for (int i = 1; i <= productsOnPage; i++)
                     {
-                        if (i == CurrentPage)
+                        if (i == currentPage)
                         {
-                            <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
+                            <li class="page-item">
+                                <a class="page-link active rounded-2 me-1" href="#">@i</a>
+                            </li>
                         }
                         else
                         {
                             <form>
-                            <li class="page-item me-1">
-                                <input type="hidden" value="@i" name="PageNumber" class="page-link">
-                                <button type="submit" class="page-link">@i</button>
-                            </li>
+                                <li class="page-item me-1">
+                                    <input type="hidden" value="@i" name="PageNumber" class="page-link">
+                                    <button type="submit" class="page-link">@i</button>
+                                </li>
                             </form>
-
                         }
                     }
-                    @if (CurrentPage == PageCount)
+                    @if (currentPage == productsOnPage)
                     {
                         <li class="page-item">
                             <span class="page-link disabled rounded-2">Дальше</span>
@@ -201,10 +203,10 @@ else
                     else
                     {
                         <form>
-                        <li class="page-item">
-                            <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
-                            <button type="submit" class="page-link">Дальше</button>
-                        </li>
+                            <li class="page-item">
+                                <input type="hidden" name="PageNumber" value="@(currentPage + 1)">
+                                <button type="submit" class="page-link">Дальше</button>
+                            </li>
                         </form>
                     }
                 </ul>
@@ -212,14 +214,15 @@ else
             </nav>
         </div>
     }
+
     <partial name="_ProductListForUserPartial"></partial>
 
-    @if (PageCount > 1)
+    @if (productsOnPage > 1)
     {
         <div style="display: flex; justify-content: center; align-items: center">
             <nav aria-label="">
                 <ul class="pagination">
-                    @if (CurrentPage == 1)
+                    @if (currentPage == 1)
                     {
                         <li class="page-item disabled me-1 ">
                             <span class="rounded-2 page-link me-1">Назад</span>
@@ -228,30 +231,31 @@ else
                     else
                     {
                         <form>
-                        <li class="page-item me-1">
-                            <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
-                            <button type="submit" class="page-link">Назад</button>
-                        </li>
+                            <li class="page-item me-1">
+                                <input type="hidden" name="PageNumber" value="@(currentPage - 1)">
+                                <button type="submit" class="page-link">Назад</button>
+                            </li>
                         </form>
                     }
-                    @for (int i = 1; i <= PageCount; i++)
+                    @for (int i = 1; i <= productsOnPage; i++)
                     {
-                        if (i == CurrentPage)
+                        if (i == currentPage)
                         {
-                            <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
+                            <li class="page-item">
+                                <a class="page-link active rounded-2 me-1" href="#">@i</a>
+                            </li>
                         }
                         else
                         {
                             <form>
-                            <li class="page-item me-1">
-                                <input type="hidden" value="@i" name="PageNumber" class="page-link">
-                                <button type="submit" class="page-link">@i</button>
-                            </li>
+                                <li class="page-item me-1">
+                                    <input type="hidden" value="@i" name="PageNumber" class="page-link">
+                                    <button type="submit" class="page-link">@i</button>
+                                </li>
                             </form>
-
                         }
                     }
-                    @if (CurrentPage == PageCount)
+                    @if (currentPage == productsOnPage)
                     {
                         <li class="page-item">
                             <span class="page-link disabled rounded-2">Дальше</span>
@@ -260,10 +264,10 @@ else
                     else
                     {
                         <form>
-                        <li class="page-item">
-                            <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
-                            <button type="submit" class="page-link">Дальше</button>
-                        </li>
+                            <li class="page-item">
+                                <input type="hidden" name="PageNumber" value="@(currentPage + 1)">
+                                <button type="submit" class="page-link">Дальше</button>
+                            </li>
                         </form>
                     }
                 </ul>

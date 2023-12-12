@@ -1,7 +1,6 @@
 using MyPet.Areas.Services.Abstractions;
-using System;
 
-namespace MyPet.Areas.SomeLogics
+namespace MyPet.Areas.Services.Implementation
 {
     public class TimeDifference : ITimeDifference
     {
@@ -15,23 +14,23 @@ namespace MyPet.Areas.SomeLogics
 
             if (seconds == 0)
             {
-                return $"только что";
+                return $"ГІГ®Г«ГјГЄГ® Г·ГІГ®";
             }
             if (seconds < 60)
             {
-                return $"{seconds} {(seconds == 1 ? "секунду" : seconds < 5 ? "секунды" : "секунд")} назад";
+                return $"{seconds} {(seconds == 1 ? "Г±ГҐГЄГіГ­Г¤Гі" : seconds < 5 ? "Г±ГҐГЄГіГ­Г¤Г»" : "Г±ГҐГЄГіГ­Г¤")} Г­Г Г§Г Г¤";
             }
             else if (minutes < 60)
             {
-                return $"{minutes} {(minutes == 1 ? "минуту" : minutes < 5 ? "минуты" : "минут")} назад";
+                return $"{minutes} {(minutes == 1 ? "Г¬ГЁГ­ГіГІГі" : minutes < 5 ? "Г¬ГЁГ­ГіГІГ»" : "Г¬ГЁГ­ГіГІ")} Г­Г Г§Г Г¤";
             }
             else if (hours < 24)
             {
-                return $"{hours} {(hours == 1 ? "час" : hours < 5 ? "часа" : "часов")} назад";
+                return $"{hours} {(hours == 1 ? "Г·Г Г±" : hours < 5 ? "Г·Г Г±Г " : "Г·Г Г±Г®Гў")} Г­Г Г§Г Г¤";
             }
             else
             {
-                return $"{days} {(days == 1 ? "день" : days < 5 ? "дня" : "дней")} назад";
+                return $"{days} {(days == 1 ? "Г¤ГҐГ­Гј" : days < 5 ? "Г¤Г­Гї" : "Г¤Г­ГҐГ©")} Г­Г Г§Г Г¤";
             }
         }
 

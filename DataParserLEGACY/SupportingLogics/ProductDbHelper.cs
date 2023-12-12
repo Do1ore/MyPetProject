@@ -23,15 +23,13 @@ namespace DataParserLEGACY.SupportingLogics
         };
 
         private bool _disposed = false;
-
-        // Реализация метода DisposeAsync
+        
         public async ValueTask DisposeAsync()
         {
             await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
-
-        // Метод для освобождения ресурсов
+        
         protected virtual async ValueTask DisposeAsync(bool disposing)
         {
             if (!_disposed)

@@ -1,7 +1,6 @@
 using AspNetCoreHero.ToastNotification.Extensions;
 using MyPet.Extensions;
 using MyPet.Middlewares;
-using Prometheus;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,13 +13,13 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
 builder.Services.ConfigureCustomServices(builder.Configuration);
 
-builder.Services.AddHealthChecks();
+// builder.Services.AddHealthChecks();
 
-builder.WebHost.ConfigureCustomMetrics();
+// builder.WebHost.ConfigureCustomMetrics();
 
-ServiceExtensions.ConfigureSerilog(builder.Configuration);
+// ServiceExtensions.ConfigureSerilog(builder.Configuration);
 
-builder.Host.UseSerilog();
+// builder.Host.UseSerilog();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -42,8 +41,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+// app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseMetricServer();
-app.UseHttpMetrics();
+// app.UseMetricServer();
+// app.UseHttpMetrics();
+
 app.Run();

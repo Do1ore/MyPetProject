@@ -10,67 +10,67 @@ namespace MyPet.Controllers
 {
     public class HomeController : Controller
     {
-        private NewsManager? _managerNews;
+        private readonly NewsManagerService _newsManagerService;
         private readonly ProductDbContext _db;
-        public HomeController(ProductDbContext db)
+
+        public HomeController(ProductDbContext db, NewsManagerService newsManagerService)
         {
             _db = db;
+            _newsManagerService = newsManagerService;
             Log.Debug("Controller {@ControllerName} invoked", nameof(HomeController));
         }
-        private static NewsViewModel? newsViewModel { get; set; }
+
+        private static NewsViewModel? NewsViewModel { get; set; }
 
 
         public async Task<IActionResult?> Index()
         {
-            _managerNews = new();
-            newsViewModel = new();
-            var news = await _managerNews.GetNewsAsync();
-            if(news is null)
+            NewsViewModel = new();
+            var news = await _newsManagerService.GetNewsAsync();
+            if (news is null)
             {
-                newsViewModel.Articles = new List<Article?>();
+                NewsViewModel.Articles = new List<Article?>();
             }
             else
             {
-                newsViewModel.Articles = news;
+                NewsViewModel.Articles = news;
             }
+
             List<int> ind = await _db.Products.Select(p => p.Id).ToListAsync();
-            var RandId = new Random().Next(0, ind.Count);
+            var randId = new Random().Next(0, ind.Count);
 
             var product = await _db.Products.Select(p => p)
-                .FirstOrDefaultAsync(i => i.Id == ind[RandId]);
-            ViewBag.Product = product;
+                .FirstOrDefaultAsync(i => i.Id == ind[randId]);
+            if (product != null) ViewBag.Product = product;
 
-            return View(newsViewModel);
+            return View(NewsViewModel);
         }
 
         public async Task<IActionResult> NewsDetails(string title)
         {
-            var SelectedNews = newsViewModel?.Articles?.FirstOrDefault(i => i?.Title == title);
+            var selectedNews = NewsViewModel?.Articles?.FirstOrDefault(i => i?.Title == title) ?? throw new ArgumentNullException("NewsViewModel?.Articles?.FirstOrDefault(i => i?.Title == title)");
             ViewBag.Title = "Новости";
             ViewBag.Secondary = "Детальная информация";
 
-            return View(SelectedNews);
+            return View(selectedNews);
         }
 
         public IActionResult AllNews()
         {
-
-
             ViewBag.Title = "Новости";
-            if (newsViewModel is null)
+            if (NewsViewModel is null)
             {
                 ViewBag.Secondary = "Новостей не найдено";
             }
             else
             {
-                ViewBag.Secondary = "Найдено: " + newsViewModel.Articles.Count;
-
+                ViewBag.Secondary = "Найдено: " + NewsViewModel.Articles.Count;
             }
 
 
-            return View(newsViewModel.Articles);
-
+            return View(NewsViewModel?.Articles);
         }
+
         public IActionResult Privacy()
         {
             return View();

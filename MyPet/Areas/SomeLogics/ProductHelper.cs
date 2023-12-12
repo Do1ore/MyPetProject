@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyPet.Models;
 using MyPet.ViewModels;
 
@@ -7,16 +6,16 @@ namespace MyPet.Areas.SomeLogics
 {
     public class ProductHelper
     {
-        private static ProductDbContext? _db;
+        private readonly ProductDbContext _db;
 
-        public static async Task<List<string?>> GetAllCategoriesAsync()
+        public ProductHelper(ProductDbContext db)
         {
-            DbContextOptions<ProductDbContext> options = new DbContextOptionsBuilder<ProductDbContext>()
-                .UseSqlServer(
-                    "Server=LAPTOP-CSIKF729;Database=MyPet;Trusted_Connection=True;Encrypt=False;MultipleActiveResultSets=true")
-                .Options;
+            _db = db;
+        }
 
-            _db = new ProductDbContext(options);
+        public async Task<List<string?>> GetAllCategoriesAsync()
+        {
+   
 
             List<string?> categoties = await _db.Products.Select(p => p.ProductType).Distinct().ToListAsync();
 

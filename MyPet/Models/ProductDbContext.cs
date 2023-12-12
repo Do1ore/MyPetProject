@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace MyPet.Models
 {
-    public class ProductDbContext : DbContext
+    public sealed class ProductDbContext : DbContext
     {
         public DbSet<MainProductModel> Products { get; set; }
         public DbSet<ExtraImageModel> ExtraImages { get; set; }
@@ -19,7 +19,6 @@ namespace MyPet.Models
         public ProductDbContext(DbContextOptions<ProductDbContext> options)
                 : base(options)
         {
-            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -3,12 +3,13 @@
 @using MyPet.Areas.SomeLogics;
 @using MyPet.ViewModels;
 @model ProductsAndFilterViewModel;
-@inject ITimeDifference timeDifference;
+@inject ITimeDifference TimeDifference;
+@inject ProductHelper ProductHelper;
 @{
-    int CurrentPage = ViewBag.CurrentPage;
-    int PageCount = ViewBag.ProductsOnPage;
+    int currentPage = ViewBag.CurrentPage;
+    int pageCount = ViewBag.ProductsOnPage;
     int count = 0;
-    if (Model is not null)
+    if (Model?.Products != null)
     {
         count = Model.Products.Count();
     }
@@ -17,7 +18,7 @@
         ViewBag.Title = "Товары для администратора";
         ViewBag.Secondary = $"Всего товаров: {ViewBag.Quantity}";
     }
-    List<string?> categoties = await ProductHelper.GetAllCategoriesAsync();
+    List<string?> categories = await ProductHelper.GetAllCategoriesAsync();
 
 }
 
@@ -70,7 +71,7 @@
 
                                         }
 
-                                        @foreach (var item in categoties)
+                                        @foreach (var item in categories)
                                         {   @if (Model.Filter is not null && Model.Filter.ProductType == item)
                                             {
                                                 <option selected value="@item">@item</option>
@@ -165,12 +166,12 @@
     </div>
 </div>
 
-@if (PageCount > 1)
+@if (pageCount > 1)
 {
     <div style="display: flex; justify-content: center; align-items: center">
         <nav aria-label="">
             <ul class="pagination">
-                @if (CurrentPage == 1)
+                @if (currentPage == 1)
                 {
                     <li class="page-item disabled me-1 ">
                         <span class="rounded-2 page-link me-1">Назад</span>
@@ -180,14 +181,14 @@
                 {
                     <form>
                     <li class="page-item me-1">
-                        <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
+                        <input type="hidden" name="PageNumber" value="@(currentPage - 1)">
                         <button type="submit" class="page-link">Назад</button>
                     </li>
                     </form>
                 }
-                @for (int i = 1; i <= PageCount; i++)
+                @for (int i = 1; i <= pageCount; i++)
                 {
-                    if (i == CurrentPage)
+                    if (i == currentPage)
                     {
                         <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
                     }
@@ -202,7 +203,7 @@
 
                     }
                 }
-                @if (CurrentPage == PageCount)
+                @if (currentPage == pageCount)
                 {
                     <li class="page-item">
                         <span class="page-link disabled rounded-2">Дальше</span>
@@ -212,7 +213,7 @@
                 {
                     <form>
                     <li class="page-item">
-                        <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
+                        <input type="hidden" name="PageNumber" value="@(currentPage + 1)">
                         <button type="submit" class="page-link">Дальше</button>
                     </li>
                     </form>
@@ -226,7 +227,7 @@
 @foreach (var item in Model.Products)
 {
     #region Time
-    string? value = timeDifference.GetDifference(item.LastTimeEdited);
+    string? value = TimeDifference.GetDifference(item.LastTimeEdited);
     #endregion
     <div class="card mb-lg-3 rounded-4" href="" style="max-width: 100%; padding: 15px">
         <div class="row">
@@ -241,7 +242,7 @@
 
 
                     <p class="card-text">От @item.MinPrice BYN </p>
-                    <p class="card-text"><small class="text-muted">Поледний раз редактирован @timeDifference.GetDifference(item.LastTimeEdited)</small></p>
+                    <p class="card-text"><small class="text-muted">Поледний раз редактирован @TimeDifference.GetDifference(item.LastTimeEdited)</small></p>
 
 
 
@@ -283,12 +284,12 @@
 
 }
 
-@if (PageCount > 1)
+@if (pageCount > 1)
 {
     <div style="display: flex; justify-content: center; align-items: center">
         <nav aria-label="">
             <ul class="pagination">
-                @if (CurrentPage == 1)
+                @if (currentPage == 1)
                 {
                     <li class="page-item disabled me-1 ">
                         <span class="rounded-2 page-link me-1">Назад</span>
@@ -298,14 +299,14 @@
                 {
                     <form>
                     <li class="page-item me-1">
-                        <input type="hidden" name="PageNumber" value="@(CurrentPage - 1)">
+                        <input type="hidden" name="PageNumber" value="@(currentPage - 1)">
                         <button type="submit" class="page-link">Назад</button>
                     </li>
                     </form>
                 }
-                @for (int i = 1; i <= PageCount; i++)
+                @for (int i = 1; i <= pageCount; i++)
                 {
-                    if (i == CurrentPage)
+                    if (i == currentPage)
                     {
                         <li class="page-item"><a class="page-link active rounded-2 me-1" href="#">@i</a></li>
                     }
@@ -320,7 +321,7 @@
 
                     }
                 }
-                @if (CurrentPage == PageCount)
+                @if (currentPage == pageCount)
                 {
                     <li class="page-item">
                         <span class="page-link disabled rounded-2">Дальше</span>
@@ -330,7 +331,7 @@
                 {
                     <form>
                     <li class="page-item">
-                        <input type="hidden" name="PageNumber" value="@(CurrentPage + 1)">
+                        <input type="hidden" name="PageNumber" value="@(currentPage + 1)">
                         <button type="submit" class="page-link">Дальше</button>
                     </li>
                     </form>

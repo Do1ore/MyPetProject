@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.Identity.Data;
 using MyPet.Areas.Services.Abstractions;
+using MyPet.Areas.Services.Implementation;
 using MyPet.Areas.SomeLogics;
 using MyPet.Models;
 using Serilog;
@@ -22,11 +23,15 @@ public static class ServiceExtensions
 
 
         services.AddDbContext<MyIdentityDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseNpgsql(connectionString)
+                .EnableSensitiveDataLogging());
 
 
         services.AddDbContext<ProductDbContext>(options =>
-            options.UseSqlServer(connectionString));
+        {
+            options.UseNpgsql(connectionString)
+                .EnableSensitiveDataLogging();
+        });
 
         services.AddNotyf(config =>
         {
@@ -34,12 +39,15 @@ public static class ServiceExtensions
             config.IsDismissable = true;
             config.Position = NotyfPosition.TopRight;
         });
+
         services.AddIdentity<MyPetUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<MyIdentityDbContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();
 
         services.AddScoped<ITimeDifference, TimeDifference>();
+        services.AddScoped<ProductHelper>();
+        services.AddScoped<NewsManagerService>();
     }
 
     public static void ConfigureSerilog(IConfiguration configuration)

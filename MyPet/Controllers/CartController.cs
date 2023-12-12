@@ -20,12 +20,12 @@ namespace MyPet.Controllers
         private readonly UserManager<MyPetUser> _userManager;
         private readonly IMapper _mapper;
         private readonly INotyfService _notifyService;
-        public CartController(ProductDbContext db, UserManager<MyPetUser> userManager, IMapper mapper, MyIdentityDbContext userDb, INotyfService notyfyService)
+        public CartController(ProductDbContext db, UserManager<MyPetUser> userManager, IMapper mapper, MyIdentityDbContext userDb, INotyfService notifyService)
         {
            _db = db;
            _userManager = userManager;
            _mapper = mapper;
-           _notifyService = notyfyService;
+           _notifyService = notifyService;
            Log.Debug("Controller {@ControllerName} invoked", nameof(CartController));
         }
 
