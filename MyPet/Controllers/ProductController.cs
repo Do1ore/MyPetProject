@@ -184,19 +184,10 @@ namespace MyPet.Controllers
             }
             if (ModelState.IsValid)
             {
-                try
-                {
-                    product.LastTimeEdited = DateTime.UtcNow;
+                product.LastTimeEdited = DateTime.UtcNow;
 
-                    db.Update(product);
-                    await db.SaveChangesAsync();
-
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-
-                    throw;
-                }
+                db.Update(product);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(ProductsToList));
             }
             return View(product);

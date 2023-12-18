@@ -2,6 +2,7 @@
 
 namespace MyPet.Models
 {
+    [Table("CartProduct")]
     public class CartProduct
     {
         public int Id { get; set; }

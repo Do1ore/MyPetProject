@@ -7,52 +7,49 @@
 
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h2 class="text-muted">Создать новый аккаунт</h2>
-            <hr />
+            <span>Только при наличии аккаунта, вы можете использовать все функции приложения. 
+                Это особенность архитектуры приложения</span>
+            <hr/>
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" autocomplete="off" aria-required="true" placeholder="Имя" />
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="off" aria-required="true" placeholder="Имя"/>
                 <label asp-for="Input.FirstName">Ваше имя</label>
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
-             <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" autocomplete="off" aria-required="true" placeholder="Фамилия" />
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="off" aria-required="true" placeholder="Фамилия"/>
                 <label asp-for="Input.LastName">Ваша фамилия</label>
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
                 <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Пароль"/>
                 <label asp-for="Input.Password">Пароль</label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Пароль" />
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Пароль"/>
                 <label asp-for="Input.ConfirmPassword">Подтвердите пароль</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-outline-success">Зарегистрироваться</button>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mb-4">Зарегистрироваться</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Используйте другой сервис для авторизации</h3>
-            <hr />
+    <div class="col-md-6">
+
+        <section class="d-flex justify-content-center align-content-center">
+
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
+                    <img src="/img/Illustrations/welcomeImage1.jpg" class="w-auto rounded-4" style="object-fit: cover; max-height: 60dvh;" alt="welcome"/>
                 }
                 else
                 {
@@ -73,5 +70,5 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

@@ -26,7 +26,7 @@ namespace MyPet.Controllers
         public async Task<IActionResult?> Index()
         {
             NewsViewModel = new();
-            var news = await _newsManagerService.GetNewsAsync();
+            List<Article?>? news = await _newsManagerService.GetNewsAsync();
             if (news is null)
             {
                 NewsViewModel.Articles = new List<Article?>();

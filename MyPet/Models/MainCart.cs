@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPet.Models
 {
+    [Table("MainCart")]
     public class MainCart
     {
         public int Id { get; set; }

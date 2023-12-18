@@ -23,8 +23,8 @@ namespace MyPet.Controllers
 
 
         public async Task<IActionResult> ManageNewsSettings()
-        {
-            var newSettings = await _db.NewsApiSettings.FirstAsync();
+        {   
+            var newSettings = await _db.NewsApiSettings.FirstOrDefaultAsync();
             var settingsViewModel = _mapper.Map<NewsSettingsViewModel>(newSettings);
             return View(settingsViewModel);
         }

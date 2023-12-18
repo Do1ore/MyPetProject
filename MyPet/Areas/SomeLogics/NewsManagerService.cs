@@ -8,7 +8,7 @@ namespace MyPet.Areas.SomeLogics
 {
     public class NewsManagerService : INewsParametres
     {
-        private const string NewsId = "9baebdbe994649a59f38eaf8b7bd5e6a";
+        private const string NewsApiKey = "44ac292571054b6787f228908e3cc15b";
         private readonly ProductDbContext _db;
 
         public NewsManagerService(ProductDbContext db)
@@ -23,12 +23,15 @@ namespace MyPet.Areas.SomeLogics
 
             List<Article?> articles = new();
             RestRequest request = new($"https://newsapi.org/v2/everything", Method.Get);
-            request.AddHeader("X-Api-Key", NewsId);
+            request.AddHeader("X-Api-Key", NewsApiKey);
 
             if (!_db.NewsApiSettings.Any()) return newsViewModel.Articles;
 
-            var newsSettings = await _db.NewsApiSettings.Select(x => x).FirstAsync();
-            if (newsSettings.Sourses is not null)
+            var newsSettings = await _db.NewsApiSettings.Select(x => x).FirstOrDefaultAsync();
+            if (newsSettings is null)
+                return new List<Article?>();
+
+            if (newsSettings?.Sourses is not null)
             {
                 request.AddParameter("sourses", newsSettings.Sourses);
             }
@@ -70,6 +73,7 @@ namespace MyPet.Areas.SomeLogics
             else request.AddParameter("pageSize", $"{INewsParametres.MaxPageSize}");
 
             RestResponse? response = await client.ExecuteAsync(request);
+            
             if (response.ResponseStatus.ToString() == "Error")
             {
                 return new List<Article?>();
