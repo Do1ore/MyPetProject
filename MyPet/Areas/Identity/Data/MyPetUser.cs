@@ -13,9 +13,10 @@ public class MyPetUser : IdentityUser
     public string? FirstName { get; set; }
     [PersonalData]
     public string? LastName { get; set; }
+    
     [PersonalData]
     public DateTime RegistrationDateTime { get; set; }
-    public MainCart? MainProductCart { get; set; }
+
     [NotMapped]
     public IFormFile? UserProfileImage { get; set; }
     public string? PathToProfileImage { get; set; } = DefaultUserImage.ImgUrl;

@@ -85,7 +85,7 @@ namespace MyPet.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [EmailAddress]
+            [EmailAddress(ErrorMessage = "Не верный формат электронной почты")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -94,7 +94,7 @@ namespace MyPet.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Длина {0} должна быть не менее {2} и не более {1} символов.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Пароль")]
             public string Password { get; set; }
@@ -105,7 +105,7 @@ namespace MyPet.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Подтвердите пароль")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Пароль и пароль подтверждения не совпадают.")]
             public string ConfirmPassword { get; set; }
         }
 

@@ -20,9 +20,9 @@ public class ProductDbHelper
 
 
         var existingProductIds = await context.Products.Select(p => p.ParsedUrl).ToListAsync();
-        if (existingProductIds == null) throw new ArgumentNullException(nameof(existingProductIds));
+        if (existingProductIds?.Count == 0) return productModels;
 
-        return productModels.Where(p => !existingProductIds.Contains(p.url)).ToList();
+        return productModels.Where(p => existingProductIds != null && !existingProductIds.Contains(p.url)).ToList();
     }
 
     public static double ConvertToDouble(string? stringNumber)

@@ -21,7 +21,7 @@ namespace MyPet.Models
         [NotMapped]
         public IFormFile? Image { get; set; }
         public DateTime? CreationDateTime { get; set; }
-        public DateTime? LastTimeEdited { get; set; }
+        public DateTime? LastTimeEdited { get; set; } = DateTime.UtcNow;
         public string? ParsedUrl { get; set; }
         public ICollection<ExtraImageModel>? ExtraImage { get; set; } = new List<ExtraImageModel>(); 
         public ICollection<CartProduct?>? CartProducts { get; set; } = new List<CartProduct?>();

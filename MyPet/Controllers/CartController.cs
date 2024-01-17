@@ -43,7 +43,7 @@ namespace MyPet.Controllers
 
             if (!_db.Carts.Any(i => i.UserId == userId))
             {
-                await _db.Carts.AddAsync(new MainCart { UserId = userId, User = user });
+                await _db.Carts.AddAsync(new MainCart { User = user });
                 await _db.SaveChangesAsync();
             }
 

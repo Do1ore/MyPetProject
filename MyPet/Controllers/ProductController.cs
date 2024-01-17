@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Runtime.InteropServices.JavaScript;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyPet.Areas.SomeLogics;
+using MyPet.Extensions;
 using MyPet.Models;
 using MyPet.ViewModels;
 
@@ -42,7 +44,6 @@ namespace MyPet.Controllers
                     ProductType = filter.ProductType,
                     SortPrice = filter.SortPrice,
                     SearchTerm = filter.SearchTerm,
-
                 };
             }
 
@@ -65,6 +66,7 @@ namespace MyPet.Controllers
                 ViewBag.Secondary = "Введите данные в фильтр правильно";
                 return View(new ProductsAndFilterViewModel());
             }
+
             //getting products after filter
             products = FilterProducts(filter, products);
             //mapping MainProductModel to ProductViewModel
@@ -72,6 +74,7 @@ namespace MyPet.Controllers
             {
                 productViewModel.Add(_mapper.Map<ProductViewModel>(item));
             }
+
             //assembling product and filter view model
             List<ProductViewModel> resultProducts = SelectProducts(productViewModel, PageNumber);
 
@@ -101,7 +104,6 @@ namespace MyPet.Controllers
             ViewBag.CurrentPage = PageNumber;
 
             return View(productsAndFilter);
-
         }
 
         private static List<MainProductModel> FilterProducts(FilterViewModel filter, List<MainProductModel> products)
@@ -116,9 +118,10 @@ namespace MyPet.Controllers
                 products = products.Where(p => p.DefaultPrice <= filter.MaxPrice).Select(p => p).ToList();
 
             if (filter.SearchTerm is not null)
-                products = products.Where(p => p.ProductExtendedFullName.ToUpper().Contains(filter.SearchTerm.ToUpper()) ||
-                p.Description.ToUpper().Contains(filter.SearchTerm))
-                .Select(p => p).ToList();
+                products = products.Where(p =>
+                        p.ProductExtendedFullName.ToUpper().Contains(filter.SearchTerm.ToUpper()) ||
+                        p.Description.ToUpper().Contains(filter.SearchTerm))
+                    .Select(p => p).ToList();
 
             if (filter.SortPrice is not null)
             {
@@ -145,6 +148,7 @@ namespace MyPet.Controllers
                 resultProducts = products.GetRange(page * ProductsOnPage, products.Count - (page * ProductsOnPage));
                 return resultProducts;
             }
+
             return products;
         }
 
@@ -159,6 +163,7 @@ namespace MyPet.Controllers
 
             return View(productView);
         }
+
         public async Task<IActionResult> EditProduct(int? id)
         {
             if (id == null)
@@ -171,6 +176,7 @@ namespace MyPet.Controllers
             {
                 return NotFound();
             }
+
             return View(product);
         }
 
@@ -182,14 +188,15 @@ namespace MyPet.Controllers
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
-                product.LastTimeEdited = DateTime.UtcNow;
-
+                product.LastTimeEdited = DateTime.Now;
                 db.Update(product);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(ProductsToList));
             }
+
             return View(product);
         }
 
@@ -213,6 +220,7 @@ namespace MyPet.Controllers
             {
                 return NotFound();
             }
+
             var extraimages = db.ExtraImages;
             List<ExtraImageModel> images = extraimages
                 .Where(i => i.ProductModel != null)
@@ -222,13 +230,16 @@ namespace MyPet.Controllers
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(ProductsToList));
         }
+
         //todo
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProductViewModel? product, ExtraImageModel? imageModel, int? ExtaImageCount)
+        public async Task<IActionResult> Create(CreateProductViewModel? product, ExtraImageModel? imageModel,
+            int? ExtaImageCount)
         {
             if (ModelState.IsValid)
             {
@@ -243,6 +254,7 @@ namespace MyPet.Controllers
             {
                 return RedirectToAction(nameof(Create));
             }
+
             return RedirectToAction(nameof(ProductsToList));
         }
 
@@ -251,10 +263,5 @@ namespace MyPet.Controllers
             buffilter = new FilterViewModel();
             return RedirectToAction(nameof(ProductsToList));
         }
-
     }
 }
-
-
-
-

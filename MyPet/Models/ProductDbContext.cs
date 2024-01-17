@@ -12,13 +12,14 @@ namespace MyPet.Models
         public DbSet<ExtraImageModel> ExtraImages { get; set; }
         public DbSet<MainCart> Carts { get; set; }
         public DbSet<CartProduct> CartProducts { get; set; }
-        public DbSet<NewsApiSettingsModel> NewsApiSettings { get; set; }
+        public DbSet<NewsApiSettingsModel>  NewsApiSettings { get; set; }
         public DbSet<ReviewStorage> ReviewStorages { get; set; }
         public DbSet<ProductReview> ProductReviews { get; set; }
 
         public ProductDbContext(DbContextOptions<ProductDbContext> options)
                 : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

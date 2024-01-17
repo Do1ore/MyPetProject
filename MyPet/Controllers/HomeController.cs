@@ -64,7 +64,7 @@ namespace MyPet.Controllers
             }
             else
             {
-                ViewBag.Secondary = "Найдено: " + NewsViewModel.Articles.Count;
+                if (NewsViewModel.Articles != null) ViewBag.Secondary = "Найдено: " + NewsViewModel.Articles.Count;
             }
 
 
